@@ -1,0 +1,982 @@
+{% extends 'guest_system/base.html' %} {% load static %} {% block title
+%}Dashboard Monitoring - Smart Guest Book {% block content %}
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Monitoring - Smart Guest Book</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{% load static %}{% static 'css/dashboard_style.css' %}"
+    />
+  </head>
+  <body>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>
+          <div class="icon">
+            <i class="fas fa-tachometer-alt"></i>
+          </div>
+          Smart Guest Book
+        </h2>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-item">
+          <a href="#overview" class="nav-link active" data-tab="overview">
+            <i class="fas fa-chart-pie"></i>
+            <span>Overview</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#guests" class="nav-link" data-tab="guests">
+            <i class="fas fa-users"></i>
+            <span>Data Tamu</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#visits" class="nav-link" data-tab="visits">
+            <i class="fas fa-door-open"></i>
+            <span>Kunjungan</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#notifications" class="nav-link" data-tab="notifications">
+            <i class="fas fa-bell"></i>
+            <span>Notifikasi</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="{% url 'guest_system:face_recognition' %}" class="nav-link">
+            <i class="fas fa-camera"></i>
+            <span>Face Recognition</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="page-title">
+          <h1>Dashboard Monitoring</h1>
+          <p>
+            Pantau aktivitas tamu secara real-time dengan antarmuka yang elegan
+          </p>
+        </div>
+        <div class="top-bar-actions">
+          <button class="refresh-btn" onclick="refreshDashboard()">
+            <i class="fas fa-sync-alt"></i>
+            <span>Refresh</span>
+          </button>
+          <div class="last-update">
+            <i class="fas fa-clock"></i>
+            <span
+              >Last updated: <span id="last-update-time">--:--:--</span></span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <!-- Overview Tab -->
+        <div id="overview-content" class="tab-content active">
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card total-guests">
+              <div class="stat-header">
+                <div>
+                  <div class="stat-value" id="total-guests">--</div>
+                  <div class="stat-label">Total Tamu Terdaftar</div>
+                  <div class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Terdaftar di sistem</span>
+                  </div>
+                </div>
+                <div class="stat-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card today-guests">
+              <div class="stat-header">
+                <div>
+                  <div class="stat-value" id="today-guests">--</div>
+                  <div class="stat-label">Tamu Hari Ini</div>
+                  <div class="stat-trend positive">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Registrasi hari ini</span>
+                  </div>
+                </div>
+                <div class="stat-icon">
+                  <i class="fas fa-user-plus"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card active-visits">
+              <div class="stat-header">
+                <div>
+                  <div class="stat-value" id="active-visits">--</div>
+                  <div class="stat-label">Sedang Berkunjung</div>
+                  <div class="stat-trend neutral">
+                    <i class="fas fa-clock"></i>
+                    <span>Aktif sekarang</span>
+                  </div>
+                </div>
+                <div class="stat-icon">
+                  <i class="fas fa-door-open"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card pending-guestbook">
+              <div class="stat-header">
+                <div>
+                  <div class="stat-value" id="pending-guestbook">--</div>
+                  <div class="stat-label">Belum Isi Buku Tamu</div>
+                  <div class="stat-trend urgent">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Perlu perhatian</span>
+                  </div>
+                </div>
+                <div class="stat-icon">
+                  <i class="fas fa-edit"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Grid -->
+          <div class="main-grid">
+            <!-- Recent Activity -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-icon">
+                  <i class="fas fa-history"></i>
+                </div>
+                <div class="panel-title">
+                  <h3>Aktivitas Terbaru</h3>
+                  <p>Real-time monitoring sistem</p>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="activity-list" id="recent-activity">
+                  <!-- Activities will be populated here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Statistics & Analytics -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="panel-title">
+                  <h3>Statistik & Analytics</h3>
+                  <p>Tren kunjungan harian</p>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="charts-container">
+                  <div class="chart-box">
+                    <canvas id="daily-chart"></canvas>
+                  </div>
+                  <div class="chart-box">
+                    <canvas id="purpose-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guests Tab -->
+        <div id="guests-content" class="tab-content" style="display: none">
+          <div class="content-section">
+            <div class="panel-header">
+              <div class="panel-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="panel-title">
+                <h3>Manajemen Tamu</h3>
+                <p>Daftar dan status tamu terdaftar</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="guests-grid" id="guests-list">
+                <!-- Guests will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visits Tab -->
+        <div id="visits-content" class="tab-content" style="display: none">
+          <div class="content-section">
+            <div class="panel-header">
+              <div class="panel-icon">
+                <i class="fas fa-door-open"></i>
+              </div>
+              <div class="panel-title">
+                <h3>Kunjungan Aktif</h3>
+                <p>Monitor tamu yang sedang berkunjung</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div id="active-visits-list">
+                <!-- Active visits will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications Tab -->
+        <div
+          id="notifications-content"
+          class="tab-content"
+          style="display: none"
+        >
+          <div class="content-section">
+            <div class="panel-header">
+              <div class="panel-icon">
+                <i class="fas fa-bell"></i>
+              </div>
+              <div class="panel-title">
+                <h3>Notifikasi Real-time</h3>
+                <p>Peringatan dan pemberitahuan sistem</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div id="notifications-list">
+                <!-- Notifications will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <script>
+      // Dashboard data and charts
+      let dashboardData = {};
+      let dailyChart = null;
+      let purposeChart = null;
+      let currentTab = "overview";
+
+      // CSRF Token for Django
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      // Toggle sidebar for mobile
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("open");
+      }
+
+      // Initialize dashboard
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeNavigation();
+        initializeCharts();
+        loadDashboardData();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadDashboardData, 30000);
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener("click", function (e) {
+          const sidebar = document.getElementById("sidebar");
+          const toggleBtn = document.querySelector(".mobile-toggle");
+
+          if (
+            window.innerWidth <= 1024 &&
+            !sidebar.contains(e.target) &&
+            !toggleBtn.contains(e.target) &&
+            sidebar.classList.contains("open")
+          ) {
+            sidebar.classList.remove("open");
+          }
+        });
+      });
+
+      // Navigation functionality
+      function initializeNavigation() {
+        const navLinks = document.querySelectorAll(".nav-link[data-tab]");
+
+        navLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const tabName = this.dataset.tab;
+            switchTab(tabName);
+
+            // Close sidebar on mobile after tab switch
+            if (window.innerWidth <= 1024) {
+              document.getElementById("sidebar").classList.remove("open");
+            }
+          });
+        });
+      }
+
+      function switchTab(tabName) {
+        // Update navigation
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.classList.remove("active");
+        });
+        document
+          .querySelector(`[data-tab="${tabName}"]`)
+          .classList.add("active");
+
+        // Update content
+        document.querySelectorAll(".tab-content").forEach((content) => {
+          content.style.display = "none";
+        });
+        document.getElementById(`${tabName}-content`).style.display = "block";
+
+        currentTab = tabName;
+      }
+
+      // Load dashboard data from Django backend
+      async function loadDashboardData() {
+        try {
+          const response = await fetch(
+            '{% url "guest_system:dashboard_data" %}',
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            dashboardData = result.data;
+            updateDashboard();
+            updateLastUpdateTime();
+          } else {
+            throw new Error(result.message || "Failed to load dashboard data");
+          }
+        } catch (error) {
+          console.error("Error loading dashboard data:", error);
+          showToast("Gagal memuat data dashboard: " + error.message, "error");
+        }
+      }
+
+      // Update all dashboard components
+      function updateDashboard() {
+        updateStatistics();
+        updateRecentActivity();
+        updateGuestsList();
+        updateActiveVisits();
+        updateNotifications();
+        updateCharts();
+      }
+
+      // Update statistics cards
+      function updateStatistics() {
+        if (dashboardData.statistics) {
+          document.getElementById("total-guests").textContent =
+            dashboardData.statistics.total_guests;
+          document.getElementById("today-guests").textContent =
+            dashboardData.statistics.today_guests;
+          document.getElementById("active-visits").textContent =
+            dashboardData.statistics.active_visits;
+          document.getElementById("pending-guestbook").textContent =
+            dashboardData.statistics.pending_guestbook;
+        }
+      }
+
+      // Update recent activity
+      function updateRecentActivity() {
+        const container = document.getElementById("recent-activity");
+        container.innerHTML = "";
+
+        if (
+          !dashboardData.notifications ||
+          dashboardData.notifications.length === 0
+        ) {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h3>Belum Ada Aktivitas</h3>
+                        <p>Aktivitas sistem akan muncul di sini</p>
+                    </div>
+                `;
+          return;
+        }
+
+        // Show latest 5 notifications as activities
+        const activities = dashboardData.notifications.slice(0, 5);
+
+        activities.forEach((activity) => {
+          const iconClass = getNotificationIcon(activity.type);
+          const item = document.createElement("div");
+          item.className = "activity-item";
+
+          item.innerHTML = `
+                    <div class="activity-icon-small">
+                        <i class="${iconClass}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${activity.title}</h4>
+                        <p>${activity.message}</p>
+                        <div class="activity-time">${activity.time_ago}</div>
+                    </div>
+                `;
+
+          container.appendChild(item);
+        });
+      }
+
+      // Update guests list
+      function updateGuestsList() {
+        const container = document.getElementById("guests-list");
+        container.innerHTML = "";
+
+        if (
+          !dashboardData.recent_guests ||
+          dashboardData.recent_guests.length === 0
+        ) {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>Belum Ada Tamu</h3>
+                        <p>Tamu yang terdaftar akan muncul di sini</p>
+                    </div>
+                `;
+          return;
+        }
+
+        dashboardData.recent_guests.forEach((guest) => {
+          const card = document.createElement("div");
+          card.className = "guest-card";
+
+          const initials = guest.name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .substring(0, 2);
+          const statusClass = `status-${guest.status.replace("_", "-")}`;
+
+          card.innerHTML = `
+                    <div class="guest-header">
+                        <div class="guest-avatar">
+                            ${
+                              guest.face_image_url
+                                ? `<img src="${guest.face_image_url}" alt="${guest.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
+                                : initials
+                            }
+                        </div>
+                        <div class="guest-info">
+                            <h4>${guest.name}</h4>
+                            <p>${guest.company || "Tidak ada perusahaan"}</p>
+                        </div>
+                    </div>
+                    <div class="guest-meta">
+                        <div class="guest-time">Terdaftar: ${
+                          guest.registration_time
+                        }</div>
+                        <div class="status-badge ${statusClass}">
+                            ${guest.status_info.text}
+                        </div>
+                    </div>
+                    <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                        ${
+                          guest.status === "pending_guestbook"
+                            ? `<button class="btn btn-warning" onclick="sendReminder(${guest.id})">
+                                <i class="fas fa-bell"></i> Kirim Pengingat
+                            </button>`
+                            : ""
+                        }
+                        ${
+                          guest.status === "active_visit"
+                            ? `<button class="btn btn-danger" onclick="checkoutGuest(${guest.id})">
+                                <i class="fas fa-sign-out-alt"></i> Check Out
+                            </button>`
+                            : ""
+                        }
+                    </div>
+                `;
+
+          container.appendChild(card);
+        });
+      }
+
+      // Update active visits
+      function updateActiveVisits() {
+        const container = document.getElementById("active-visits-list");
+        container.innerHTML = "";
+
+        if (
+          !dashboardData.active_visits ||
+          dashboardData.active_visits.length === 0
+        ) {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-door-open"></i>
+                        <h3>Tidak Ada Kunjungan Aktif</h3>
+                        <p>Kunjungan yang sedang berlangsung akan muncul di sini</p>
+                    </div>
+                `;
+          return;
+        }
+
+        dashboardData.active_visits.forEach((visit) => {
+          const urgencyColor = {
+            low: "#10b981",
+            medium: "#f59e0b",
+            high: "#ef4444",
+          };
+
+          const item = document.createElement("div");
+          item.className = "guest-card";
+          item.style.borderLeft = `4px solid ${
+            urgencyColor[visit.urgency_level]
+          }`;
+
+          item.innerHTML = `
+                    <div class="guest-header">
+                        <div class="guest-avatar">
+                            ${visit.guest_name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .substring(0, 2)}
+                        </div>
+                        <div class="guest-info">
+                            <h4>${visit.guest_name}</h4>
+                            <p>${visit.purpose}</p>
+                        </div>
+                    </div>
+                    <div class="guest-meta">
+                        <div class="guest-time">
+                            Check-in: ${visit.check_in_time} | Durasi: ${
+            visit.duration_minutes
+          } menit
+                        </div>
+                        <div class="status-badge ${
+                          visit.is_overdue ? "status-pending" : "status-active"
+                        }">
+                            ${visit.is_overdue ? "Terlambat" : "Aktif"}
+                        </div>
+                    </div>
+                `;
+
+          container.appendChild(item);
+        });
+      }
+
+      // Update notifications
+      function updateNotifications() {
+        const container = document.getElementById("notifications-list");
+        container.innerHTML = "";
+
+        if (
+          !dashboardData.notifications ||
+          dashboardData.notifications.length === 0
+        ) {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell"></i>
+                        <h3>Tidak Ada Notifikasi</h3>
+                        <p>Notifikasi sistem akan muncul di sini</p>
+                    </div>
+                `;
+          return;
+        }
+
+        dashboardData.notifications.forEach((notification) => {
+          const iconClass = getNotificationIcon(notification.type);
+          const isUrgent = notification.type === "guestbook_reminder";
+
+          const item = document.createElement("div");
+          item.className = `activity-item ${isUrgent ? "urgent" : ""} ${
+            !notification.is_read ? "unread" : ""
+          }`;
+          item.style.cursor = "pointer";
+          item.onclick = () => markNotificationRead(notification.id);
+
+          item.innerHTML = `
+                    <div class="activity-icon-small" style="background: ${
+                      isUrgent ? "#ef4444" : "#3b82f6"
+                    }">
+                        <i class="${iconClass}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${notification.title} ${
+            !notification.is_read
+              ? '<span style="color: #ef4444;">●</span>'
+              : ""
+          }</h4>
+                        <p><strong>${notification.guest_name}:</strong> ${
+            notification.message
+          }</p>
+                        <div class="activity-time">${
+                          notification.time_ago
+                        }</div>
+                    </div>
+                `;
+
+          container.appendChild(item);
+        });
+      }
+
+      // Initialize charts
+      function initializeCharts() {
+        // Daily registrations chart
+        const dailyCtx = document
+          .getElementById("daily-chart")
+          .getContext("2d");
+        dailyChart = new Chart(dailyCtx, {
+          type: "line",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: "Registrasi Harian",
+                data: [],
+                borderColor: "#3b82f6",
+                backgroundColor: "rgba(59, 130, 246, 0.1)",
+                tension: 0.4,
+                fill: true,
+                borderWidth: 3,
+                pointBackgroundColor: "#3b82f6",
+                pointBorderColor: "#ffffff",
+                pointBorderWidth: 2,
+                pointRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: "Registrasi Harian (7 Hari Terakhir)",
+                font: {
+                  size: 14,
+                  weight: "bold",
+                },
+              },
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1,
+                },
+              },
+            },
+          },
+        });
+
+        // Purpose breakdown chart
+        const purposeCtx = document
+          .getElementById("purpose-chart")
+          .getContext("2d");
+        purposeChart = new Chart(purposeCtx, {
+          type: "doughnut",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                data: [],
+                backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
+                borderWidth: 0,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: "Tujuan Kunjungan Hari Ini",
+                font: {
+                  size: 14,
+                  weight: "bold",
+                },
+              },
+              legend: {
+                position: "bottom",
+                labels: {
+                  padding: 20,
+                  usePointStyle: true,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Update charts with real data
+      function updateCharts() {
+        // Update daily chart
+        if (dailyChart && dashboardData.daily_stats) {
+          dailyChart.data.labels = dashboardData.daily_stats.map(
+            (stat) => stat.day
+          );
+          dailyChart.data.datasets[0].data = dashboardData.daily_stats.map(
+            (stat) => stat.registrations
+          );
+          dailyChart.update();
+        }
+
+        // Update purpose chart
+        if (purposeChart && dashboardData.purpose_breakdown) {
+          purposeChart.data.labels = dashboardData.purpose_breakdown.map(
+            (stat) => stat.purpose_display
+          );
+          purposeChart.data.datasets[0].data =
+            dashboardData.purpose_breakdown.map((stat) => stat.count);
+          purposeChart.update();
+        }
+      }
+
+      // Helper functions
+      function getNotificationIcon(type) {
+        const icons = {
+          new_registration: "fas fa-user-plus",
+          guestbook_reminder: "fas fa-exclamation-triangle",
+          guestbook_completed: "fas fa-check-circle",
+          guest_checkout: "fas fa-sign-out-alt",
+          long_visit: "fas fa-clock",
+        };
+        return icons[type] || "fas fa-bell";
+      }
+
+      function updateLastUpdateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+        document.getElementById("last-update-time").textContent = timeString;
+      }
+
+      // Action functions
+      async function sendReminder(guestId) {
+        try {
+          const response = await fetch(
+            `{% url 'guest_system:send_reminder' guest_id=0 %}`.replace(
+              "0",
+              guestId
+            ),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+              },
+            }
+          );
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            showToast("Pengingat berhasil dikirim!", "success");
+            loadDashboardData(); // Refresh data
+          } else {
+            throw new Error(result.message || "Gagal mengirim pengingat");
+          }
+        } catch (error) {
+          console.error("Error sending reminder:", error);
+          showToast("Gagal mengirim pengingat: " + error.message, "error");
+        }
+      }
+
+      async function checkoutGuest(guestId) {
+        if (!confirm("Apakah Anda yakin ingin checkout tamu ini?")) {
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `{% url 'guest_system:checkout_guest' guest_id=0 %}`.replace(
+              "0",
+              guestId
+            ),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+              },
+              body: JSON.stringify({
+                checkout_notes: "",
+              }),
+            }
+          );
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            showToast("Tamu berhasil di-checkout!", "success");
+            loadDashboardData(); // Refresh data
+          } else {
+            throw new Error(result.message || "Gagal checkout tamu");
+          }
+        } catch (error) {
+          console.error("Error checking out guest:", error);
+          showToast("Gagal checkout tamu: " + error.message, "error");
+        }
+      }
+
+      async function markNotificationRead(notificationId) {
+        try {
+          await fetch(
+            `{% url 'guest_system:mark_notification_read' notification_id=0 %}`.replace(
+              "0",
+              notificationId
+            ),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+              },
+            }
+          );
+
+          loadDashboardData(); // Refresh data
+        } catch (error) {
+          console.error("Error marking notification as read:", error);
+        }
+      }
+
+      // Refresh dashboard
+      async function refreshDashboard() {
+        const refreshBtn = document.querySelector(".refresh-btn");
+        const originalHTML = refreshBtn.innerHTML;
+
+        refreshBtn.innerHTML =
+          '<div class="loading"></div> <span>Memuat...</span>';
+        refreshBtn.disabled = true;
+
+        try {
+          await loadDashboardData();
+          showToast("Dashboard berhasil diperbarui!", "success");
+        } catch (error) {
+          showToast("Gagal memperbarui dashboard: " + error.message, "error");
+        } finally {
+          refreshBtn.innerHTML = originalHTML;
+          refreshBtn.disabled = false;
+        }
+      }
+
+      // Toast notification system
+      function showToast(message, type = "success") {
+        // Remove existing toasts
+        document.querySelectorAll(".toast").forEach((toast) => toast.remove());
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+
+        const iconClass =
+          type === "success" ? "fa-check-circle" : "fa-exclamation-circle";
+
+        toast.innerHTML = `
+                <i class="fas ${iconClass}"></i>
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" style="background: none; border: none; color: inherit; margin-left: auto; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+        document.body.appendChild(toast);
+
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+          if (toast.parentElement) {
+            toast.remove();
+          }
+        }, 4000);
+      }
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", function (e) {
+        // Ctrl/Cmd + R to refresh
+        if ((e.ctrlKey || e.metaKey) && e.key === "r") {
+          e.preventDefault();
+          refreshDashboard();
+        }
+
+        // Number keys 1-4 to switch tabs
+        if (
+          e.key >= "1" &&
+          e.key <= "4" &&
+          !e.ctrlKey &&
+          !e.metaKey &&
+          !e.altKey
+        ) {
+          const tabNames = ["overview", "guests", "visits", "notifications"];
+          const tabIndex = parseInt(e.key) - 1;
+          if (tabNames[tabIndex]) {
+            switchTab(tabNames[tabIndex]);
+          }
+        }
+
+        // Escape key to close sidebar on mobile
+        if (e.key === "Escape" && window.innerWidth <= 1024) {
+          document.getElementById("sidebar").classList.remove("open");
+        }
+      });
+
+      // Console log for debugging
+      console.log("🚀 Smart Guest Book Dashboard Loaded");
+      console.log("📊 Auto-refresh: 30 seconds");
+      console.log("⌨️ Keyboard shortcuts:");
+      console.log("   - Ctrl+R: Refresh dashboard");
+      console.log("   - 1-4: Switch tabs");
+      console.log("   - Escape: Close sidebar (mobile)");
+    </script>
+  </body>
+</html>
+{% endblock %}

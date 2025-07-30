@@ -1,0 +1,521 @@
+{% extends 'guest_system/base.html' %} {% load static %} {% block title
+%}Deteksi Gestur - Smart Guest Book{% block content %}
+<div class="card-3d">
+  <div class="gesture-header">
+    <h2><i class="fas fa-hand-paper"></i> Pilih Tujuan Kunjungan</h2>
+    <p>Tunjukkan gestur tangan sesuai dengan tujuan kunjungan Anda</p>
+    {% if guest %}
+    <div class="guest-welcome">
+      <i class="fas fa-user-circle"></i>
+      Selamat datang, <strong>{{ guest.name }}</strong>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="gesture-options">
+    <div class="gesture-option" data-gesture="1">
+      <div class="gesture-icon">
+        <i class="fas fa-hand-point-up"></i>
+        <span class="gesture-number">1</span>
+      </div>
+      <div class="gesture-content">
+        <h3>Pelayanan Data</h3>
+        <p>
+          Tunjukkan 1 jari (telunjuk) untuk mengakses layanan data dan informasi
+        </p>
+        <div class="gesture-visual">☝️</div>
+      </div>
+    </div>
+
+    <div class="gesture-option" data-gesture="2">
+      <div class="gesture-icon">
+        <i class="fas fa-hand-peace"></i>
+        <span class="gesture-number">2</span>
+      </div>
+      <div class="gesture-content">
+        <h3>Menemui Pegawai</h3>
+        <p>
+          Tunjukkan 2 jari (telunjuk & tengah) untuk bertemu pegawai atau kepala
+          kantor
+        </p>
+        <div class="gesture-visual">✌️</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="camera-container">
+    <video id="gesture-video" autoplay muted></video>
+    <canvas id="gesture-canvas" style="display: none"></canvas>
+    <div class="camera-overlay">
+      <div class="hand-guide">
+        <div class="hand-outline"></div>
+        <p>Tunjukkan tangan di sini</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="gesture-status" class="status-container">
+    <div class="status-message status-info">
+      <i class="fas fa-info-circle"></i>
+      Tunjukkan gestur tangan Anda di depan kamera
+    </div>
+  </div>
+
+  <div class="instruction-panel">
+    <h4><i class="fas fa-lightbulb"></i> Panduan Gestur:</h4>
+    <ul>
+      <li>Pastikan tangan Anda terlihat jelas di kamera</li>
+      <li>Tunjukkan gestur dengan stabil selama 2-3 detik</li>
+      <li>Gunakan pencahayaan yang cukup</li>
+      <li>Jarak ideal: 30-50 cm dari kamera</li>
+    </ul>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .gesture-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .gesture-header h2 {
+    color: #a6a9afff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 2rem;
+  }
+
+  .gesture-header p {
+    color: #6b7280;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+
+  .guest-welcome {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+  }
+
+  .gesture-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .gesture-option {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gesture-option::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(102, 126, 234, 0.1),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .gesture-option:hover::before {
+    left: 100%;
+  }
+
+  .gesture-option:hover {
+    transform: translateY(-5px);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+  }
+
+  .gesture-option.active {
+    background: rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.25);
+  }
+
+  .gesture-icon {
+    position: relative;
+    color: #667eea;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+  }
+
+  .gesture-number {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #667eea;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gesture-content h3 {
+    color: #374151;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .gesture-content p {
+    color: #6b7280;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+  }
+
+  .gesture-visual {
+    font-size: 2.5rem;
+    margin-top: 10px;
+  }
+
+  .hand-guide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .hand-outline {
+    width: 120px;
+    height: 150px;
+    border: 3px solid rgba(102, 126, 234, 0.6);
+    border-radius: 20px 20px 10px 10px;
+    background: rgba(102, 126, 234, 0.1);
+    margin: 0 auto 10px;
+    animation: handPulse 2s infinite;
+    position: relative;
+  }
+
+  .hand-outline::before {
+    content: "✋";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    opacity: 0.7;
+  }
+
+  .hand-guide p {
+    color: rgba(102, 126, 234, 0.8);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  @keyframes handPulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.9;
+    }
+  }
+
+  .instruction-panel {
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+  }
+
+  .instruction-panel h4 {
+    color: #2563eb;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .instruction-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .instruction-panel li {
+    color: #9a9c9fff;
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .instruction-panel li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #2563eb;
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    .gesture-options {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .gesture-option {
+      padding: 20px;
+    }
+
+    .gesture-header h2 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  let currentStream = null;
+  let gestureDetectionActive = false;
+  let detectedGesture = null;
+  let gestureConfirmCount = 0;
+  const requiredConfirmCount = 15; // Need 15 consistent detections
+
+  // Get guest ID from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const guestId = urlParams.get("guest_id");
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeGestureCamera();
+    // Give audio instruction
+    setTimeout(() => {
+      speakInstruction(
+        "Silakan tunjukkan gestur tangan: angka 1 untuk pelayanan data, angka 2 untuk menemui pegawai."
+      );
+    }, 1000);
+  });
+
+  async function initializeGestureCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: 640,
+          height: 480,
+          facingMode: "user",
+        },
+      });
+
+      const video = document.getElementById("gesture-video");
+      video.srcObject = stream;
+      currentStream = stream;
+
+      // Start gesture detection after video loads
+      video.addEventListener("loadedmetadata", () => {
+        gestureDetectionActive = true;
+        detectGesture();
+      });
+
+      updateGestureStatus(
+        "success",
+        "Kamera aktif. Tunjukkan gestur tangan Anda."
+      );
+    } catch (error) {
+      console.error("Error accessing camera for gesture:", error);
+      updateGestureStatus("error", "Error: Tidak dapat mengakses kamera.");
+    }
+  }
+
+  async function detectGesture() {
+    if (!gestureDetectionActive) return;
+
+    const video = document.getElementById("gesture-video");
+    const canvas = document.getElementById("gesture-canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+
+    const imageData = canvas.toDataURL("image/jpeg", 0.6);
+
+    try {
+      const response = await fetch('{% url "guest_system:process_gesture" %}', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        body: JSON.stringify({
+          image: imageData,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        const gesture = result.gesture;
+
+        // Check for consistent gesture detection
+        if (detectedGesture === gesture) {
+          gestureConfirmCount++;
+        } else {
+          detectedGesture = gesture;
+          gestureConfirmCount = 1;
+        }
+
+        // Update UI
+        updateGestureSelection(gesture);
+
+        const progressPercent =
+          (gestureConfirmCount / requiredConfirmCount) * 100;
+        updateGestureStatus(
+          "info",
+          `Gestur ${gesture} terdeteksi... (${Math.round(progressPercent)}%)`
+        );
+
+        // If gesture confirmed enough times
+        if (gestureConfirmCount >= requiredConfirmCount) {
+          gestureDetectionActive = false;
+          const purposeText =
+            gesture === 1 ? "Pelayanan Data" : "Menemui Pegawai";
+          const purpose = gesture === 1 ? "data_service" : "meet_staff";
+
+          updateGestureStatus("success", `Gestur dikonfirmasi: ${purposeText}`);
+
+          // Give audio feedback
+          if (gesture === 1) {
+            speakInstruction(
+              "Gestur terdeteksi. Anda akan diarahkan ke ruang PST untuk pelayanan data."
+            );
+          } else {
+            speakInstruction(
+              "Gestur terdeteksi. Anda akan diarahkan untuk menemui pegawai atau kepala kantor."
+            );
+          }
+
+          setTimeout(() => {
+            window.location.href = `{% url 'guest_system:guest_book' %}?guest_id=${guestId}&purpose=${purpose}`;
+          }, 3000);
+
+          return; // Stop processing
+        }
+      } else {
+        // Reset if no gesture detected
+        if (detectedGesture !== null) {
+          detectedGesture = null;
+          gestureConfirmCount = 0;
+          clearGestureSelection();
+          updateGestureStatus(
+            "info",
+            "Tunjukkan gestur tangan Anda di depan kamera"
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error processing gesture:", error);
+    }
+
+    // Continue processing
+    setTimeout(() => {
+      if (gestureDetectionActive) {
+        detectGesture();
+      }
+    }, 100);
+  }
+
+  function updateGestureSelection(gesture) {
+    // Clear all selections
+    document.querySelectorAll(".gesture-option").forEach((option) => {
+      option.classList.remove("active");
+    });
+
+    // Highlight selected gesture
+    const selectedOption = document.querySelector(
+      `[data-gesture="${gesture}"]`
+    );
+    if (selectedOption) {
+      selectedOption.classList.add("active");
+    }
+  }
+
+  function clearGestureSelection() {
+    document.querySelectorAll(".gesture-option").forEach((option) => {
+      option.classList.remove("active");
+    });
+  }
+
+  function updateGestureStatus(type, message) {
+    const statusContainer = document.getElementById("gesture-status");
+    const iconClass = {
+      success: "fas fa-check-circle",
+      error: "fas fa-exclamation-circle",
+      info: "fas fa-info-circle",
+    };
+
+    statusContainer.innerHTML = `
+            <div class="status-message status-${type}">
+                <i class="${iconClass[type]}"></i>
+                ${message}
+            </div>
+        `;
+  }
+
+  function speakInstruction(text) {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "id-ID";
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // Cleanup
+  window.addEventListener("beforeunload", function () {
+    gestureDetectionActive = false;
+    if (currentStream) {
+      currentStream.getTracks().forEach((track) => track.stop());
+    }
+  });
+</script>
+{% endblock %}

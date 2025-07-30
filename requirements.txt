@@ -1,0 +1,15 @@
+# Install dlib (this takes time as it compiles)
+Django
+cmake
+psycopg2
+opencv-python
+face-recognition
+mediapipe
+numpy
+Pillow
+django-cors-headers
+channels
+channels-redis
+daphne
+gtts
+pygame
