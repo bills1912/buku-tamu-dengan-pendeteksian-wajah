@@ -1,0 +1,693 @@
+{% extends 'guest_system/base.html' %} {% load static %} {% block title
+%}Changelog & Version History - Smart Guest Book{% endblock %} {% block content
+%}
+<div class="changelog-container">
+  <!-- Header Section -->
+  <div class="changelog-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1><i class="fas fa-code-branch"></i> Changelog & Version History</h1>
+        <p>Pantau perkembangan dan pembaruan Smart Guest Book System</p>
+      </div>
+      <div class="header-right">
+        <div class="current-version" id="current-version">
+          <span class="version-label">Current Version</span>
+          <span class="version-number">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Version List -->
+  <div class="versions-container" id="versions-container">
+    <!-- Loading State -->
+    <div class="loading-state" id="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Memuat data changelog...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" id="error-state" style="display: none">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>Gagal Memuat Data</h3>
+      <p>Terjadi kesalahan saat memuat changelog. Silakan coba lagi.</p>
+      <button class="btn-retry" onclick="loadChangelogData()">
+        <i class="fas fa-redo"></i>
+        Coba Lagi
+      </button>
+    </div>
+
+    <!-- Versions will be populated here -->
+    <div class="versions-list" id="versions-list" style="display: none">
+      <!-- Version items will be inserted here -->
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <div class="back-section">
+    <a href="{% url 'guest_system:home' %}" class="btn-back">
+      <i class="fas fa-arrow-left"></i>
+      Kembali ke Beranda
+    </a>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .changelog-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 15px;
+  }
+
+  .changelog-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .header-left h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-left p {
+    font-size: 1rem;
+    opacity: 0.9;
+    line-height: 1.4;
+  }
+
+  .current-version {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    min-width: 150px;
+  }
+
+  .version-label {
+    display: block;
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .version-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 6px 12px;
+  }
+
+  .loading-state,
+  .error-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(102, 126, 234, 0.1);
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+  }
+
+  .error-state i {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 20px;
+  }
+
+  .error-state h3 {
+    color: #374151;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+
+  .error-state p {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+  }
+
+  .btn-retry {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .btn-retry:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
+
+  .versions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .version-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .version-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  .version-card.current {
+    border: 2px solid #10b981;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+  }
+
+  .version-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 20px 25px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+  }
+
+  .version-card.current .version-header {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  }
+
+  .version-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .version-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .version-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  .version-card.current .version-icon {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+
+  .version-details h3 {
+    color: #374151;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .version-title {
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .version-meta {
+    text-align: right;
+    color: #6b7280;
+  }
+
+  .version-date {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .version-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .version-status.current {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  .version-status.previous {
+    background: rgba(107, 114, 128, 0.1);
+    color: #4b5563;
+  }
+
+  .current-badge {
+    position: absolute;
+    top: -8px;
+    right: 25px;
+    background: #10b981;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+  }
+
+  .version-description {
+    padding: 20px 25px;
+  }
+
+  .version-description p {
+    color: #6b7280;
+    line-height: 1.5;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .changelog-items {
+    padding: 0 25px 25px;
+  }
+
+  .changelog-section {
+    margin-bottom: 20px;
+  }
+
+  .changelog-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .changelog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .changelog-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 10px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  .changelog-item:hover {
+    background: rgba(248, 250, 252, 1);
+    transform: translateX(3px);
+  }
+
+  .changelog-item.highlighted {
+    background: rgba(102, 126, 234, 0.05);
+    border-left-color: #667eea;
+  }
+
+  .changelog-item.highlighted:hover {
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  .item-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: white;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .item-icon.new {
+    background: #10b981;
+  }
+  .item-icon.improvement {
+    background: #3b82f6;
+  }
+  .item-icon.fix {
+    background: #f59e0b;
+  }
+  .item-icon.security {
+    background: #ef4444;
+  }
+  .item-icon.breaking {
+    background: #8b5cf6;
+  }
+
+  .item-content {
+    flex: 1;
+  }
+
+  .item-title {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 3px;
+    font-size: 0.85rem;
+  }
+
+  .item-description {
+    color: #6b7280;
+    line-height: 1.4;
+    font-size: 0.8rem;
+  }
+
+  .back-section {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .btn-back {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border: 2px solid rgba(107, 114, 128, 0.2);
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-back:hover {
+    background: rgba(107, 114, 128, 0.2);
+    border-color: rgba(107, 114, 128, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    .changelog-container {
+      padding: 10px;
+    }
+    .changelog-header {
+      padding: 20px;
+    }
+    .header-content {
+      flex-direction: column;
+      text-align: center;
+      gap: 15px;
+    }
+    .header-left h1 {
+      font-size: 1.5rem;
+    }
+    .current-version {
+      min-width: auto;
+      width: 100%;
+    }
+    .version-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .version-meta {
+      text-align: left;
+      width: 100%;
+    }
+    .version-header,
+    .version-description,
+    .changelog-items {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .current-badge {
+      position: static;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    loadChangelogData();
+  });
+
+  async function loadChangelogData() {
+    const loadingState = document.getElementById("loading-state");
+    const errorState = document.getElementById("error-state");
+    const versionsList = document.getElementById("versions-list");
+
+    loadingState.style.display = "block";
+    errorState.style.display = "none";
+    versionsList.style.display = "none";
+
+    try {
+      const response = await fetch('{% url "guest_system:changelog_data" %}');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      if (result.status === "success") {
+        renderChangelog(result.data);
+        loadingState.style.display = "none";
+        versionsList.style.display = "block";
+      } else {
+        throw new Error(result.message || "Failed to load changelog data");
+      }
+    } catch (error) {
+      console.error("Error loading changelog data:", error);
+      loadingState.style.display = "none";
+      errorState.style.display = "block";
+      versionsList.style.display = "none";
+    }
+  }
+
+  function renderChangelog(data) {
+    const currentVersionEl = document.getElementById("current-version");
+    if (data.current_version) {
+      currentVersionEl.querySelector(
+        ".version-number"
+      ).textContent = `v${data.current_version.version_number}`;
+    }
+
+    const versionsList = document.getElementById("versions-list");
+    versionsList.innerHTML = "";
+
+    if (!data.versions || data.versions.length === 0) {
+      versionsList.innerHTML = `
+        <div style="text-align: center; padding: 50px 20px;">
+          <i class="fas fa-code-branch" style="font-size: 3rem; color: #9ca3af; margin-bottom: 15px;"></i>
+          <h3 style="color: #6b7280; margin-bottom: 8px; font-size: 1.2rem;">Belum Ada Changelog</h3>
+          <p style="color: #9ca3af; font-size: 0.9rem;">Changelog versi akan muncul di sini ketika tersedia.</p>
+        </div>
+      `;
+      return;
+    }
+
+    data.versions.forEach((version) => {
+      const versionCard = createVersionCard(version);
+      versionsList.appendChild(versionCard);
+    });
+  }
+
+  function createVersionCard(version) {
+    const card = document.createElement("div");
+    card.className = `version-card ${version.is_current ? "current" : ""}`;
+
+    const itemsByType = {};
+    version.changelog_items.forEach((item) => {
+      if (!itemsByType[item.item_type]) {
+        itemsByType[item.item_type] = [];
+      }
+      itemsByType[item.item_type].push(item);
+    });
+
+    let changelogSectionsHtml = "";
+    const typeOrder = ["new", "improvement", "fix", "security", "breaking"];
+    const typeLabels = {
+      new: "Fitur Baru",
+      improvement: "Peningkatan",
+      fix: "Perbaikan Bug",
+      security: "Keamanan",
+      breaking: "Perubahan Breaking",
+    };
+    const typeIcons = {
+      new: "fas fa-plus",
+      improvement: "fas fa-arrow-up",
+      fix: "fas fa-wrench",
+      security: "fas fa-shield-alt",
+      breaking: "fas fa-exclamation-triangle",
+    };
+
+    typeOrder.forEach((type) => {
+      if (itemsByType[type] && itemsByType[type].length > 0) {
+        const items = itemsByType[type];
+        const itemsHtml = items
+          .map(
+            (item) => `
+          <div class="changelog-item ${
+            item.is_highlighted ? "highlighted" : ""
+          }">
+            <div class="item-icon ${item.item_type}">
+              <i class="${getItemIcon(item.item_type)}"></i>
+            </div>
+            <div class="item-content">
+              <div class="item-title">${item.title}</div>
+              <div class="item-description">${item.description}</div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+
+        changelogSectionsHtml += `
+          <div class="changelog-section">
+            <div class="section-title">
+              <i class="${typeIcons[type]}"></i>
+              ${typeLabels[type]} (${items.length})
+            </div>
+            <div class="changelog-list">
+              ${itemsHtml}
+            </div>
+          </div>
+        `;
+      }
+    });
+
+    const releaseDate = new Date(version.release_date);
+    const formattedDate = releaseDate.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    card.innerHTML = `
+      <div class="version-header">
+        ${
+          version.is_current
+            ? '<div class="current-badge">Current Version</div>'
+            : ""
+        }
+        <div class="version-info">
+          <div class="version-main">
+            <div class="version-icon">
+              <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="version-details">
+              <h3>
+                Version ${version.version_number}
+                ${
+                  version.is_current
+                    ? '<i class="fas fa-star" style="color: #10b981;"></i>'
+                    : ""
+                }
+              </h3>
+              <div class="version-title">${version.title}</div>
+            </div>
+          </div>
+          <div class="version-meta">
+            <div class="version-date">${formattedDate}</div>
+            <div class="version-status ${
+              version.is_current ? "current" : "previous"
+            }">
+              <i class="fas ${
+                version.is_current ? "fa-check-circle" : "fa-history"
+              }"></i>
+              ${version.is_current ? "Current" : "Previous"}
+            </div>
+          </div>
+        </div>
+      </div>
+      ${
+        version.description
+          ? `<div class="version-description"><p>${version.description}</p></div>`
+          : ""
+      }
+      ${
+        changelogSectionsHtml
+          ? `<div class="changelog-items">${changelogSectionsHtml}</div>`
+          : ""
+      }
+    `;
+    return card;
+  }
+
+  function getItemIcon(itemType) {
+    const icons = {
+      new: "fas fa-plus",
+      improvement: "fas fa-arrow-up",
+      fix: "fas fa-wrench",
+      security: "fas fa-shield-alt",
+      breaking: "fas fa-exclamation-triangle",
+    };
+    return icons[itemType] || "fas fa-circle";
+  }
+</script>
+{% endblock %}

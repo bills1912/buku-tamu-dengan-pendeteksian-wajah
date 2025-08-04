@@ -401,26 +401,37 @@
         // If gesture confirmed enough times
         if (gestureConfirmCount >= requiredConfirmCount) {
           gestureDetectionActive = false;
-          const purposeText =
-            gesture === 1 ? "Pelayanan Data" : "Menemui Pegawai";
-          const purpose = gesture === 1 ? "data_service" : "meet_staff";
 
-          updateGestureStatus("success", `Gestur dikonfirmasi: ${purposeText}`);
-
-          // Give audio feedback
+          // Handle both gesture types
           if (gesture === 1) {
-            speakInstruction(
-              "Gestur terdeteksi. Anda akan diarahkan ke ruang PST untuk pelayanan data."
+            // Gesture 1: Direct to guest book for data service
+            updateGestureStatus(
+              "success",
+              "Gestur dikonfirmasi: Pelayanan Data"
             );
-          } else {
-            speakInstruction(
-              "Gestur terdeteksi. Anda akan diarahkan untuk menemui pegawai atau kepala kantor."
-            );
-          }
 
-          setTimeout(() => {
-            window.location.href = `{% url 'guest_system:guest_book' %}?guest_id=${guestId}&purpose=${purpose}`;
-          }, 3000);
+            speakInstruction(
+              "Gestur terdeteksi. Anda akan diarahkan ke form buku tamu untuk pelayanan data."
+            );
+
+            setTimeout(() => {
+              window.location.href = `{% url 'guest_system:guest_book' %}?guest_id=${guestId}&purpose=data_service`;
+            }, 3000);
+          } else if (gesture === 2) {
+            // Gesture 2: Go to staff selection
+            updateGestureStatus(
+              "success",
+              "Gestur dikonfirmasi: Menemui Pegawai"
+            );
+
+            speakInstruction(
+              "Gestur terdeteksi. Silakan pilih staff yang ingin Anda temui."
+            );
+
+            setTimeout(() => {
+              window.location.href = `{% url 'guest_system:staff_selection' %}?guest_id=${guestId}`;
+            }, 3000);
+          }
 
           return; // Stop processing
         }

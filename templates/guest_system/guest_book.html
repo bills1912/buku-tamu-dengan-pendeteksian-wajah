@@ -1,5 +1,5 @@
 {% extends 'guest_system/base.html' %} {% load static %} {% block title %}Buku
-Tamu - Smart Guest Book {% endblock %}{% block content %}
+Tamu - Smart Guest Book {% endblock %} {% block content %}
 <div class="card-3d">
   <div class="guestbook-header">
     <h2><i class="fas fa-book"></i> Buku Tamu Digital</h2>
@@ -37,10 +37,42 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     </div>
   </div>
 
+  <!-- Staff Display (if staff is selected) -->
+  {% if staff %}
+  <div class="staff-display">
+    <h4><i class="fas fa-user-tie"></i> Staff yang Akan Ditemui:</h4>
+    <div class="selected-staff-card">
+      <div class="staff-photo">
+        {% if staff.photo %}
+        <img src="{{ staff.photo.url }}" alt="Foto {{ staff.name }}" />
+        {% else %}
+        <i class="fas fa-user"></i>
+        {% endif %}
+      </div>
+      <div class="staff-info">
+        <div class="staff-name">{{ staff.name }}</div>
+        <div class="staff-position">{{ staff.position }}</div>
+        <div class="staff-department">{{ staff.department_display }}</div>
+        <div class="staff-room">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ staff.office_room|default:"Ruang kerja" }}
+        </div>
+      </div>
+      <div class="staff-status {{ staff.current_status }}">
+        <span class="status-indicator"></span>
+        <span class="status-text">{{ staff.get_current_status_display }}</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <form id="guestbook-form" class="guestbook-form">
     {% csrf_token %}
     <input type="hidden" id="guest-id" name="guest_id" value="{{ guest.id }}" />
     <input type="hidden" id="visit-purpose" name="purpose" />
+    {% if staff %}
+    <input type="hidden" id="staff-id" name="staff_id" value="{{ staff.id }}" />
+    {% endif %}
 
     <div class="form-section">
       <h4><i class="fas fa-edit"></i> Detail Kunjungan</h4>
@@ -122,7 +154,11 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
             </div>
           </div>
           <!-- Hidden input for form submission -->
-          <input type="hidden" id="expected-duration" name="expected_duration" />
+          <input
+            type="hidden"
+            id="expected-duration"
+            name="expected_duration"
+          />
         </div>
       </div>
 
@@ -156,10 +192,7 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
         <i class="fas fa-check-circle"></i>
         Selesai & Masuk
       </button>
-      <a
-        href="{% url 'guest_system:gesture_recognition' %}?guest_id={{ guest.id }}"
-        class="btn-secondary"
-      >
+      <a href="javascript:history.back()" class="btn-secondary">
         <i class="fas fa-arrow-left"></i>
         Kembali
       </a>
@@ -175,9 +208,21 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     </div>
     <h3>Selamat Datang!</h3>
     <p>Buku tamu berhasil diisi. Terima kasih atas kunjungan Anda.</p>
+
+    <!-- WhatsApp Status -->
+    <div id="whatsapp-status" class="whatsapp-status" style="display: none">
+      <div class="whatsapp-success">
+        <i class="fab fa-whatsapp"></i>
+        <span
+          >Notifikasi WhatsApp telah dikirim ke staff yang bersangkutan</span
+        >
+      </div>
+    </div>
+
     <div id="direction-display" class="direction-info">
       <!-- Direction will be populated here -->
     </div>
+
     <div class="success-actions">
       <button class="btn-3d" onclick="finishProcess()">
         <i class="fas fa-home"></i>
@@ -186,9 +231,7 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     </div>
   </div>
 </div>
-{% endblock %} 
-
-{% block extra_css %}
+{% endblock %} {% block extra_css %}
 <style>
   .guestbook-header {
     text-align: center;
@@ -270,26 +313,6 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     color: #667eea;
   }
 
-  .btn-secondary {
-    background: rgba(107, 114, 128, 0.1);
-    color: #6b7280;
-    border: 2px solid rgba(107, 114, 128, 0.2);
-    padding: 12px 24px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn-secondary:hover {
-    background: rgba(107, 114, 128, 0.2);
-    border-color: rgba(107, 114, 128, 0.3);
-    transform: translateY(-2px);
-  }
-
   .purpose-display {
     margin-bottom: 30px;
   }
@@ -323,6 +346,147 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     background: rgba(59, 130, 246, 0.1);
     color: #2563eb;
     border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  .purpose-badge.other-activity {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  }
+
+  /* Staff Display Styles */
+  .staff-display {
+    margin-bottom: 30px;
+  }
+
+  .staff-display h4 {
+    color: #a6a9afff;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+  }
+
+  .selected-staff-card {
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .selected-staff-card .staff-photo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(59, 130, 246, 0.2);
+  }
+
+  .selected-staff-card .staff-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .selected-staff-card .staff-photo i {
+    font-size: 2rem;
+    color: #2563eb;
+  }
+
+  .selected-staff-card .staff-info {
+    flex: 1;
+  }
+
+  .staff-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 5px;
+  }
+
+  .staff-position {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 5px;
+  }
+
+  .staff-department {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-bottom: 8px;
+  }
+
+  .staff-room {
+    font-size: 0.9rem;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .staff-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  .status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .staff-status.available {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  .staff-status.available .status-indicator {
+    background: #10b981;
+  }
+
+  .staff-status.busy {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+  }
+
+  .staff-status.busy .status-indicator {
+    background: #f59e0b;
+  }
+
+  .btn-secondary {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border: 2px solid rgba(107, 114, 128, 0.2);
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(107, 114, 128, 0.2);
+    border-color: rgba(107, 114, 128, 0.3);
+    transform: translateY(-2px);
   }
 
   .form-section {
@@ -571,8 +735,6 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     background: rgba(102, 126, 234, 0.5);
   }
 
-  /* ===== END CUSTOM SELECT STYLES ===== */
-
   .urgency-options {
     display: flex;
     gap: 15px;
@@ -697,6 +859,28 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     line-height: 1.5;
   }
 
+  /* WhatsApp Status */
+  .whatsapp-status {
+    margin-bottom: 25px;
+  }
+
+  .whatsapp-success {
+    background: rgba(37, 211, 102, 0.1);
+    border: 1px solid rgba(37, 211, 102, 0.2);
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #059669;
+    font-weight: 500;
+  }
+
+  .whatsapp-success i {
+    font-size: 1.5rem;
+    color: #25d366;
+  }
+
   .direction-info {
     background: rgba(16, 185, 129, 0.1);
     border: 1px solid rgba(16, 185, 129, 0.2);
@@ -735,6 +919,11 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
       align-items: center;
     }
 
+    .selected-staff-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
     .urgency-options {
       flex-direction: column;
     }
@@ -749,14 +938,13 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     }
   }
 </style>
-{% endblock %} 
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Get purpose from URL and set up the page
+    // Get purpose and staff from URL and set up the page
     const urlParams = new URLSearchParams(window.location.search);
     const purpose = urlParams.get("purpose");
+    const staffId = urlParams.get("staff_id");
 
     setupPurposeDisplay(purpose);
     setupCharacterCounter();
@@ -777,6 +965,10 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
       purposeBadge.innerHTML =
         '<i class="fas fa-users"></i> Menemui Pegawai/Kepala Kantor';
       purposeBadge.className = "purpose-badge meet-staff";
+    } else if (purpose === "other_activity") {
+      purposeBadge.innerHTML =
+        '<i class="fas fa-calendar-alt"></i> Mengikuti Kegiatan Lainnya';
+      purposeBadge.className = "purpose-badge other-activity";
     }
   }
 
@@ -806,74 +998,74 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
   }
 
   function setupCustomSelect() {
-    const customSelect = document.getElementById('duration-select');
-    const selectTrigger = customSelect.querySelector('.select-trigger');
-    const selectOptions = customSelect.querySelector('.select-options');
-    const hiddenInput = document.getElementById('expected-duration');
-    const placeholder = selectTrigger.querySelector('.select-placeholder');
+    const customSelect = document.getElementById("duration-select");
+    const selectTrigger = customSelect.querySelector(".select-trigger");
+    const selectOptions = customSelect.querySelector(".select-options");
+    const hiddenInput = document.getElementById("expected-duration");
+    const placeholder = selectTrigger.querySelector(".select-placeholder");
 
     // Toggle dropdown
-    selectTrigger.addEventListener('click', function() {
-      customSelect.classList.toggle('active');
-      
+    selectTrigger.addEventListener("click", function () {
+      customSelect.classList.toggle("active");
+
       // Close other selects if any
-      document.querySelectorAll('.custom-select').forEach(select => {
+      document.querySelectorAll(".custom-select").forEach((select) => {
         if (select !== customSelect) {
-          select.classList.remove('active');
+          select.classList.remove("active");
         }
       });
     });
 
     // Handle option selection
-    selectOptions.addEventListener('click', function(e) {
-      const option = e.target.closest('.select-option');
+    selectOptions.addEventListener("click", function (e) {
+      const option = e.target.closest(".select-option");
       if (!option) return;
 
       const value = option.dataset.value;
-      const text = option.querySelector('span').textContent;
+      const text = option.querySelector("span").textContent;
 
       // Update display
       placeholder.textContent = text;
-      selectTrigger.classList.add('has-value');
-      
+      selectTrigger.classList.add("has-value");
+
       // Update hidden input
       hiddenInput.value = value;
 
       // Update selected state
-      selectOptions.querySelectorAll('.select-option').forEach(opt => {
-        opt.classList.remove('selected');
+      selectOptions.querySelectorAll(".select-option").forEach((opt) => {
+        opt.classList.remove("selected");
       });
-      option.classList.add('selected');
+      option.classList.add("selected");
 
       // Close dropdown
-      customSelect.classList.remove('active');
+      customSelect.classList.remove("active");
 
       // Add subtle animation
-      selectTrigger.style.transform = 'scale(0.98)';
+      selectTrigger.style.transform = "scale(0.98)";
       setTimeout(() => {
-        selectTrigger.style.transform = 'scale(1)';
+        selectTrigger.style.transform = "scale(1)";
       }, 100);
     });
 
     // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
+    document.addEventListener("click", function (e) {
       if (!customSelect.contains(e.target)) {
-        customSelect.classList.remove('active');
+        customSelect.classList.remove("active");
       }
     });
 
     // Keyboard navigation
-    customSelect.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
+    customSelect.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        customSelect.classList.toggle('active');
-      } else if (e.key === 'Escape') {
-        customSelect.classList.remove('active');
+        customSelect.classList.toggle("active");
+      } else if (e.key === "Escape") {
+        customSelect.classList.remove("active");
       }
     });
 
     // Make it focusable
-    selectTrigger.setAttribute('tabindex', '0');
+    selectTrigger.setAttribute("tabindex", "0");
   }
 
   function setupFormSubmission() {
@@ -902,17 +1094,23 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
         const result = await response.json();
 
         if (result.status === "success") {
-          showSuccessModal();
+          showSuccessModal(result.whatsapp_sent);
 
           // Give audio direction
           const purpose = document.getElementById("visit-purpose").value;
+          const staffSelected = document.getElementById("staff-id");
+
           if (purpose === "data_service") {
             speakInstruction(
               "Terima kasih. Silakan menuju ke ruang PST untuk pelayanan data."
             );
+          } else if (purpose === "meet_staff" && staffSelected) {
+            speakInstruction(
+              "Terima kasih. Buku tamu telah diisi dan notifikasi telah dikirim ke staff yang bersangkutan."
+            );
           } else {
             speakInstruction(
-              "Terima kasih. Silakan langsung menemui pegawai atau kepala kantor."
+              "Terima kasih. Buku tamu telah diisi dengan sukses."
             );
           }
         } else {
@@ -928,10 +1126,12 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     });
   }
 
-  function showSuccessModal() {
+  function showSuccessModal(whatsappSent = false) {
     const modal = document.getElementById("success-modal");
     const directionDisplay = document.getElementById("direction-display");
+    const whatsappStatus = document.getElementById("whatsapp-status");
     const purpose = document.getElementById("visit-purpose").value;
+    const staffSelected = document.getElementById("staff-id");
 
     let directionText = "";
     let directionIcon = "";
@@ -939,15 +1139,29 @@ Tamu - Smart Guest Book {% endblock %}{% block content %}
     if (purpose === "data_service") {
       directionText = "Silakan menuju ke Ruang PST untuk pelayanan data";
       directionIcon = "fas fa-map-marker-alt";
-    } else {
-      directionText = "Silakan langsung menemui pegawai atau kepala kantor";
+    } else if (purpose === "meet_staff" && staffSelected) {
+      const staffName = '{{ staff.name|default:"staff yang bersangkutan" }}';
+      const staffRoom = '{{ staff.office_room|default:"ruang kerja" }}';
+      directionText = `Silakan menuju ${staffRoom} untuk menemui ${staffName}`;
       directionIcon = "fas fa-user-tie";
+    } else if (purpose === "other_activity") {
+      directionText =
+        "Silakan mengikuti kegiatan sesuai jadwal yang telah ditentukan";
+      directionIcon = "fas fa-calendar-check";
+    } else {
+      directionText = "Terima kasih atas kunjungan Anda";
+      directionIcon = "fas fa-handshake";
     }
 
     directionDisplay.innerHTML = `
-            <h4><i class="${directionIcon}"></i> Petunjuk Arah:</h4>
-            <p>${directionText}</p>
-        `;
+      <h4><i class="${directionIcon}"></i> Petunjuk:</h4>
+      <p>${directionText}</p>
+    `;
+
+    // Show WhatsApp status if applicable
+    if (whatsappSent && purpose === "meet_staff" && staffSelected) {
+      whatsappStatus.style.display = "block";
+    }
 
     modal.style.display = "flex";
   }

@@ -9,7 +9,8 @@ from datetime import datetime, timedelta
 import json
 import base64
 import numpy as np
-from .models import Guest, VisitLog, Notification
+from .models import Guest, VisitLog, Notification, Version, ChangelogItem, Staff
+from .services.whatsapp_service import whatsapp_service
 
 # LAZY LOADING SERVICES - Avoid immediate import to prevent pygame startup message
 face_service = None
@@ -56,14 +57,15 @@ def get_audio_service():
             audio_service = None
     return audio_service
 
-def create_notification(guest, notification_type, title, message):
+def create_notification(guest, notification_type, title, message, related_staff=None):
     """Helper function to create notifications"""
     try:
         Notification.objects.create(
             guest=guest,
             notification_type=notification_type,
             title=title,
-            message=message
+            message=message,
+            related_staff=related_staff
         )
     except Exception as e:
         print(f"Error creating notification: {e}")
@@ -354,13 +356,13 @@ def process_gesture(request):
                             if hasattr(audio_svc, 'direct_to_staff'):
                                 audio_svc.direct_to_staff()
                             elif hasattr(audio_svc, 'speak'):
-                                audio_svc.speak("Terima kasih. Silakan langsung menemui pegawai atau kepala kantor.")
+                                audio_svc.speak("Terima kasih. Silakan pilih pegawai yang ingin Anda temui.")
                         
                         return JsonResponse({
                             'status': 'success',
                             'gesture': 2,
-                            'action': 'staff',
-                            'message': 'Menuju pegawai/kepala kantor'
+                            'action': 'staff_selection',
+                            'message': 'Pilih staff yang ingin ditemui'
                         })
                 
                 return JsonResponse({
@@ -387,18 +389,66 @@ def process_gesture(request):
     
     return JsonResponse({'status': 'invalid_request'})
 
-class GuestBookView(View):
+class StaffSelectionView(View):
     def get(self, request):
         guest_id = request.GET.get('guest_id')
-        purpose = request.GET.get('purpose')
-        
         guest = None
         if guest_id:
             guest = get_object_or_404(Guest, id=guest_id)
         
+        return render(request, 'guest_system/staff_selection.html', {
+            'guest': guest
+        })
+
+def get_staff_list(request):
+    """API endpoint to get list of available staff"""
+    try:
+        staff_list = []
+        for staff in Staff.objects.filter(is_active=True).order_by('department', 'name'):
+            staff_data = {
+                'id': staff.id,
+                'name': staff.name,
+                'position': staff.position,
+                'department': staff.department,
+                'department_display': staff.department_display,
+                'current_status': staff.current_status,
+                'status_message': staff.status_message,
+                'office_room': staff.office_room,
+                'photo': staff.photo.url if staff.photo else None,
+                'whatsapp_enabled': staff.whatsapp_enabled,
+            }
+            staff_list.append(staff_data)
+        
+        return JsonResponse({
+            'status': 'success',
+            'data': staff_list
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+class GuestBookView(View):
+    def get(self, request):
+        guest_id = request.GET.get('guest_id')
+        purpose = request.GET.get('purpose')
+        staff_id = request.GET.get('staff_id')
+        
+        guest = None
+        staff = None
+        
+        if guest_id:
+            guest = get_object_or_404(Guest, id=guest_id)
+            
+        if staff_id:
+            staff = get_object_or_404(Staff, id=staff_id)
+        
         return render(request, 'guest_system/guest_book.html', {
             'guest': guest,
-            'purpose': purpose
+            'purpose': purpose,
+            'staff': staff
         })
     
     def post(self, request):
@@ -408,8 +458,13 @@ class GuestBookView(View):
             description = request.POST.get('description')
             urgency = request.POST.get('urgency', 'low')
             expected_duration = request.POST.get('expected_duration')
+            staff_id = request.POST.get('staff_id')
             
             guest = get_object_or_404(Guest, id=guest_id)
+            staff = None
+            
+            if staff_id:
+                staff = get_object_or_404(Staff, id=staff_id)
             
             # Create visit log
             visit_log = VisitLog.objects.create(
@@ -417,7 +472,8 @@ class GuestBookView(View):
                 visit_purpose=purpose,
                 visit_description=description,
                 urgency_level=urgency,
-                expected_duration=int(expected_duration) if expected_duration else None
+                expected_duration=int(expected_duration) if expected_duration else None,
+                staff_to_meet=staff
             )
             
             # Create notification for completed guestbook
@@ -425,8 +481,51 @@ class GuestBookView(View):
                 guest=guest,
                 notification_type='guestbook_completed',
                 title='Buku Tamu Telah Diisi',
-                message=f'{guest.name} telah mengisi buku tamu dengan tujuan: {dict(Guest.VISIT_PURPOSE_CHOICES)[purpose]}'
+                message=f'{guest.name} telah mengisi buku tamu dengan tujuan: {dict(Guest.VISIT_PURPOSE_CHOICES)[purpose]}',
+                related_staff=staff
             )
+            
+            # Send WhatsApp notification if staff is selected
+            if staff and staff.whatsapp_enabled:
+                try:
+                    whatsapp_result = whatsapp_service.send_guest_meeting_notification(
+                        staff=staff,
+                        guest=guest,
+                        visit_log=visit_log
+                    )
+                    
+                    if whatsapp_result['success']:
+                        visit_log.whatsapp_sent = True
+                        visit_log.whatsapp_sent_at = timezone.now()
+                        visit_log.save()
+                        
+                        # Create WhatsApp success notification
+                        create_notification(
+                            guest=guest,
+                            notification_type='whatsapp_sent',
+                            title='WhatsApp Terkirim',
+                            message=f'Notifikasi WhatsApp berhasil dikirim ke {staff.name}',
+                            related_staff=staff
+                        )
+                    else:
+                        # Create WhatsApp failure notification
+                        create_notification(
+                            guest=guest,
+                            notification_type='staff_meeting_request',
+                            title='Permintaan Bertemu Staff',
+                            message=f'{guest.name} ingin bertemu dengan {staff.name}. WhatsApp gagal dikirim: {whatsapp_result["message"]}',
+                            related_staff=staff
+                        )
+                        
+                except Exception as whatsapp_error:
+                    print(f"WhatsApp error: {whatsapp_error}")
+                    create_notification(
+                        guest=guest,
+                        notification_type='staff_meeting_request',
+                        title='Permintaan Bertemu Staff',
+                        message=f'{guest.name} ingin bertemu dengan {staff.name}. Error WhatsApp: {str(whatsapp_error)}',
+                        related_staff=staff
+                    )
             
             # Give completion audio with direction
             audio_svc = get_audio_service()
@@ -436,12 +535,15 @@ class GuestBookView(View):
                 elif hasattr(audio_svc, 'speak'):
                     if purpose == 'data_service':
                         audio_svc.speak("Buku tamu telah diisi. Silakan menuju ruang PST untuk pelayanan data.")
+                    elif purpose == 'meet_staff' and staff:
+                        audio_svc.speak(f"Buku tamu telah diisi. Silakan menuju {staff.office_room or 'ruang kerja'} untuk menemui {staff.name}.")
                     else:
-                        audio_svc.speak("Buku tamu telah diisi. Silakan menemui pegawai atau kepala kantor.")
+                        audio_svc.speak("Buku tamu telah diisi. Terima kasih atas kunjungan Anda.")
             
             return JsonResponse({
                 'status': 'success',
-                'message': 'Buku tamu berhasil diisi'
+                'message': 'Buku tamu berhasil diisi',
+                'whatsapp_sent': visit_log.whatsapp_sent
             })
             
         except Exception as e:
@@ -481,6 +583,7 @@ def dashboard_data(request):
                 'title': notification.title,
                 'message': notification.message,
                 'guest_name': notification.guest.name,
+                'staff_name': notification.related_staff.name if notification.related_staff else None,
                 'time_ago': notification.time_ago,
                 'is_read': notification.is_read
             })
@@ -510,7 +613,8 @@ def dashboard_data(request):
                 'current_visit': {
                     'purpose': dict(Guest.VISIT_PURPOSE_CHOICES)[current_visit.visit_purpose],
                     'description': current_visit.visit_description,
-                    'duration': f"{current_visit.duration_minutes} menit"
+                    'duration': f"{current_visit.duration_minutes} menit",
+                    'staff_name': current_visit.staff_to_meet.name if current_visit.staff_to_meet else None
                 } if current_visit else None
             })
         
@@ -521,10 +625,12 @@ def dashboard_data(request):
                 'id': visit.id,
                 'guest_name': visit.guest.name,
                 'purpose': dict(Guest.VISIT_PURPOSE_CHOICES)[visit.visit_purpose],
+                'staff_name': visit.staff_to_meet.name if visit.staff_to_meet else None,
                 'duration_minutes': visit.duration_minutes,
                 'check_in_time': visit.check_in_time.strftime('%H:%M'),
                 'urgency_level': visit.urgency_level,
-                'is_overdue': visit.is_overdue
+                'is_overdue': visit.is_overdue,
+                'whatsapp_sent': visit.whatsapp_sent
             })
         
         # Daily statistics (last 7 days)
@@ -566,6 +672,55 @@ def dashboard_data(request):
                 'active_visits': active_visits_data,
                 'daily_stats': daily_stats,
                 'purpose_breakdown': purpose_breakdown
+            }
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+# Changelog Views
+class ChangelogView(View):
+    def get(self, request):
+        return render(request, 'guest_system/changelog.html')
+
+def changelog_data(request):
+    """API endpoint to get changelog data"""
+    try:
+        # Get current version
+        current_version = Version.objects.filter(is_current=True).first()
+        
+        # Get all versions with their changelog items
+        versions = []
+        for version in Version.objects.all():
+            changelog_items = []
+            for item in version.changelog_items.all():
+                changelog_items.append({
+                    'item_type': item.item_type,
+                    'title': item.title,
+                    'description': item.description,
+                    'is_highlighted': item.is_highlighted,
+                })
+            
+            versions.append({
+                'version_number': version.version_number,
+                'title': version.title,
+                'description': version.description,
+                'release_date': version.release_date.isoformat(),
+                'is_current': version.is_current,
+                'changelog_items': changelog_items
+            })
+        
+        return JsonResponse({
+            'status': 'success',
+            'data': {
+                'current_version': {
+                    'version_number': current_version.version_number,
+                    'title': current_version.title
+                } if current_version else None,
+                'versions': versions
             }
         })
         
@@ -622,8 +777,6 @@ def send_reminder(request, guest_id):
                 message=f'Pengingat telah dikirim kepada {guest.name} untuk mengisi buku tamu.'
             )
             
-            # Here you could add actual reminder logic (SMS, email, etc.)
-            
             return JsonResponse({
                 'status': 'success',
                 'message': 'Reminder sent successfully'
@@ -655,13 +808,59 @@ def checkout_guest(request, guest_id):
                     guest=guest,
                     notification_type='guest_checkout',
                     title='Tamu Check-out',
-                    message=f'{guest.name} telah check-out setelah {active_visit.duration_minutes} menit berkunjung.'
+                    message=f'{guest.name} telah check-out setelah {active_visit.duration_minutes} menit berkunjung.',
+                    related_staff=active_visit.staff_to_meet
                 )
             
             return JsonResponse({
                 'status': 'success',
                 'message': 'Guest checked out successfully'
             })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    
+    return JsonResponse({'status': 'invalid_request'})
+
+# Staff management endpoints
+@csrf_exempt
+def update_staff_status(request, staff_id):
+    """Update staff status"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            staff = get_object_or_404(Staff, id=staff_id)
+            
+            staff.current_status = data.get('status', staff.current_status)
+            staff.status_message = data.get('message', staff.status_message)
+            staff.save()
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': f'Status {staff.name} berhasil diperbarui'
+            })
+            
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    
+    return JsonResponse({'status': 'invalid_request'})
+
+@csrf_exempt
+def test_staff_whatsapp(request, staff_id):
+    """Test WhatsApp notification to staff"""
+    if request.method == 'POST':
+        try:
+            staff = get_object_or_404(Staff, id=staff_id)
+            
+            result = whatsapp_service.send_test_message(
+                phone_number=staff.whatsapp_number,
+                staff_name=staff.name
+            )
+            
+            return JsonResponse({
+                'status': 'success' if result['success'] else 'error',
+                'message': result['message']
+            })
+            
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
     
@@ -698,12 +897,14 @@ def health_check(request):
         guest_count = Guest.objects.count()
         visit_count = VisitLog.objects.count()
         notification_count = Notification.objects.count()
+        staff_count = Staff.objects.filter(is_active=True).count()
         
         # Check service availability
         services_status = {
             'face_recognition': get_face_service() is not None,
             'kinetic_recognition': get_kinetic_service() is not None,
             'audio': get_audio_service() is not None,
+            'whatsapp': whatsapp_service.enabled,
         }
         
         return JsonResponse({
@@ -712,6 +913,7 @@ def health_check(request):
             'guests': guest_count,
             'visits': visit_count,
             'notifications': notification_count,
+            'staff': staff_count,
             'services': services_status
         })
     except Exception as e:

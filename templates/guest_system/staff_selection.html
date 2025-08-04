@@ -1,0 +1,1010 @@
+{% extends 'guest_system/base.html' %} {% load static %} {% block title %}Pilih
+Staff - Smart Guest Book{% endblock %} {% block content %}
+<div class="card-3d">
+  <div class="staff-header">
+    <h2><i class="fas fa-users"></i> Pilih Staff yang Ingin Ditemui</h2>
+    <p>Silakan pilih pegawai atau kepala kantor yang ingin Anda temui</p>
+    {% if guest %}
+    <div class="guest-welcome">
+      <i class="fas fa-user-circle"></i>
+      Selamat datang, <strong>{{ guest.name }}</strong>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Department Filters -->
+  <div class="department-filters">
+    <button class="filter-btn active" data-department="all">
+      <i class="fas fa-building"></i>
+      Semua Bagian
+    </button>
+    <button class="filter-btn" data-department="kepala_kantor">
+      <i class="fas fa-crown"></i>
+      Kepala Kantor
+    </button>
+    <button class="filter-btn" data-department="sekretaris">
+      <i class="fas fa-user-tie"></i>
+      Sekretaris
+    </button>
+    <button class="filter-btn" data-department="pst">
+      <i class="fas fa-chart-bar"></i>
+      PST
+    </button>
+  </div>
+
+  <!-- Staff Selection Grid -->
+  <div class="staff-grid" id="staff-grid">
+    <!-- Staff cards will be populated here -->
+  </div>
+
+  <!-- Other Activity Option -->
+  <div class="other-activity-section">
+    <div class="section-divider">
+      <span>atau</span>
+    </div>
+
+    <div class="other-activity-card" onclick="selectOtherActivity()">
+      <div class="activity-icon">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+      <div class="activity-content">
+        <h3>Mengikuti Kegiatan Lainnya</h3>
+        <p>
+          Pilih opsi ini jika Anda datang untuk mengikuti rapat, pelatihan, atau
+          kegiatan khusus lainnya
+        </p>
+      </div>
+      <div class="activity-arrow">
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="loading-state" class="loading-state" style="display: none">
+    <div class="loading-spinner"></div>
+    <p>Memuat data staff...</p>
+  </div>
+
+  <!-- Error State -->
+  <div id="error-state" class="error-state" style="display: none">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h3>Gagal Memuat Data</h3>
+    <p>Terjadi kesalahan saat memuat data staff. Silakan coba lagi.</p>
+    <button class="btn-retry" onclick="loadStaffData()">
+      <i class="fas fa-redo"></i>
+      Coba Lagi
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <div class="navigation-buttons">
+    <a
+      href="{% url 'guest_system:gesture_recognition' %}?guest_id={{ guest.id }}"
+      class="btn-secondary"
+    >
+      <i class="fas fa-arrow-left"></i>
+      Kembali
+    </a>
+  </div>
+</div>
+
+<!-- Staff Detail Modal -->
+<div id="staff-modal" class="modal" style="display: none">
+  <div class="modal-content card-3d staff-modal">
+    <div class="modal-header">
+      <h3 id="modal-staff-name">Loading...</h3>
+      <button class="modal-close" onclick="closeStaffModal()">&times;</button>
+    </div>
+
+    <div class="staff-detail-content">
+      <div class="staff-photo-section">
+        <div class="staff-photo" id="modal-staff-photo">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="staff-status" id="modal-staff-status">
+          <span class="status-indicator"></span>
+          <span class="status-text">Loading...</span>
+        </div>
+      </div>
+
+      <div class="staff-info-section">
+        <div class="info-item">
+          <i class="fas fa-briefcase"></i>
+          <span id="modal-staff-position">Loading...</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-building"></i>
+          <span id="modal-staff-department">Loading...</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span id="modal-staff-room">Loading...</span>
+        </div>
+        <div class="info-item" id="modal-staff-message" style="display: none">
+          <i class="fas fa-info-circle"></i>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button
+        class="btn-3d"
+        id="confirm-staff-btn"
+        onclick="confirmStaffSelection()"
+      >
+        <i class="fas fa-check"></i>
+        Pilih Staff Ini
+      </button>
+      <button class="btn-secondary" onclick="closeStaffModal()">
+        <i class="fas fa-times"></i>
+        Batal
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_css %}
+<style>
+  .staff-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .staff-header h2 {
+    color: #a6a9afff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 2rem;
+  }
+
+  .staff-header p {
+    color: #6b7280;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+
+  .guest-welcome {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+  }
+
+  /* Department Filters */
+  .department-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filter-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    border-radius: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #6b7280;
+    font-size: 0.9rem;
+  }
+
+  .filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    border-color: rgba(102, 126, 234, 0.3);
+  }
+
+  .filter-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+  }
+
+  /* Staff Grid */
+  .staff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+  }
+
+  .staff-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    border-radius: 20px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .staff-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(102, 126, 234, 0.1),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .staff-card:hover::before {
+    left: 100%;
+  }
+
+  .staff-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+  }
+
+  .staff-card.unavailable {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .staff-card.unavailable:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .staff-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    overflow: hidden;
+    background: rgba(102, 126, 234, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(102, 126, 234, 0.2);
+    position: relative;
+  }
+
+  .staff-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .staff-photo i {
+    font-size: 2rem;
+    color: #667eea;
+  }
+
+  .staff-info {
+    text-align: center;
+  }
+
+  .staff-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 5px;
+  }
+
+  .staff-position {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 10px;
+  }
+
+  .staff-department {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-bottom: 15px;
+  }
+
+  .staff-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .staff-status.available {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  .staff-status.available .status-indicator {
+    background: #10b981;
+  }
+
+  .staff-status.busy {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+  }
+
+  .staff-status.busy .status-indicator {
+    background: #f59e0b;
+  }
+
+  .staff-status.meeting {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+
+  .staff-status.meeting .status-indicator {
+    background: #ef4444;
+  }
+
+  .staff-status.out {
+    background: rgba(107, 114, 128, 0.1);
+    color: #4b5563;
+  }
+
+  .staff-status.out .status-indicator {
+    background: #6b7280;
+  }
+
+  .staff-status.off {
+    background: rgba(156, 163, 175, 0.1);
+    color: #6b7280;
+  }
+
+  .staff-status.off .status-indicator {
+    background: #9ca3af;
+  }
+
+  /* Other Activity Section */
+  .other-activity-section {
+    margin-top: 50px;
+  }
+
+  .section-divider {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .section-divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(102, 126, 234, 0.3),
+      transparent
+    );
+  }
+
+  .section-divider span {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0 20px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .other-activity-card {
+    background: rgba(245, 158, 11, 0.05);
+    border: 2px solid rgba(245, 158, 11, 0.2);
+    border-radius: 20px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .other-activity-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(245, 158, 11, 0.1),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .other-activity-card:hover::before {
+    left: 100%;
+  }
+
+  .other-activity-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.15);
+  }
+
+  .activity-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(245, 158, 11, 0.2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d97706;
+    font-size: 1.5rem;
+  }
+
+  .activity-content {
+    flex: 1;
+  }
+
+  .activity-content h3 {
+    color: #374151;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+  }
+
+  .activity-content p {
+    color: #6b7280;
+    line-height: 1.5;
+  }
+
+  .activity-arrow {
+    color: #d97706;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+
+  .other-activity-card:hover .activity-arrow {
+    transform: translateX(5px);
+  }
+
+  /* Loading and Error States */
+  .loading-state,
+  .error-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(102, 126, 234, 0.1);
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+  }
+
+  .error-state i {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 20px;
+  }
+
+  .error-state h3 {
+    color: #374151;
+    margin-bottom: 10px;
+  }
+
+  .error-state p {
+    color: #6b7280;
+    margin-bottom: 25px;
+  }
+
+  .btn-retry {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-retry:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+  }
+
+  /* Navigation */
+  .navigation-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .btn-secondary {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border: 2px solid rgba(107, 114, 128, 0.2);
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(107, 114, 128, 0.2);
+    border-color: rgba(107, 114, 128, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* Staff Modal */
+  .staff-modal {
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+  }
+
+  .modal-header h3 {
+    color: #374151;
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .modal-close:hover {
+    background: rgba(107, 114, 128, 0.1);
+    color: #374151;
+  }
+
+  .staff-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  .staff-photo-section {
+    text-align: center;
+  }
+
+  .staff-photo-section .staff-photo {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15px;
+  }
+
+  .staff-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 8px;
+  }
+
+  .info-item i {
+    color: #667eea;
+    width: 20px;
+    text-align: center;
+  }
+
+  .info-item span {
+    color: #374151;
+    font-weight: 500;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .staff-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .department-filters {
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .filter-btn {
+      flex-shrink: 0;
+    }
+
+    .other-activity-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .activity-arrow {
+      transform: rotate(90deg);
+    }
+
+    .other-activity-card:hover .activity-arrow {
+      transform: rotate(90deg) translateY(-5px);
+    }
+
+    .modal-actions {
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock %} {% block extra_js %}
+<script>
+  let staffData = [];
+  let selectedStaff = null;
+  const guestId = "{{ guest.id }}";
+
+  document.addEventListener("DOMContentLoaded", function () {
+    loadStaffData();
+    setupFilters();
+  });
+
+  async function loadStaffData() {
+    const loadingState = document.getElementById("loading-state");
+    const errorState = document.getElementById("error-state");
+    const staffGrid = document.getElementById("staff-grid");
+
+    // Show loading
+    loadingState.style.display = "block";
+    errorState.style.display = "none";
+    staffGrid.style.display = "none";
+
+    try {
+      const response = await fetch('{% url "guest_system:get_staff_list" %}');
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        staffData = result.data;
+        renderStaffGrid();
+
+        // Hide loading, show grid
+        loadingState.style.display = "none";
+        staffGrid.style.display = "grid";
+      } else {
+        throw new Error(result.message || "Failed to load staff data");
+      }
+    } catch (error) {
+      console.error("Error loading staff data:", error);
+
+      // Show error state
+      loadingState.style.display = "none";
+      errorState.style.display = "block";
+      staffGrid.style.display = "none";
+    }
+  }
+
+  function renderStaffGrid(filterDepartment = "all") {
+    const staffGrid = document.getElementById("staff-grid");
+    staffGrid.innerHTML = "";
+
+    const filteredStaff =
+      filterDepartment === "all"
+        ? staffData
+        : staffData.filter((staff) => staff.department === filterDepartment);
+
+    if (filteredStaff.length === 0) {
+      staffGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+          <i class="fas fa-user-slash" style="font-size: 3rem; color: #9ca3af; margin-bottom: 15px;"></i>
+          <h3 style="color: #6b7280;">Tidak Ada Staff</h3>
+          <p style="color: #9ca3af;">Tidak ada staff yang tersedia untuk bagian ini.</p>
+        </div>
+      `;
+      return;
+    }
+
+    filteredStaff.forEach((staff) => {
+      const staffCard = createStaffCard(staff);
+      staffGrid.appendChild(staffCard);
+    });
+  }
+
+  function createStaffCard(staff) {
+    const card = document.createElement("div");
+    card.className = `staff-card ${
+      staff.current_status !== "available" ? "unavailable" : ""
+    }`;
+    card.onclick = () => openStaffModal(staff);
+
+    const photoHtml = staff.photo
+      ? `<img src="${staff.photo}" alt="${staff.name}">`
+      : `<i class="fas fa-user"></i>`;
+
+    card.innerHTML = `
+      <div class="staff-photo">
+        ${photoHtml}
+      </div>
+      <div class="staff-info">
+        <div class="staff-name">${staff.name}</div>
+        <div class="staff-position">${staff.position}</div>
+        <div class="staff-department">${staff.department_display}</div>
+        <div class="staff-status ${staff.current_status}">
+          <span class="status-indicator"></span>
+          <span class="status-text">${getStatusText(
+            staff.current_status
+          )}</span>
+        </div>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function getStatusText(status) {
+    const statusMap = {
+      available: "Tersedia",
+      busy: "Sedang Sibuk",
+      meeting: "Sedang Rapat",
+      out: "Sedang Keluar",
+      off: "Tidak Masuk",
+    };
+    return statusMap[status] || "Unknown";
+  }
+
+  function setupFilters() {
+    const filterBtns = document.querySelectorAll(".filter-btn");
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        // Remove active class from all buttons
+        filterBtns.forEach((b) => b.classList.remove("active"));
+
+        // Add active class to clicked button
+        this.classList.add("active");
+
+        // Filter staff
+        const department = this.dataset.department;
+        renderStaffGrid(department);
+      });
+    });
+  }
+
+  function openStaffModal(staff) {
+    if (staff.current_status !== "available") {
+      showToast(
+        `${staff.name} sedang ${getStatusText(
+          staff.current_status
+        ).toLowerCase()}. Silakan pilih staff lain.`,
+        "warning"
+      );
+      return;
+    }
+
+    selectedStaff = staff;
+
+    // Populate modal
+    document.getElementById("modal-staff-name").textContent = staff.name;
+    document.getElementById("modal-staff-position").textContent =
+      staff.position;
+    document.getElementById("modal-staff-department").textContent =
+      staff.department_display;
+    document.getElementById("modal-staff-room").textContent =
+      staff.office_room || "Tidak disebutkan";
+
+    // Photo
+    const photoContainer = document.getElementById("modal-staff-photo");
+    if (staff.photo) {
+      photoContainer.innerHTML = `<img src="${staff.photo}" alt="${staff.name}">`;
+    } else {
+      photoContainer.innerHTML = '<i class="fas fa-user"></i>';
+    }
+
+    // Status
+    const statusContainer = document.getElementById("modal-staff-status");
+    statusContainer.className = `staff-status ${staff.current_status}`;
+    statusContainer.querySelector(".status-text").textContent = getStatusText(
+      staff.current_status
+    );
+
+    // Status message
+    const messageContainer = document.getElementById("modal-staff-message");
+    if (staff.status_message) {
+      messageContainer.style.display = "flex";
+      messageContainer.querySelector("span").textContent = staff.status_message;
+    } else {
+      messageContainer.style.display = "none";
+    }
+
+    // Show modal
+    document.getElementById("staff-modal").style.display = "flex";
+  }
+
+  function closeStaffModal() {
+    document.getElementById("staff-modal").style.display = "none";
+    selectedStaff = null;
+  }
+
+  function confirmStaffSelection() {
+    if (!selectedStaff) return;
+
+    // Redirect to guest book with staff selection
+    window.location.href = `{% url 'guest_system:guest_book' %}?guest_id=${guestId}&purpose=meet_staff&staff_id=${selectedStaff.id}`;
+  }
+
+  function selectOtherActivity() {
+    // Redirect to guest book with other activity purpose
+    window.location.href = `{% url 'guest_system:guest_book' %}?guest_id=${guestId}&purpose=other_activity`;
+  }
+
+  function showToast(message, type = "info") {
+    // Remove existing toasts
+    document.querySelectorAll(".toast").forEach((toast) => toast.remove());
+
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+
+    const iconClass =
+      {
+        success: "fa-check-circle",
+        warning: "fa-exclamation-triangle",
+        error: "fa-exclamation-circle",
+        info: "fa-info-circle",
+      }[type] || "fa-info-circle";
+
+    toast.innerHTML = `
+      <i class="fas ${iconClass}"></i>
+      <span>${message}</span>
+      <button onclick="this.parentElement.remove()" style="background: none; border: none; color: inherit; margin-left: auto; cursor: pointer;">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+
+    // Add toast styles
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${
+        type === "warning"
+          ? "#fbbf24"
+          : type === "error"
+          ? "#ef4444"
+          : type === "success"
+          ? "#10b981"
+          : "#3b82f6"
+      };
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10000;
+      animation: slideInRight 0.3s ease;
+      max-width: 400px;
+      font-weight: 500;
+    `;
+
+    document.body.appendChild(toast);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+      if (toast.parentElement) {
+        toast.style.animation = "slideOutRight 0.3s ease";
+        setTimeout(() => toast.remove(), 300);
+      }
+    }, 4000);
+  }
+
+  // Close modal when clicking outside
+  document.addEventListener("click", function (e) {
+    const modal = document.getElementById("staff-modal");
+    if (e.target === modal) {
+      closeStaffModal();
+    }
+  });
+
+  // Close modal with Escape key
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeStaffModal();
+    }
+  });
+
+  // Add CSS animations
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOutRight {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+{% endblock %}

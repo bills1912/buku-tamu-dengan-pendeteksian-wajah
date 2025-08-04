@@ -73,7 +73,36 @@ TEMPLATES = [
 WSGI_APPLICATION = "guest_book.wsgi.application"
 ASGI_APPLICATION = 'guest_book.asgi.application'
 
+WHATSAPP_ENABLED = True  # Set to False to disable WhatsApp functionality
+WHATSAPP_API_URL = 'https://api.fonnte.com/send'  # Change to your WhatsApp gateway URL
+WHATSAPP_API_TOKEN = ''  # Add your WhatsApp API token here
 
+if DEBUG:
+    WHATSAPP_ENABLED = False
+    
+    
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'whatsapp.log',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'guest_system.services.whatsapp_service': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -82,7 +111,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'buku_tamu',
         'USER': 'postgres',
-        'PASSWORD': 'ThinkVision11',
+        'PASSWORD': 'kuran1925',
         'HOST': 'localhost',
         'PORT': '5432',
     }

@@ -35,6 +35,94 @@
     </a>
   </div>
 </div>
+
+<!-- Version & Changelog Section -->
+<div class="version-section">
+  <div class="version-info">
+    <div class="version-badge">
+      <i class="fas fa-code-branch"></i>
+      <span class="version-label">Versi</span>
+      <span class="version-number" id="current-version">Loading...</span>
+    </div>
+    <button class="changelog-btn" onclick="openChangelogModal()">
+      <i class="fas fa-list-ul"></i>
+      <span>Lihat Changelog</span>
+      <i class="fas fa-external-link-alt"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Changelog Modal -->
+<div id="changelog-modal" class="changelog-modal" style="display: none">
+  <div class="modal-overlay" onclick="closeChangelogModal()"></div>
+  <div class="changelog-modal-content">
+    <!-- Modal Header -->
+    <div class="changelog-modal-header">
+      <div class="modal-title">
+        <i class="fas fa-code-branch"></i>
+        <h3>Changelog & Version History</h3>
+      </div>
+      <button class="modal-close-btn" onclick="closeChangelogModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="changelog-modal-body">
+      <!-- Loading State -->
+      <div class="modal-loading" id="modal-loading">
+        <div class="loading-spinner"></div>
+        <p>Memuat changelog...</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="modal-error" id="modal-error" style="display: none">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h4>Gagal Memuat Data</h4>
+        <p>Terjadi kesalahan saat memuat changelog.</p>
+        <button class="btn-retry" onclick="loadChangelogModal()">
+          <i class="fas fa-redo"></i>
+          Coba Lagi
+        </button>
+      </div>
+
+      <!-- Changelog Content -->
+      <div
+        class="changelog-content"
+        id="changelog-content"
+        style="display: none"
+      >
+        <!-- Current Version Banner -->
+        <div class="current-version-banner" id="current-version-banner">
+          <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Version List -->
+        <div class="modal-versions-list" id="modal-versions-list">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="changelog-modal-footer">
+      <div class="footer-info">
+        <i class="fas fa-info-circle"></i>
+        <span>Smart Guest Book System - BPS Kab. Padang Lawas Utara</span>
+      </div>
+      <div class="footer-actions">
+        <a href="{% url 'guest_system:changelog' %}" class="btn-full-changelog">
+          <i class="fas fa-external-link-alt"></i>
+          Lihat Detail Lengkap
+        </a>
+        <button class="btn-secondary" onclick="closeChangelogModal()">
+          <i class="fas fa-times"></i>
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %} {% block extra_css %}
 <style>
   .welcome-content {
@@ -90,5 +178,837 @@
     font-weight: 500;
     color: #9a9c9fff;
   }
+
+  /* Version Section Styles */
+  .version-section {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .version-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 12px 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .version-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .version-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #667eea;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .version-badge i {
+    font-size: 1rem;
+  }
+
+  .version-label {
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .version-number {
+    color: #374151;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .changelog-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+  }
+
+  .changelog-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  }
+
+  .changelog-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Changelog Modal Styles */
+  .changelog-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+  }
+
+  .changelog-modal-content {
+    position: relative;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(30px);
+    border-radius: 24px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalSlideUp 0.3s ease forwards;
+  }
+
+  .changelog-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+  }
+
+  .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .modal-title h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .modal-close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+  }
+
+  .changelog-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  /* Modal Loading & Error States */
+  .modal-loading,
+  .modal-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 30px;
+    text-align: center;
+  }
+
+  .modal-loading .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(102, 126, 234, 0.1);
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+
+  .modal-error i {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 20px;
+  }
+
+  .modal-error h4 {
+    color: #374151;
+    margin-bottom: 10px;
+  }
+
+  .modal-error p {
+    color: #6b7280;
+    margin-bottom: 25px;
+  }
+
+  .btn-retry {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .btn-retry:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+  }
+
+  /* Current Version Banner */
+  .current-version-banner {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 20px 30px;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .current-version-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -50px;
+    width: 100px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skew(-20deg);
+  }
+
+  .current-version-banner h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .current-version-banner p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+  }
+
+  /* Modal Versions List */
+  .modal-versions-list {
+    padding: 30px;
+  }
+
+  .modal-version-item {
+    background: rgba(248, 250, 252, 0.8);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .modal-version-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.1);
+  }
+
+  .modal-version-item.current {
+    border-color: #10b981;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+  }
+
+  .modal-version-header {
+    padding: 20px 25px;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .modal-version-item.current .modal-version-header {
+    background: rgba(16, 185, 129, 0.05);
+  }
+
+  .modal-version-main {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .modal-version-icon {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+  }
+
+  .modal-version-item.current .modal-version-icon {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+
+  .modal-version-details h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #374151;
+  }
+
+  .modal-version-title {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .modal-version-meta {
+    text-align: right;
+    color: #6b7280;
+    font-size: 0.85rem;
+  }
+
+  .modal-version-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 5px;
+  }
+
+  .modal-version-status.current {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  .modal-version-status.previous {
+    background: rgba(107, 114, 128, 0.1);
+    color: #4b5563;
+  }
+
+  .modal-changelog-summary {
+    padding: 20px 25px;
+  }
+
+  .modal-changelog-summary h5 {
+    color: #374151;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .modal-changelog-items {
+    display: grid;
+    gap: 10px;
+  }
+
+  .modal-changelog-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    border-left: 3px solid transparent;
+  }
+
+  .modal-changelog-item.highlighted {
+    background: rgba(102, 126, 234, 0.05);
+    border-left-color: #667eea;
+  }
+
+  .modal-item-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: white;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .modal-item-icon.new {
+    background: #10b981;
+  }
+  .modal-item-icon.improvement {
+    background: #3b82f6;
+  }
+  .modal-item-icon.fix {
+    background: #f59e0b;
+  }
+  .modal-item-icon.security {
+    background: #ef4444;
+  }
+  .modal-item-icon.breaking {
+    background: #8b5cf6;
+  }
+
+  .modal-item-content {
+    flex: 1;
+  }
+
+  .modal-item-title {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+  }
+
+  .modal-item-description {
+    color: #6b7280;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  /* Modal Footer */
+  .changelog-modal-footer {
+    padding: 20px 30px;
+    background: rgba(248, 250, 252, 0.8);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+    font-size: 0.85rem;
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-full-changelog {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-full-changelog:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+
+  .btn-secondary {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+    border: 1px solid rgba(107, 114, 128, 0.2);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(107, 114, 128, 0.2);
+    border-color: rgba(107, 114, 128, 0.3);
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes modalSlideUp {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .version-section {
+      bottom: 20px;
+      right: 20px;
+      left: 20px;
+    }
+
+    .version-info {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .changelog-btn {
+      justify-content: center;
+    }
+
+    .changelog-modal-content {
+      width: 95%;
+      max-height: 90vh;
+      margin: 20px;
+    }
+
+    .changelog-modal-header {
+      padding: 20px;
+    }
+
+    .modal-title h3 {
+      font-size: 1.3rem;
+    }
+
+    .modal-versions-list {
+      padding: 20px;
+    }
+
+    .modal-version-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .modal-version-meta {
+      text-align: left;
+      width: 100%;
+    }
+
+    .changelog-modal-footer {
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .footer-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .btn-full-changelog,
+    .btn-secondary {
+      justify-content: center;
+      width: 100%;
+    }
+  }
 </style>
+{% endblock %} {% block extra_js %}
+<script>
+  // Load current version on page load
+  document.addEventListener("DOMContentLoaded", function () {
+    loadCurrentVersion();
+  });
+
+  async function loadCurrentVersion() {
+    try {
+      const response = await fetch('{% url "guest_system:changelog_data" %}');
+      const result = await response.json();
+
+      if (result.status === "success" && result.data.current_version) {
+        document.getElementById(
+          "current-version"
+        ).textContent = `v${result.data.current_version.version_number}`;
+      } else {
+        document.getElementById("current-version").textContent = "v1.0.0";
+      }
+    } catch (error) {
+      console.error("Error loading current version:", error);
+      document.getElementById("current-version").textContent = "v1.0.0";
+    }
+  }
+
+  function openChangelogModal() {
+    document.getElementById("changelog-modal").style.display = "flex";
+    loadChangelogModal();
+  }
+
+  function closeChangelogModal() {
+    document.getElementById("changelog-modal").style.display = "none";
+  }
+
+  async function loadChangelogModal() {
+    const loading = document.getElementById("modal-loading");
+    const error = document.getElementById("modal-error");
+    const content = document.getElementById("changelog-content");
+
+    // Show loading
+    loading.style.display = "flex";
+    error.style.display = "none";
+    content.style.display = "none";
+
+    try {
+      const response = await fetch('{% url "guest_system:changelog_data" %}');
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        renderModalChangelog(result.data);
+
+        // Show content
+        loading.style.display = "none";
+        content.style.display = "block";
+      } else {
+        throw new Error(result.message || "Failed to load changelog");
+      }
+    } catch (err) {
+      console.error("Error loading changelog:", err);
+
+      // Show error
+      loading.style.display = "none";
+      error.style.display = "flex";
+    }
+  }
+
+  function renderModalChangelog(data) {
+    // Render current version banner
+    const banner = document.getElementById("current-version-banner");
+    if (data.current_version) {
+      banner.innerHTML = `
+        <h4>
+          <i class="fas fa-star"></i>
+          Versi Saat Ini: v${data.current_version.version_number}
+        </h4>
+        <p>${data.current_version.title}</p>
+      `;
+    }
+
+    // Render versions list (show only first 3 versions)
+    const versionsList = document.getElementById("modal-versions-list");
+    versionsList.innerHTML = "";
+
+    if (!data.versions || data.versions.length === 0) {
+      versionsList.innerHTML = `
+        <div class="modal-loading">
+          <i class="fas fa-code-branch" style="font-size: 3rem; color: #9ca3af; margin-bottom: 20px;"></i>
+          <h4 style="color: #6b7280;">Belum Ada Changelog</h4>
+          <p style="color: #9ca3af;">Data changelog akan muncul di sini.</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Show only first 3 versions in modal
+    const versionsToShow = data.versions.slice(0, 3);
+
+    versionsToShow.forEach((version) => {
+      const versionCard = createModalVersionCard(version);
+      versionsList.appendChild(versionCard);
+    });
+
+    // Add "show more" message if there are more versions
+    if (data.versions.length > 3) {
+      const showMore = document.createElement("div");
+      showMore.style.cssText =
+        "text-align: center; padding: 20px; color: #6b7280; font-style: italic;";
+      showMore.innerHTML = `
+        <i class="fas fa-ellipsis-h"></i>
+        <p>Dan ${data.versions.length - 3} versi lainnya...</p>
+      `;
+      versionsList.appendChild(showMore);
+    }
+  }
+
+  function createModalVersionCard(version) {
+    const card = document.createElement("div");
+    card.className = `modal-version-item ${
+      version.is_current ? "current" : ""
+    }`;
+
+    // Get top 3 changelog items
+    const topItems = version.changelog_items.slice(0, 3);
+
+    const itemsHtml = topItems
+      .map(
+        (item) => `
+      <div class="modal-changelog-item ${
+        item.is_highlighted ? "highlighted" : ""
+      }">
+        <div class="modal-item-icon ${item.item_type}">
+          <i class="${getItemIcon(item.item_type)}"></i>
+        </div>
+        <div class="modal-item-content">
+          <div class="modal-item-title">${item.title}</div>
+          <div class="modal-item-description">${item.description}</div>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+
+    const releaseDate = new Date(version.release_date);
+    const formattedDate = releaseDate.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    card.innerHTML = `
+      <div class="modal-version-header">
+        <div class="modal-version-main">
+          <div class="modal-version-icon">
+            <i class="fas fa-code-branch"></i>
+          </div>
+          <div class="modal-version-details">
+            <h4>Version ${version.version_number}</h4>
+            <p class="modal-version-title">${version.title}</p>
+          </div>
+        </div>
+        <div class="modal-version-meta">
+          <div>${formattedDate}</div>
+          <div class="modal-version-status ${
+            version.is_current ? "current" : "previous"
+          }">
+            <i class="fas ${
+              version.is_current ? "fa-check-circle" : "fa-history"
+            }"></i>
+            ${version.is_current ? "Current" : "Previous"}
+          </div>
+        </div>
+      </div>
+      
+      ${
+        topItems.length > 0
+          ? `
+        <div class="modal-changelog-summary">
+          <h5>
+            <i class="fas fa-list-ul"></i>
+            Highlight Update (${topItems.length}/${version.changelog_items.length})
+          </h5>
+          <div class="modal-changelog-items">
+            ${itemsHtml}
+          </div>
+        </div>
+      `
+          : ""
+      }
+    `;
+
+    return card;
+  }
+
+  function getItemIcon(itemType) {
+    const icons = {
+      new: "fas fa-plus",
+      improvement: "fas fa-arrow-up",
+      fix: "fas fa-wrench",
+      security: "fas fa-shield-alt",
+      breaking: "fas fa-exclamation-triangle",
+    };
+    return icons[itemType] || "fas fa-circle";
+  }
+
+  // Close modal with Escape key
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeChangelogModal();
+    }
+  });
+
+  // Prevent modal close when clicking inside modal content
+  document.addEventListener("click", function (e) {
+    const modalContent = document.querySelector(".changelog-modal-content");
+    const modal = document.getElementById("changelog-modal");
+
+    if (
+      modal.style.display === "flex" &&
+      !modalContent.contains(e.target) &&
+      e.target === modal.querySelector(".modal-overlay")
+    ) {
+      closeChangelogModal();
+    }
+  });
+</script>
 {% endblock %}
