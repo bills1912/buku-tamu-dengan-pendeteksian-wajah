@@ -1,0 +1,29 @@
+INFO 2025-08-05 07:10:39,212 autoreload 43416 53224 Watching for file changes with StatReloader
+INFO 2025-08-05 07:10:40,787 basehttp 43416 30564 "GET /face-recognition/ HTTP/1.1" 200 14201
+WARNING 2025-08-05 07:10:41,479 log 43416 30564 Not Found: /favicon.ico
+WARNING 2025-08-05 07:10:41,480 basehttp 43416 30564 "GET /favicon.ico HTTP/1.1" 404 6116
+INFO 2025-08-05 07:10:46,586 basehttp 43416 30564 "POST /api/process-face/ HTTP/1.1" 200 86
+INFO 2025-08-05 07:10:48,651 basehttp 43416 30564 "GET /gesture-recognition/?guest_id=8 HTTP/1.1" 200 13975
+INFO 2025-08-05 07:10:50,931 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-05 07:10:51,094 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:51,226 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:51,358 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:51,490 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:51,624 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:51,754 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:51,884 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:52,018 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:52,156 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:52,290 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:52,427 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:52,557 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:52,693 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:52,824 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:52,956 basehttp 43416 30564 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-05 07:10:56,028 basehttp 43416 30564 "GET /staff-selection/?guest_id=8 HTTP/1.1" 200 28562
+INFO 2025-08-05 07:10:56,121 basehttp 43416 30564 "GET /api/get-staff-list/ HTTP/1.1" 200 2447
+INFO 2025-08-05 07:11:02,500 basehttp 43416 30564 "GET /guest-book/?guest_id=8&purpose=meet_staff&staff_id=5 HTTP/1.1" 200 30614
+INFO 2025-08-05 07:11:09,176 basehttp 43416 30564 "POST /guest-book/ HTTP/1.1" 200 83
+INFO 2025-08-05 07:11:28,901 basehttp 43416 30564 "GET / HTTP/1.1" 200 24421
+INFO 2025-08-05 07:11:28,999 basehttp 43416 30564 "GET /api/changelog-data/ HTTP/1.1" 200 4021
+INFO 2025-08-05 07:12:01,667 autoreload 43416 53224 C:\xampp\htdocs\buku_tamu_frecog\guest_system\services\whatsapp_service.py changed, reloading.

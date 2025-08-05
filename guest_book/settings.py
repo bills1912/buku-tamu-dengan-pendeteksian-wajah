@@ -73,33 +73,90 @@ TEMPLATES = [
 WSGI_APPLICATION = "guest_book.wsgi.application"
 ASGI_APPLICATION = 'guest_book.asgi.application'
 
-WHATSAPP_ENABLED = True  # Set to False to disable WhatsApp functionality
-WHATSAPP_API_URL = 'https://api.fonnte.com/send'  # Change to your WhatsApp gateway URL
-WHATSAPP_API_TOKEN = ''  # Add your WhatsApp API token here
+# WhatsApp Configuration
+# Set to True to enable WhatsApp notifications
+WHATSAPP_ENABLED = True
 
+# Fonnte API Configuration
+WHATSAPP_API_URL = 'https://api.fonnte.com/send'
+WHATSAPP_API_TOKEN = 'xn1uCaCcu5pzqHePnRpn'  # Your Fonnte API token
+
+# WhatsApp Settings
+WHATSAPP_SETTINGS = {
+    'API_URL': WHATSAPP_API_URL,
+    'API_TOKEN': WHATSAPP_API_TOKEN,
+    'ENABLED': WHATSAPP_ENABLED,
+    'TIMEOUT': 30,  # Request timeout in seconds
+    'RETRY_ATTEMPTS': 3,  # Number of retry attempts for failed requests
+    'RETRY_DELAY': 5,  # Delay between retries in seconds
+}
+
+# Environment-specific WhatsApp settings
 if DEBUG:
-    WHATSAPP_ENABLED = False
+    # In development, you might want to disable WhatsApp or use test numbers
+    WHATSAPP_ENABLED = True  # Set to False to disable in development
     
-    
+    # You can override settings for development
+    WHATSAPP_TEST_MODE = True
+    WHATSAPP_TEST_NUMBERS = [
+        '6281367163919',  # Test number for development
+    ]
+else:
+    # Production settings
+    WHATSAPP_TEST_MODE = False
+
+# Logging Configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
         'file': {
             'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'whatsapp.log',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'django.log',
+            'maxBytes': 1024*1024*5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
         },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
+        'whatsapp_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'whatsapp.log',
+            'maxBytes': 1024*1024*2,  # 2 MB
+            'backupCount': 3,
+            'formatter': 'verbose',
         },
     },
     'loggers': {
-        'guest_system.services.whatsapp_service': {
-            'handlers': ['file', 'console'],
+        'django': {
+            'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': True,
+        },
+        'guest_system': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': True,
+        },
+        'guest_system.services.whatsapp_service': {
+            'handlers': ['console', 'whatsapp_file'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,  # Don't propagate to avoid duplicate logs
         },
     },
 }

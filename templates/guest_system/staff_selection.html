@@ -1,5 +1,7 @@
-{% extends 'guest_system/base.html' %} {% load static %} {% block title %}Pilih
-Staff - Smart Guest Book{% endblock %} {% block content %}
+{% extends 'guest_system/base.html' %} 
+{% load static %} 
+{% block title %}Pilih Staff - Smart Guest Book{% endblock %} 
+{% block content %}
 <div class="card-3d">
   <div class="staff-header">
     <h2><i class="fas fa-users"></i> Pilih Staff yang Ingin Ditemui</h2>
@@ -32,9 +34,28 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
     </button>
   </div>
 
-  <!-- Staff Selection Grid -->
-  <div class="staff-grid" id="staff-grid">
-    <!-- Staff cards will be populated here -->
+  <!-- Staff Selection Container with Scroll -->
+  <div class="staff-container">
+    <div class="staff-grid" id="staff-grid">
+      <!-- Staff cards will be populated here -->
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading-state" class="loading-state" style="display: none">
+      <div class="loading-spinner"></div>
+      <p>Memuat data staff...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="error-state" style="display: none">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>Gagal Memuat Data</h3>
+      <p>Terjadi kesalahan saat memuat data staff. Silakan coba lagi.</p>
+      <button class="btn-retry" onclick="loadStaffData()">
+        <i class="fas fa-redo"></i>
+        Coba Lagi
+      </button>
+    </div>
   </div>
 
   <!-- Other Activity Option -->
@@ -58,23 +79,6 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
         <i class="fas fa-arrow-right"></i>
       </div>
     </div>
-  </div>
-
-  <!-- Loading State -->
-  <div id="loading-state" class="loading-state" style="display: none">
-    <div class="loading-spinner"></div>
-    <p>Memuat data staff...</p>
-  </div>
-
-  <!-- Error State -->
-  <div id="error-state" class="error-state" style="display: none">
-    <i class="fas fa-exclamation-triangle"></i>
-    <h3>Gagal Memuat Data</h3>
-    <p>Terjadi kesalahan saat memuat data staff. Silakan coba lagi.</p>
-    <button class="btn-retry" onclick="loadStaffData()">
-      <i class="fas fa-redo"></i>
-      Coba Lagi
-    </button>
   </div>
 
   <!-- Navigation -->
@@ -148,7 +152,7 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
 <style>
   .staff-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
   }
 
   .staff-header h2 {
@@ -182,7 +186,7 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
   .department-filters {
     display: flex;
     gap: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -216,23 +220,57 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
     box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
   }
 
-  /* Staff Grid */
+  /* Staff Container with Scroll */
+  .staff-container {
+    height: 400px; /* Fixed height for scrollable area */
+    overflow-y: auto;
+    margin-bottom: 30px;
+    padding: 10px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+  }
+
+  /* Custom Scrollbar */
+  .staff-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .staff-container::-webkit-scrollbar-track {
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 4px;
+  }
+
+  .staff-container::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+
+  .staff-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.5);
+  }
+
+  /* Staff Grid - Smaller Cards */
   .staff-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .staff-card {
     background: rgba(255, 255, 255, 0.9);
     border: 2px solid rgba(102, 126, 234, 0.1);
-    border-radius: 20px;
-    padding: 25px;
+    border-radius: 15px;
+    padding: 15px 20px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-height: 80px; /* Compact height */
   }
 
   .staff-card::before {
@@ -256,9 +294,9 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
   }
 
   .staff-card:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateX(5px) scale(1.01);
     border-color: rgba(102, 126, 234, 0.3);
-    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
   }
 
   .staff-card.unavailable {
@@ -271,18 +309,19 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
     box-shadow: none;
   }
 
+  /* Smaller Staff Photo */
   .staff-photo {
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    margin: 0 auto 15px;
     overflow: hidden;
     background: rgba(102, 126, 234, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid rgba(102, 126, 234, 0.2);
+    border: 2px solid rgba(102, 126, 234, 0.2);
     position: relative;
+    flex-shrink: 0;
   }
 
   .staff-photo img {
@@ -292,46 +331,55 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
   }
 
   .staff-photo i {
-    font-size: 2rem;
+    font-size: 1.2rem;
     color: #667eea;
   }
 
+  /* Staff Info Layout */
   .staff-info {
-    text-align: center;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .staff-main-info {
+    flex: 1;
   }
 
   .staff-name {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #374151;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
   }
 
   .staff-position {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #6b7280;
-    margin-bottom: 10px;
+    margin-bottom: 2px;
   }
 
   .staff-department {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #9ca3af;
-    margin-bottom: 15px;
   }
 
+  /* Compact Status */
   .staff-status {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.75rem;
     font-weight: 500;
+    flex-shrink: 0;
   }
 
   .status-indicator {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
   }
 
@@ -382,12 +430,12 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
 
   /* Other Activity Section */
   .other-activity-section {
-    margin-top: 50px;
+    margin-top: 30px;
   }
 
   .section-divider {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     position: relative;
   }
 
@@ -494,46 +542,49 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
   .loading-state,
   .error-state {
     text-align: center;
-    padding: 60px 20px;
+    padding: 40px 20px;
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(102, 126, 234, 0.1);
-    border-top: 4px solid #667eea;
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(102, 126, 234, 0.1);
+    border-top: 3px solid #667eea;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
+    margin: 0 auto 15px;
   }
 
   .error-state i {
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: #ef4444;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 
   .error-state h3 {
     color: #374151;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
   }
 
   .error-state p {
     color: #6b7280;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
   }
 
   .btn-retry {
     background: #ef4444;
     color: white;
     border: none;
-    padding: 12px 24px;
+    padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    font-size: 0.9rem;
   }
 
   .btn-retry:hover {
@@ -545,7 +596,7 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
   .navigation-buttons {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    margin-top: 30px;
   }
 
   .btn-secondary {
@@ -569,17 +620,43 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
   }
 
   /* Staff Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+
   .staff-modal {
     max-width: 500px;
     width: 100%;
+    padding: 30px;
   }
 
   .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
     border-bottom: 2px solid rgba(102, 126, 234, 0.1);
   }
 
@@ -587,16 +664,17 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
     color: #374151;
     margin: 0;
     font-size: 1.5rem;
+    font-weight: 600;
   }
 
   .modal-close {
-    background: none;
+    background: rgba(107, 114, 128, 0.1);
     border: none;
     font-size: 1.5rem;
     color: #6b7280;
     cursor: pointer;
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -605,57 +683,133 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
   }
 
   .modal-close:hover {
-    background: rgba(107, 114, 128, 0.1);
+    background: rgba(107, 114, 128, 0.2);
     color: #374151;
+    transform: scale(1.1);
   }
 
   .staff-detail-content {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
     margin-bottom: 30px;
   }
 
   .staff-photo-section {
     text-align: center;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 15px;
   }
 
   .staff-photo-section .staff-photo {
     width: 100px;
     height: 100px;
-    margin-bottom: 15px;
+    margin: 0 auto 15px;
+    border: 3px solid rgba(102, 126, 234, 0.2);
+  }
+
+  .staff-photo-section .staff-photo i {
+    font-size: 2.5rem;
+  }
+
+  .staff-photo-section .staff-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .staff-photo-section .status-indicator {
+    width: 10px;
+    height: 10px;
   }
 
   .staff-info-section {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
   }
 
   .info-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
+    gap: 15px;
+    padding: 15px 18px;
+    background: rgba(248, 250, 252, 0.8);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .info-item:hover {
     background: rgba(102, 126, 234, 0.05);
-    border-radius: 8px;
+    border-color: rgba(102, 126, 234, 0.2);
   }
 
   .info-item i {
     color: #667eea;
-    width: 20px;
-    text-align: center;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    flex-shrink: 0;
   }
 
   .info-item span {
     color: #374151;
     font-weight: 500;
+    font-size: 0.95rem;
+    flex: 1;
   }
 
   .modal-actions {
     display: flex;
     gap: 15px;
     justify-content: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(102, 126, 234, 0.1);
+  }
+
+  .btn-3d {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+
+  .btn-3d:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  }
+
+  .btn-3d:active {
+    transform: translateY(-1px);
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8) translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
   }
 
   @keyframes spin {
@@ -669,8 +823,8 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
 
   /* Responsive Design */
   @media (max-width: 768px) {
-    .staff-grid {
-      grid-template-columns: 1fr;
+    .staff-container {
+      height: 350px; /* Slightly smaller on mobile */
     }
 
     .department-filters {
@@ -681,6 +835,23 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
 
     .filter-btn {
       flex-shrink: 0;
+    }
+
+    .staff-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 15px;
+      gap: 10px;
+    }
+
+    .staff-info {
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .staff-main-info {
+      text-align: center;
     }
 
     .other-activity-card {
@@ -696,8 +867,33 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
       transform: rotate(90deg) translateY(-5px);
     }
 
+    .staff-photo-section {
+      padding: 15px;
+    }
+
+    .staff-photo-section .staff-photo {
+      width: 80px;
+      height: 80px;
+    }
+
+    .info-item {
+      padding: 12px 15px;
+    }
+
+    .info-item i {
+      width: 20px;
+      height: 20px;
+      font-size: 0.8rem;
+    }
+
     .modal-actions {
       flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-3d, .btn-secondary {
+      padding: 12px 20px;
+      font-size: 0.9rem;
     }
   }
 </style>
@@ -737,7 +933,7 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
 
         // Hide loading, show grid
         loadingState.style.display = "none";
-        staffGrid.style.display = "grid";
+        staffGrid.style.display = "flex";
       } else {
         throw new Error(result.message || "Failed to load staff data");
       }
@@ -762,10 +958,10 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
 
     if (filteredStaff.length === 0) {
       staffGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-          <i class="fas fa-user-slash" style="font-size: 3rem; color: #9ca3af; margin-bottom: 15px;"></i>
-          <h3 style="color: #6b7280;">Tidak Ada Staff</h3>
-          <p style="color: #9ca3af;">Tidak ada staff yang tersedia untuk bagian ini.</p>
+        <div style="text-align: center; padding: 40px; width: 100%;">
+          <i class="fas fa-user-slash" style="font-size: 2.5rem; color: #9ca3af; margin-bottom: 15px;"></i>
+          <h3 style="color: #6b7280; margin: 0 0 8px 0;">Tidak Ada Staff</h3>
+          <p style="color: #9ca3af; margin: 0;">Tidak ada staff yang tersedia untuk bagian ini.</p>
         </div>
       `;
       return;
@@ -793,9 +989,11 @@ Staff - Smart Guest Book{% endblock %} {% block content %}
         ${photoHtml}
       </div>
       <div class="staff-info">
-        <div class="staff-name">${staff.name}</div>
-        <div class="staff-position">${staff.position}</div>
-        <div class="staff-department">${staff.department_display}</div>
+        <div class="staff-main-info">
+          <div class="staff-name">${staff.name}</div>
+          <div class="staff-position">${staff.position}</div>
+          <div class="staff-department">${staff.department_display}</div>
+        </div>
         <div class="staff-status ${staff.current_status}">
           <span class="status-indicator"></span>
           <span class="status-text">${getStatusText(

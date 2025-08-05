@@ -1,6 +1,7 @@
-{% extends 'guest_system/base.html' %} {% load static %} {% block title
-%}Changelog & Version History - Smart Guest Book{% endblock %} {% block content
-%}
+{% extends 'guest_system/base.html' %} 
+{% load static %} 
+{% block title %}Changelog & Version History - Smart Guest Book{% endblock %} 
+{% block content %}
 <div class="changelog-container">
   <!-- Header Section -->
   <div class="changelog-header">
@@ -101,21 +102,21 @@
   }
 
   .version-label {
-    display: block;
-    font-size: 0.75rem;
-    opacity: 0.8;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    display: block !important;
+    font-size: 0.75rem !important;
+    opacity: 0.8 !important;
+    margin-bottom: 20px !important; /* Force larger spacing */
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
   }
 
   .version-number {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    padding: 6px 12px;
+    display: block !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 6px !important;
+    padding: 15px 20px !important; /* Force larger padding */
   }
 
   .loading-state,
@@ -177,9 +178,9 @@
   }
 
   .versions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 50px !important; /* Force larger spacing with !important */
   }
 
   .version-card {
@@ -204,13 +205,14 @@
 
   .version-header {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    padding: 20px 25px;
+    padding: 30px 25px 20px 25px; /* Increased top padding from 20px to 30px */
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     position: relative;
   }
 
   .version-card.current .version-header {
     background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    padding: 30px 25px 20px 25px; /* Same increased top padding for current version */
   }
 
   .version-info {
@@ -481,6 +483,19 @@
       position: static;
       margin-bottom: 12px;
       display: inline-block;
+    }
+    
+    /* Mobile spacing adjustments */
+    .versions-list {
+      gap: 35px; /* Larger gap on mobile too */
+    }
+    
+    .version-label {
+      margin-bottom: 12px; /* More spacing on mobile */
+    }
+    
+    .version-number {
+      padding: 10px 14px; /* Better padding on mobile */
     }
   }
 

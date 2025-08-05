@@ -852,7 +852,7 @@ def test_staff_whatsapp(request, staff_id):
             staff = get_object_or_404(Staff, id=staff_id)
             
             result = whatsapp_service.send_test_message(
-                phone_number=staff.whatsapp_number,
+                phone_number=staff.phone_number,
                 staff_name=staff.name
             )
             

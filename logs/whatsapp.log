@@ -1,0 +1,9 @@
+WhatsApp service disabled
+WhatsApp service is disabled in settings
+INFO 2025-08-05 07:06:53,816 whatsapp_service 8616 31004 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-08-05 07:06:53,818 whatsapp_service 8616 31004 API Token configured: xn1uCaCcu5...
+INFO 2025-08-05 07:10:39,715 whatsapp_service 43416 53224 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-08-05 07:10:39,715 whatsapp_service 43416 53224 API Token configured: xn1uCaCcu5...
+INFO 2025-08-05 07:11:08,411 whatsapp_service 43416 30564 Sending WhatsApp to 6281367163919
+INFO 2025-08-05 07:11:09,171 whatsapp_service 43416 30564 Response status: 200
+INFO 2025-08-05 07:11:09,172 whatsapp_service 43416 30564 WhatsApp sent successfully to 6281367163919
