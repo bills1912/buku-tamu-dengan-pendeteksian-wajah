@@ -61,6 +61,16 @@
           </a>
         </div>
         <div class="nav-item">
+          <a
+            href="#staff-management"
+            class="nav-link"
+            data-tab="staff-management"
+          >
+            <i class="fas fa-user-cog"></i>
+            <span>Staff Management</span>
+          </a>
+        </div>
+        <div class="nav-item">
           <a href="{% url 'guest_system:face_recognition' %}" class="nav-link">
             <i class="fas fa-camera"></i>
             <span>Face Recognition</span>
@@ -269,6 +279,274 @@
               <div id="notifications-list">
                 <!-- Notifications will be populated here -->
               </div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="staff-management-content"
+          class="tab-content"
+          style="display: none"
+        >
+          <div class="content-section">
+            <div class="panel-header">
+              <div class="panel-icon">
+                <i class="fas fa-user-cog"></i>
+              </div>
+              <div class="panel-title">
+                <h3>Manajemen Staff</h3>
+                <p>Kelola data pegawai dan konfigurasi WhatsApp</p>
+              </div>
+              <div class="panel-actions">
+                <button class="btn btn-primary" onclick="openAddStaffModal()">
+                  <i class="fas fa-plus"></i>
+                  Tambah Staff Baru
+                </button>
+              </div>
+            </div>
+
+            <!-- Staff Filter and Search -->
+            <div class="staff-filters">
+              <div class="filter-group">
+                <label for="department-filter">Filter Departemen:</label>
+                <select id="department-filter" onchange="filterStaff()">
+                  <option value="">Semua Departemen</option>
+                  <option value="kepala_kantor">Kepala Kantor</option>
+                  <option value="subbag_umum">Subbag Umum & Kepegawaian</option>
+                  <option value="pst">Fungsi PST</option>
+                  <option value="ipds">Fungsi IPDS</option>
+                  <option value="distribusi">
+                    Fungsi Statistik Distribusi
+                  </option>
+                  <option value="produksi">Fungsi Statistik Produksi</option>
+                  <option value="sosial">Fungsi Statistik Sosial</option>
+                  <option value="neraca">Fungsi Neraca & Analisis</option>
+                  <option value="sekretaris">Sekretaris</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="status-filter">Filter Status:</label>
+                <select id="status-filter" onchange="filterStaff()">
+                  <option value="">Semua Status</option>
+                  <option value="available">Tersedia</option>
+                  <option value="busy">Sedang Sibuk</option>
+                  <option value="meeting">Sedang Rapat</option>
+                  <option value="out">Sedang Keluar</option>
+                  <option value="off">Tidak Masuk</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="whatsapp-filter">Filter WhatsApp:</label>
+                <select id="whatsapp-filter" onchange="filterStaff()">
+                  <option value="">Semua</option>
+                  <option value="enabled">WhatsApp Aktif</option>
+                  <option value="disabled">WhatsApp Nonaktif</option>
+                </select>
+              </div>
+
+              <div class="search-group">
+                <label for="staff-search">Cari Staff:</label>
+                <input
+                  type="text"
+                  id="staff-search"
+                  placeholder="Cari nama atau jabatan..."
+                  onkeyup="filterStaff()"
+                />
+              </div>
+            </div>
+
+            <div class="panel-body">
+              <div id="staff-management-list">
+                <!-- Staff list will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Staff Modal for Add/Edit -->
+        <div id="staff-modal" class="modal" style="display: none">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 id="modal-title">Tambah Staff Baru</h3>
+              <button class="modal-close" onclick="closeStaffModal()">
+                &times;
+              </button>
+            </div>
+
+            <form id="staff-form" onsubmit="saveStaff(event)">
+              <div class="modal-body">
+                <input type="hidden" id="staff-id" name="staff_id" />
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="staff-name">Nama Lengkap *</label>
+                    <input type="text" id="staff-name" name="name" required />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="staff-position">Jabatan *</label>
+                    <input
+                      type="text"
+                      id="staff-position"
+                      name="position"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="staff-department">Departemen/Fungsi *</label>
+                    <select id="staff-department" name="department" required>
+                      <option value="">Pilih Departemen</option>
+                      <option value="kepala_kantor">Kepala Kantor</option>
+                      <option value="subbag_umum">
+                        Subbag Umum & Kepegawaian
+                      </option>
+                      <option value="pst">Fungsi PST</option>
+                      <option value="ipds">Fungsi IPDS</option>
+                      <option value="distribusi">
+                        Fungsi Statistik Distribusi
+                      </option>
+                      <option value="produksi">
+                        Fungsi Statistik Produksi
+                      </option>
+                      <option value="sosial">Fungsi Statistik Sosial</option>
+                      <option value="neraca">Fungsi Neraca & Analisis</option>
+                      <option value="sekretaris">Sekretaris</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="staff-phone">Nomor Telepon *</label>
+                    <input
+                      type="tel"
+                      id="staff-phone"
+                      name="phone_number"
+                      required
+                      placeholder="08xxxxxxxxxx atau 62xxxxxxxxxx"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="staff-email">Email</label>
+                    <input type="email" id="staff-email" name="email" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="staff-room">Ruang Kantor</label>
+                    <input
+                      type="text"
+                      id="staff-room"
+                      name="office_room"
+                      placeholder="Ruang PST, Lt. 2, dll"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="staff-status">Status Saat Ini</label>
+                    <select id="staff-status" name="current_status">
+                      <option value="available">Tersedia</option>
+                      <option value="busy">Sedang Sibuk</option>
+                      <option value="meeting">Sedang Rapat</option>
+                      <option value="out">Sedang Keluar</option>
+                      <option value="off">Tidak Masuk</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="staff-status-message">Pesan Status</label>
+                    <input
+                      type="text"
+                      id="staff-status-message"
+                      name="status_message"
+                      placeholder="Rapat koordinasi, Dinas luar, dll"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="staff-whatsapp"
+                      name="whatsapp_enabled"
+                      checked
+                    />
+                    <span class="checkbox-custom"></span>
+                    Aktifkan Notifikasi WhatsApp
+                  </label>
+                </div>
+
+                <div class="form-group checkbox-group">
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      id="staff-active"
+                      name="is_active"
+                      checked
+                    />
+                    <span class="checkbox-custom"></span>
+                    Staff Aktif
+                  </label>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  onclick="closeStaffModal()"
+                >
+                  <i class="fas fa-times"></i>
+                  Batal
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i>
+                  <span id="save-btn-text">Simpan</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Confirm Delete Modal -->
+        <div id="delete-modal" class="modal" style="display: none">
+          <div class="modal-content small-modal">
+            <div class="modal-header">
+              <h3>Konfirmasi Hapus</h3>
+              <button class="modal-close" onclick="closeDeleteModal()">
+                &times;
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <div class="delete-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>
+                  Apakah Anda yakin ingin menghapus staff
+                  <strong id="delete-staff-name"></strong>?
+                </p>
+                <p class="warning-text">Tindakan ini tidak dapat dibatalkan!</p>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeDeleteModal()"
+              >
+                <i class="fas fa-times"></i>
+                Batal
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                onclick="confirmDeleteStaff()"
+              >
+                <i class="fas fa-trash"></i>
+                Hapus
+              </button>
             </div>
           </div>
         </div>
@@ -966,6 +1244,820 @@
         // Escape key to close sidebar on mobile
         if (e.key === "Escape" && window.innerWidth <= 1024) {
           document.getElementById("sidebar").classList.remove("open");
+        }
+      });
+
+      let staffData = [];
+      let filteredStaffData = [];
+      let editingStaffId = null;
+      let deleteStaffId = null;
+
+      // Enhanced loading state
+      function showLoadingCards(count = 6) {
+        const container = document.getElementById("staff-management-list");
+        const loadingHTML = Array(count)
+          .fill(0)
+          .map(
+            () => `
+    <div class="loading-card">
+      <div class="loading-header">
+        <div class="loading-avatar"></div>
+        <div class="loading-info">
+          <div class="loading-line medium"></div>
+          <div class="loading-line short"></div>
+          <div class="loading-line long"></div>
+        </div>
+      </div>
+      <div class="loading-line long"></div>
+      <div class="loading-line medium"></div>
+      <div class="loading-line short"></div>
+    </div>
+  `
+          )
+          .join("");
+
+        container.innerHTML = `<div class="staff-grid">${loadingHTML}</div>`;
+      }
+
+      // Enhanced load staff data with loading state
+      async function loadStaffData() {
+        try {
+          showLoadingCards();
+
+          const response = await fetch("/api/get-staff-list/", {
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            staffData = result.data;
+            filteredStaffData = [...staffData];
+
+            // Add slight delay for better UX
+            setTimeout(() => {
+              renderStaffList();
+              updateFilterResultCount();
+            }, 300);
+          } else {
+            throw new Error(result.message || "Failed to load staff data");
+          }
+        } catch (error) {
+          console.error("Error loading staff data:", error);
+          showToast("Gagal memuat data staff: " + error.message, "error");
+
+          // Show error state
+          const container = document.getElementById("staff-management-list");
+          container.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Gagal Memuat Data</h3>
+        <p>Terjadi kesalahan saat memuat data staff: ${error.message}</p>
+        <button class="btn btn-primary" onclick="loadStaffData()" style="margin-top: 1rem;">
+          <i class="fas fa-redo"></i> Coba Lagi
+        </button>
+      </div>
+    `;
+        }
+      }
+
+      // Enhanced render with animations
+      function renderStaffList() {
+        const container = document.getElementById("staff-management-list");
+
+        if (!filteredStaffData || filteredStaffData.length === 0) {
+          container.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-users"></i>
+        <h3>Tidak Ada Staff</h3>
+        <p>Belum ada data staff yang sesuai dengan filter yang diterapkan</p>
+        <button class="btn btn-primary" onclick="openAddStaffModal()" style="margin-top: 1rem;">
+          <i class="fas fa-plus"></i> Tambah Staff Pertama
+        </button>
+      </div>
+    `;
+          return;
+        }
+
+        const staffGrid = document.createElement("div");
+        staffGrid.className = "staff-grid";
+
+        filteredStaffData.forEach((staff, index) => {
+          const card = document.createElement("div");
+          card.innerHTML = createStaffCard(staff);
+          card.style.animationDelay = `${index * 0.1}s`;
+          card.style.animation = "fadeInUp 0.5s ease forwards";
+          card.style.opacity = "0";
+          staffGrid.appendChild(card.firstElementChild);
+        });
+
+        container.innerHTML = "";
+        container.appendChild(staffGrid);
+      }
+
+      // Create staff card HTML
+      function createStaffCard(staff) {
+        const initials = staff.name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .substring(0, 2);
+        const statusText = getStatusText(staff.current_status);
+        const departmentText = getDepartmentText(staff.department);
+
+        return `
+    <div class="staff-management-card ${staff.current_status}" data-staff-id="${
+          staff.id
+        }">
+      <div class="staff-card-header">
+        <div class="staff-avatar-large">
+          ${
+            staff.photo
+              ? `<img src="${staff.photo}" alt="${staff.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;">`
+              : initials
+          }
+        </div>
+        <div class="staff-main-info">
+          <h4>${staff.name}</h4>
+          <div class="position">${staff.position}</div>
+          <div class="department">${departmentText}</div>
+        </div>
+      </div>
+      
+      <div class="staff-details">
+        <div class="detail-row">
+          <i class="fas fa-phone"></i>
+          <span>${staff.phone_number}</span>
+        </div>
+        ${
+          staff.email
+            ? `
+          <div class="detail-row">
+            <i class="fas fa-envelope"></i>
+            <span>${staff.email}</span>
+          </div>
+        `
+            : ""
+        }
+        ${
+          staff.office_room
+            ? `
+          <div class="detail-row">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>${staff.office_room}</span>
+          </div>
+        `
+            : ""
+        }
+        ${
+          staff.statistics
+            ? `
+          <div class="detail-row">
+            <i class="fas fa-chart-bar"></i>
+            <span>${staff.statistics.total_visits} total kunjungan, ${staff.statistics.active_visits} aktif</span>
+          </div>
+        `
+            : ""
+        }
+      </div>
+      
+      <div class="status-row">
+        <div class="current-status">
+          <span class="status-dot ${staff.current_status}"></span>
+          <span>${statusText}</span>
+          ${
+            staff.status_message
+              ? `<span class="status-message">- ${staff.status_message}</span>`
+              : ""
+          }
+        </div>
+        <div class="whatsapp-badge ${
+          staff.whatsapp_enabled ? "enabled" : "disabled"
+        }">
+          <i class="fab fa-whatsapp"></i>
+          <span>${staff.whatsapp_enabled ? "Aktif" : "Nonaktif"}</span>
+        </div>
+      </div>
+      
+      <div class="staff-actions">
+        ${
+          staff.whatsapp_enabled
+            ? `
+          <button class="btn-icon btn-whatsapp" onclick="testWhatsApp(${staff.id})" title="Test WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </button>
+        `
+            : ""
+        }
+        <button class="btn-icon btn-edit" onclick="editStaff(${
+          staff.id
+        })" title="Edit Staff">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn-icon btn-delete" onclick="deleteStaff(${
+          staff.id
+        })" title="Hapus Staff">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `;
+      }
+
+      // Helper functions
+      function getStatusText(status) {
+        const statusMap = {
+          available: "Tersedia",
+          busy: "Sedang Sibuk",
+          meeting: "Sedang Rapat",
+          out: "Sedang Keluar",
+          off: "Tidak Masuk",
+        };
+        return statusMap[status] || status;
+      }
+
+      function getDepartmentText(department) {
+        const departmentMap = {
+          kepala_kantor: "Kepala Kantor",
+          subbag_umum: "Subbag Umum & Kepegawaian",
+          pst: "Fungsi PST",
+          ipds: "Fungsi IPDS",
+          distribusi: "Fungsi Statistik Distribusi",
+          produksi: "Fungsi Statistik Produksi",
+          sosial: "Fungsi Statistik Sosial",
+          neraca: "Fungsi Neraca & Analisis",
+          sekretaris: "Sekretaris",
+        };
+        return departmentMap[department] || department;
+      }
+
+      // Enhanced filter function with debouncing
+      let filterTimeout;
+      function filterStaff() {
+        clearTimeout(filterTimeout);
+        filterTimeout = setTimeout(() => {
+          const departmentFilter =
+            document.getElementById("department-filter").value;
+          const statusFilter = document.getElementById("status-filter").value;
+          const whatsappFilter =
+            document.getElementById("whatsapp-filter").value;
+          const searchTerm = document
+            .getElementById("staff-search")
+            .value.toLowerCase()
+            .trim();
+
+          filteredStaffData = staffData.filter((staff) => {
+            const matchDepartment =
+              !departmentFilter || staff.department === departmentFilter;
+            const matchStatus =
+              !statusFilter || staff.current_status === statusFilter;
+            const matchWhatsApp =
+              !whatsappFilter ||
+              (whatsappFilter === "enabled" && staff.whatsapp_enabled) ||
+              (whatsappFilter === "disabled" && !staff.whatsapp_enabled);
+            const matchSearch =
+              !searchTerm ||
+              staff.name.toLowerCase().includes(searchTerm) ||
+              staff.position.toLowerCase().includes(searchTerm) ||
+              staff.email?.toLowerCase().includes(searchTerm) ||
+              staff.office_room?.toLowerCase().includes(searchTerm);
+
+            return (
+              matchDepartment && matchStatus && matchWhatsApp && matchSearch
+            );
+          });
+
+          renderStaffList();
+          updateFilterResultCount();
+        }, 300);
+      }
+
+      // Add result count display
+      function updateFilterResultCount() {
+        let resultText = `Menampilkan ${filteredStaffData.length} dari ${staffData.length} staff`;
+
+        const panelHeader = document.querySelector(
+          "#staff-management-content .panel-header"
+        );
+        let resultIndicator = panelHeader.querySelector(".result-indicator");
+
+        if (!resultIndicator) {
+          resultIndicator = document.createElement("div");
+          resultIndicator.className = "result-indicator";
+          resultIndicator.style.cssText = `
+      font-size: 0.875rem;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      margin-left: 1rem;
+    `;
+          panelHeader.appendChild(resultIndicator);
+        }
+
+        resultIndicator.textContent = resultText;
+      }
+
+      // Reset filters function
+      function resetFilters() {
+        document.getElementById("department-filter").value = "";
+        document.getElementById("status-filter").value = "";
+        document.getElementById("whatsapp-filter").value = "";
+        document.getElementById("staff-search").value = "";
+        filterStaff();
+      }
+
+      // Enhanced modal functions with better UX
+      function openAddStaffModal() {
+        editingStaffId = null;
+        document.getElementById("modal-title").textContent =
+          "Tambah Staff Baru";
+        document.getElementById("save-btn-text").textContent = "Simpan";
+
+        const form = document.getElementById("staff-form");
+        form.reset();
+
+        // Set defaults
+        document.getElementById("staff-status").value = "available";
+        document.getElementById("staff-whatsapp").checked = true;
+        document.getElementById("staff-active").checked = true;
+
+        document.getElementById("staff-modal").style.display = "flex";
+
+        // Focus on first input
+        setTimeout(() => {
+          document.getElementById("staff-name").focus();
+        }, 100);
+      }
+
+      function editStaff(staffId) {
+        const staff = staffData.find((s) => s.id === staffId);
+        if (!staff) return;
+
+        editingStaffId = staffId;
+        document.getElementById(
+          "modal-title"
+        ).textContent = `Edit Staff: ${staff.name}`;
+        document.getElementById("save-btn-text").textContent = "Update";
+
+        // Populate form with enhanced error handling
+        try {
+          document.getElementById("staff-id").value = staff.id;
+          document.getElementById("staff-name").value = staff.name || "";
+          document.getElementById("staff-position").value =
+            staff.position || "";
+          document.getElementById("staff-department").value =
+            staff.department || "";
+          document.getElementById("staff-phone").value =
+            staff.phone_number || "";
+          document.getElementById("staff-email").value = staff.email || "";
+          document.getElementById("staff-room").value = staff.office_room || "";
+          document.getElementById("staff-status").value =
+            staff.current_status || "available";
+          document.getElementById("staff-status-message").value =
+            staff.status_message || "";
+          document.getElementById("staff-whatsapp").checked =
+            staff.whatsapp_enabled;
+          document.getElementById("staff-active").checked = staff.is_active;
+        } catch (error) {
+          console.error("Error populating form:", error);
+          showToast("Error saat memuat data staff", "error");
+          return;
+        }
+
+        document.getElementById("staff-modal").style.display = "flex";
+
+        // Focus on name input
+        setTimeout(() => {
+          document.getElementById("staff-name").focus();
+          document.getElementById("staff-name").select();
+        }, 100);
+      }
+
+      // Enhanced modal close with animation
+      function closeStaffModal() {
+        const modal = document.getElementById("staff-modal");
+        const modalContent = modal.querySelector(".modal-content");
+
+        modalContent.style.animation = "slideOutModal 0.3s ease forwards";
+        setTimeout(() => {
+          modal.style.display = "none";
+          modalContent.style.animation = "";
+          editingStaffId = null;
+        }, 300);
+      }
+
+      function deleteStaff(staffId) {
+        const staff = staffData.find((s) => s.id === staffId);
+        if (!staff) return;
+
+        deleteStaffId = staffId;
+        document.getElementById("delete-staff-name").textContent = staff.name;
+        document.getElementById("delete-modal").style.display = "flex";
+      }
+
+      function closeDeleteModal() {
+        const modal = document.getElementById("delete-modal");
+        const modalContent = modal.querySelector(".modal-content");
+
+        modalContent.style.animation = "slideOutModal 0.3s ease forwards";
+        setTimeout(() => {
+          modal.style.display = "none";
+          modalContent.style.animation = "";
+          deleteStaffId = null;
+        }, 300);
+      }
+
+      // Enhanced save staff with better validation and UX
+      async function saveStaff(event) {
+        event.preventDefault();
+
+        const saveBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = saveBtn.innerHTML;
+
+        // Show loading state
+        saveBtn.innerHTML =
+          '<div class="loading"></div> <span>Menyimpan...</span>';
+        saveBtn.disabled = true;
+
+        const formData = new FormData(event.target);
+
+        // Enhanced validation
+        const validationErrors = [];
+
+        // Name validation
+        const name = formData.get("name").trim();
+        if (!name) {
+          validationErrors.push("Nama wajib diisi");
+        } else if (name.length < 3) {
+          validationErrors.push("Nama minimal 3 karakter");
+        }
+
+        // Phone validation
+        const phone = formData.get("phone_number").trim();
+        const phoneRegex = /^(\+62|62|0)[0-9]{8,12}$/;
+        if (!phone) {
+          validationErrors.push("Nomor telepon wajib diisi");
+        } else if (!phoneRegex.test(phone)) {
+          validationErrors.push(
+            "Format nomor telepon tidak valid (gunakan 08xxx, 62xxx, atau +62xxx)"
+          );
+        }
+
+        // Email validation (if provided)
+        const email = formData.get("email").trim();
+        if (email) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            validationErrors.push("Format email tidak valid");
+          }
+        }
+
+        // Department validation
+        const department = formData.get("department");
+        if (!department) {
+          validationErrors.push("Departemen wajib dipilih");
+        }
+
+        // Position validation
+        const position = formData.get("position").trim();
+        if (!position) {
+          validationErrors.push("Jabatan wajib diisi");
+        }
+
+        if (validationErrors.length > 0) {
+          saveBtn.innerHTML = originalText;
+          saveBtn.disabled = false;
+          showToast("Validasi gagal: " + validationErrors.join(", "), "error");
+          return;
+        }
+
+        const staffDataPayload = {
+          name: name,
+          position: position,
+          department: department,
+          phone_number: phone,
+          email: email || null,
+          office_room: formData.get("office_room").trim() || null,
+          current_status: formData.get("current_status"),
+          status_message: formData.get("status_message").trim() || null,
+          whatsapp_enabled: formData.get("whatsapp_enabled") === "on",
+          is_active: formData.get("is_active") === "on",
+        };
+
+        try {
+          let url, method;
+          if (editingStaffId) {
+            url = `/api/staff/${editingStaffId}/update/`;
+            method = "PUT";
+            staffDataPayload.id = editingStaffId;
+          } else {
+            url = "/api/staff/create/";
+            method = "POST";
+          }
+
+          const response = await fetch(url, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify(staffDataPayload),
+          });
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            showToast(
+              editingStaffId
+                ? `Data ${staffDataPayload.name} berhasil diperbarui!`
+                : `Staff ${staffDataPayload.name} berhasil ditambahkan!`,
+              "success"
+            );
+
+            closeStaffModal();
+
+            // Refresh data with animation
+            await loadStaffData();
+
+            // Reset filters if adding new staff
+            if (!editingStaffId) {
+              resetFilters();
+            }
+          } else {
+            throw new Error(result.message || "Gagal menyimpan data staff");
+          }
+        } catch (error) {
+          console.error("Error saving staff:", error);
+          showToast("Gagal menyimpan data staff: " + error.message, "error");
+        } finally {
+          saveBtn.innerHTML = originalText;
+          saveBtn.disabled = false;
+        }
+      }
+
+      // Enhanced delete with better confirmation
+      async function confirmDeleteStaff() {
+        if (!deleteStaffId) return;
+
+        const deleteBtn = document.querySelector("#delete-modal .btn-danger");
+        const originalText = deleteBtn.innerHTML;
+
+        deleteBtn.innerHTML =
+          '<div class="loading"></div> <span>Menghapus...</span>';
+        deleteBtn.disabled = true;
+
+        try {
+          const response = await fetch(`/api/staff/${deleteStaffId}/delete/`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+          });
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            const staffName =
+              staffData.find((s) => s.id === deleteStaffId)?.name || "Staff";
+            showToast(`${staffName} berhasil dihapus!`, "success");
+
+            closeDeleteModal();
+
+            // Remove from local data with animation
+            const cardElement = document.querySelector(
+              `[data-staff-id="${deleteStaffId}"]`
+            );
+            if (cardElement) {
+              cardElement.style.animation = "fadeOutDown 0.3s ease forwards";
+              setTimeout(() => {
+                loadStaffData();
+              }, 300);
+            } else {
+              loadStaffData();
+            }
+          } else {
+            throw new Error(result.message || "Gagal menghapus staff");
+          }
+        } catch (error) {
+          console.error("Error deleting staff:", error);
+          showToast("Gagal menghapus staff: " + error.message, "error");
+        } finally {
+          deleteBtn.innerHTML = originalText;
+          deleteBtn.disabled = false;
+        }
+      }
+
+      // Enhanced WhatsApp test with better feedback
+      async function testWhatsApp(staffId) {
+        const staff = staffData.find((s) => s.id === staffId);
+        if (!staff) return;
+
+        // Find and disable the WhatsApp button
+        const whatsappBtn = document.querySelector(
+          `[data-staff-id="${staffId}"] .btn-whatsapp`
+        );
+        const originalContent = whatsappBtn.innerHTML;
+
+        whatsappBtn.innerHTML = '<div class="loading"></div>';
+        whatsappBtn.disabled = true;
+
+        try {
+          showToast(`Mengirim test WhatsApp ke ${staff.name}...`, "info");
+
+          const response = await fetch(`/api/staff/${staffId}/test-whatsapp/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+          });
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            showToast(
+              `✅ Test WhatsApp berhasil dikirim ke ${staff.name}!`,
+              "success"
+            );
+
+            // Add visual feedback to the card
+            const card = document.querySelector(`[data-staff-id="${staffId}"]`);
+            card.style.animation = "pulse 0.5s ease";
+            setTimeout(() => {
+              card.style.animation = "";
+            }, 500);
+          } else {
+            throw new Error(result.message || "Gagal mengirim test WhatsApp");
+          }
+        } catch (error) {
+          console.error("Error testing WhatsApp:", error);
+          showToast(
+            `❌ Gagal mengirim test WhatsApp: ${error.message}`,
+            "error"
+          );
+        } finally {
+          whatsappBtn.innerHTML = originalContent;
+          whatsappBtn.disabled = false;
+        }
+      }
+
+      // Initialize staff management when tab is selected
+      function initializeStaffManagement() {
+        if (currentTab === "staff-management" && staffData.length === 0) {
+          loadStaffData();
+        }
+      }
+
+      // Update tab switching to load staff data when needed
+      const originalSwitchTab = switchTab;
+      switchTab = function (tabName) {
+        originalSwitchTab(tabName);
+        if (tabName === "staff-management") {
+          initializeStaffManagement();
+        }
+      };
+
+      // Enhanced phone number formatting
+      function formatPhoneInput() {
+        const phoneInput = document.getElementById("staff-phone");
+        if (!phoneInput) return;
+
+        phoneInput.addEventListener("input", function (e) {
+          let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+
+          // Limit length
+          if (value.length > 16) {
+            value = value.substring(0, 16);
+          }
+
+          e.target.value = value;
+        });
+      }
+
+      // Close modals when clicking outside
+      document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("modal")) {
+          if (e.target.id === "staff-modal") {
+            closeStaffModal();
+          } else if (e.target.id === "delete-modal") {
+            closeDeleteModal();
+          }
+        }
+      });
+
+      // Close modals with Escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeStaffModal();
+          closeDeleteModal();
+        }
+
+        // Enhanced keyboard shortcuts for staff management
+        if (currentTab === "staff-management") {
+          // Ctrl+N to add new staff
+          if ((e.ctrlKey || e.metaKey) && e.key === "n") {
+            e.preventDefault();
+            openAddStaffModal();
+          }
+
+          // Ctrl+F to focus search
+          if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+            e.preventDefault();
+            document.getElementById("staff-search").focus();
+          }
+
+          // Ctrl+R to reset filters (only if not refreshing page)
+          if ((e.ctrlKey || e.metaKey) && e.key === "r" && e.shiftKey) {
+            e.preventDefault();
+            resetFilters();
+          }
+        }
+      });
+
+      // Add CSS animations
+      const additionalCSS = `
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+@keyframes slideOutModal {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8) translateY(50px);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.toast.info {
+  border-left-color: #3b82f6;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1e40af;
+}
+`;
+
+      // Inject CSS if not already present
+      if (!document.querySelector("#staff-management-css")) {
+        const styleSheet = document.createElement("style");
+        styleSheet.id = "staff-management-css";
+        styleSheet.textContent = additionalCSS;
+        document.head.appendChild(styleSheet);
+      }
+
+      // Initialize phone formatting when modal opens
+      document.addEventListener("DOMContentLoaded", function () {
+        const staffModal = document.getElementById("staff-modal");
+        if (staffModal) {
+          const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+              if (
+                mutation.type === "attributes" &&
+                mutation.attributeName === "style"
+              ) {
+                if (staffModal.style.display === "flex") {
+                  setTimeout(formatPhoneInput, 100);
+                }
+              }
+            });
+          });
+
+          observer.observe(staffModal, { attributes: true });
         }
       });
 

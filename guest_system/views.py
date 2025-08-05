@@ -11,6 +11,19 @@ import base64
 import numpy as np
 from .models import Guest, VisitLog, Notification, Version, ChangelogItem, Staff
 from .services.whatsapp_service import whatsapp_service
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.utils import timezone
+from django.db.models import Q
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+import re
+import logging
+logger = logging.getLogger(__name__)
 
 # LAZY LOADING SERVICES - Avoid immediate import to prevent pygame startup message
 face_service = None
@@ -921,3 +934,560 @@ def health_check(request):
             'status': 'unhealthy',
             'error': str(e)
         }, status=503)
+        
+@csrf_exempt
+@require_http_methods(["POST"])
+def create_staff(request):
+    """Create new staff member"""
+    try:
+        data = json.loads(request.body)
+        
+        # Validate required fields
+        required_fields = ['name', 'position', 'department', 'phone_number']
+        for field in required_fields:
+            if not data.get(field):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': f'Field {field} wajib diisi'
+                })
+        
+        # Validate phone number format
+        phone_number = data['phone_number'].strip()
+        if not re.match(r'^(\+62|62|0)[0-9]{8,12}$', phone_number):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Format nomor telepon tidak valid. Gunakan format: 08xxxx, 62xxxx, atau +62xxxx'
+            })
+        
+        # Validate email if provided
+        email = data.get('email', '').strip()
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Format email tidak valid'
+                })
+        
+        # Validate department
+        valid_departments = [choice[0] for choice in Staff.DEPARTMENTS]
+        if data['department'] not in valid_departments:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Departemen tidak valid'
+            })
+        
+        # Validate status
+        valid_statuses = [choice[0] for choice in Staff.STATUS_CHOICES]
+        current_status = data.get('current_status', 'available')
+        if current_status not in valid_statuses:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Status tidak valid'
+            })
+        
+        # Check if phone number already exists
+        if Staff.objects.filter(phone_number=phone_number).exists():
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Nomor telepon sudah terdaftar untuk staff lain'
+            })
+        
+        # Check if email already exists (if provided)
+        if email and Staff.objects.filter(email=email).exists():
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Email sudah terdaftar untuk staff lain'
+            })
+        
+        # Create staff
+        staff = Staff.objects.create(
+            name=data['name'].strip(),
+            position=data['position'].strip(),
+            department=data['department'],
+            phone_number=phone_number,
+            email=email if email else None,
+            office_room=data.get('office_room', '').strip() or None,
+            current_status=current_status,
+            status_message=data.get('status_message', '').strip() or None,
+            whatsapp_enabled=data.get('whatsapp_enabled', True),
+            is_active=data.get('is_active', True)
+        )
+        
+        # Create notification for new staff
+        try:
+            create_notification(
+                guest=None,  # System notification
+                notification_type='staff_added',
+                title='Staff Baru Ditambahkan',
+                message=f'Staff baru {staff.name} telah ditambahkan ke sistem dengan jabatan {staff.position}'
+            )
+        except:
+            pass  # Don't fail if notification creation fails
+        
+        logger.info(f"New staff created: {staff.name} (ID: {staff.id})")
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Staff berhasil ditambahkan',
+            'staff_id': staff.id,
+            'data': {
+                'id': staff.id,
+                'name': staff.name,
+                'position': staff.position,
+                'department': staff.department,
+                'department_display': staff.department_display,
+                'phone_number': staff.phone_number,
+                'email': staff.email,
+                'office_room': staff.office_room,
+                'current_status': staff.current_status,
+                'status_message': staff.status_message,
+                'whatsapp_enabled': staff.whatsapp_enabled,
+                'is_active': staff.is_active,
+            }
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Data JSON tidak valid'
+        })
+    except Exception as e:
+        logger.error(f"Error creating staff: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Terjadi kesalahan sistem: {str(e)}'
+        })
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def update_staff(request, staff_id):
+    """Update existing staff member"""
+    try:
+        staff = get_object_or_404(Staff, id=staff_id)
+        data = json.loads(request.body)
+        
+        # Validate required fields
+        required_fields = ['name', 'position', 'department', 'phone_number']
+        for field in required_fields:
+            if not data.get(field):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': f'Field {field} wajib diisi'
+                })
+        
+        # Validate phone number format
+        phone_number = data['phone_number'].strip()
+        if not re.match(r'^(\+62|62|0)[0-9]{8,12}$', phone_number):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Format nomor telepon tidak valid. Gunakan format: 08xxxx, 62xxxx, atau +62xxxx'
+            })
+        
+        # Validate email if provided
+        email = data.get('email', '').strip()
+        if email:
+            try:
+                validate_email(email)
+            except ValidationError:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Format email tidak valid'
+                })
+        
+        # Validate department
+        valid_departments = [choice[0] for choice in Staff.DEPARTMENTS]
+        if data['department'] not in valid_departments:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Departemen tidak valid'
+            })
+        
+        # Validate status
+        valid_statuses = [choice[0] for choice in Staff.STATUS_CHOICES]
+        current_status = data.get('current_status', 'available')
+        if current_status not in valid_statuses:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Status tidak valid'
+            })
+        
+        # Check if phone number already exists for other staff
+        existing_phone = Staff.objects.filter(phone_number=phone_number).exclude(id=staff_id)
+        if existing_phone.exists():
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Nomor telepon sudah terdaftar untuk staff lain'
+            })
+        
+        # Check if email already exists for other staff (if provided)
+        if email:
+            existing_email = Staff.objects.filter(email=email).exclude(id=staff_id)
+            if existing_email.exists():
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Email sudah terdaftar untuk staff lain'
+                })
+        
+        # Store old values for comparison
+        old_name = staff.name
+        old_status = staff.current_status
+        old_whatsapp = staff.whatsapp_enabled
+        
+        # Update staff
+        staff.name = data['name'].strip()
+        staff.position = data['position'].strip()
+        staff.department = data['department']
+        staff.phone_number = phone_number
+        staff.email = email if email else None
+        staff.office_room = data.get('office_room', '').strip() or None
+        staff.current_status = current_status
+        staff.status_message = data.get('status_message', '').strip() or None
+        staff.whatsapp_enabled = data.get('whatsapp_enabled', True)
+        staff.is_active = data.get('is_active', True)
+        
+        staff.save()
+        
+        # Create notification for significant changes
+        changes = []
+        if old_name != staff.name:
+            changes.append(f'nama dari {old_name} ke {staff.name}')
+        if old_status != staff.current_status:
+            old_status_display = dict(Staff.STATUS_CHOICES).get(old_status, old_status)
+            new_status_display = dict(Staff.STATUS_CHOICES).get(staff.current_status, staff.current_status)
+            changes.append(f'status dari {old_status_display} ke {new_status_display}')
+        if old_whatsapp != staff.whatsapp_enabled:
+            whatsapp_status = 'diaktifkan' if staff.whatsapp_enabled else 'dinonaktifkan'
+            changes.append(f'WhatsApp {whatsapp_status}')
+        
+        if changes:
+            try:
+                create_notification(
+                    guest=None,  # System notification
+                    notification_type='staff_updated',
+                    title='Data Staff Diperbarui',
+                    message=f'Data staff {staff.name} telah diperbarui: {", ".join(changes)}'
+                )
+            except:
+                pass
+        
+        logger.info(f"Staff updated: {staff.name} (ID: {staff.id})")
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Data staff berhasil diperbarui',
+            'data': {
+                'id': staff.id,
+                'name': staff.name,
+                'position': staff.position,
+                'department': staff.department,
+                'department_display': staff.department_display,
+                'phone_number': staff.phone_number,
+                'email': staff.email,
+                'office_room': staff.office_room,
+                'current_status': staff.current_status,
+                'status_message': staff.status_message,
+                'whatsapp_enabled': staff.whatsapp_enabled,
+                'is_active': staff.is_active,
+            }
+        })
+        
+    except Staff.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Staff tidak ditemukan'
+        })
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Data JSON tidak valid'
+        })
+    except Exception as e:
+        logger.error(f"Error updating staff {staff_id}: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Terjadi kesalahan sistem: {str(e)}'
+        })
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_staff(request, staff_id):
+    """Delete staff member"""
+    try:
+        staff = get_object_or_404(Staff, id=staff_id)
+        
+        # Check if staff has active visits
+        active_visits = VisitLog.objects.filter(
+            staff_to_meet=staff,
+            check_out_time__isnull=True
+        ).count()
+        
+        if active_visits > 0:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Tidak dapat menghapus staff karena masih memiliki {active_visits} kunjungan aktif'
+            })
+        
+        # Store staff info for notification
+        staff_name = staff.name
+        staff_position = staff.position
+        
+        # Soft delete: mark as inactive instead of actual deletion
+        # This preserves historical data
+        staff.is_active = False
+        staff.whatsapp_enabled = False
+        staff.current_status = 'off'
+        staff.status_message = 'Staff telah dihapus dari sistem'
+        staff.save()
+        
+        # Create notification
+        try:
+            create_notification(
+                guest=None,  # System notification
+                notification_type='staff_deleted',
+                title='Staff Dihapus',
+                message=f'Staff {staff_name} ({staff_position}) telah dihapus dari sistem'
+            )
+        except:
+            pass
+        
+        logger.info(f"Staff soft deleted: {staff_name} (ID: {staff_id})")
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Staff {staff_name} berhasil dihapus'
+        })
+        
+    except Staff.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Staff tidak ditemukan'
+        })
+    except Exception as e:
+        logger.error(f"Error deleting staff {staff_id}: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Terjadi kesalahan sistem: {str(e)}'
+        })
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_staff_detail(request, staff_id):
+    """Get detailed staff information"""
+    try:
+        staff = get_object_or_404(Staff, id=staff_id)
+        
+        # Get related statistics
+        total_visits = VisitLog.objects.filter(staff_to_meet=staff).count()
+        active_visits = VisitLog.objects.filter(
+            staff_to_meet=staff,
+            check_out_time__isnull=True
+        ).count()
+        
+        # Get recent visits
+        recent_visits = VisitLog.objects.filter(
+            staff_to_meet=staff
+        ).order_by('-check_in_time')[:5]
+        
+        recent_visits_data = []
+        for visit in recent_visits:
+            recent_visits_data.append({
+                'id': visit.id,
+                'guest_name': visit.guest.name,
+                'visit_purpose': visit.get_visit_purpose_display(),
+                'check_in_time': visit.check_in_time.strftime('%d/%m/%Y %H:%M'),
+                'check_out_time': visit.check_out_time.strftime('%d/%m/%Y %H:%M') if visit.check_out_time else None,
+                'duration_minutes': visit.duration_minutes,
+                'urgency_level': visit.get_urgency_level_display()
+            })
+        
+        return JsonResponse({
+            'status': 'success',
+            'data': {
+                'id': staff.id,
+                'name': staff.name,
+                'position': staff.position,
+                'department': staff.department,
+                'department_display': staff.department_display,
+                'phone_number': staff.phone_number,
+                'email': staff.email,
+                'office_room': staff.office_room,
+                'current_status': staff.current_status,
+                'status_display': staff.get_current_status_display(),
+                'status_message': staff.status_message,
+                'whatsapp_enabled': staff.whatsapp_enabled,
+                'is_active': staff.is_active,
+                'created_at': staff.created_at.isoformat(),
+                'updated_at': staff.updated_at.isoformat(),
+                'statistics': {
+                    'total_visits': total_visits,
+                    'active_visits': active_visits,
+                },
+                'recent_visits': recent_visits_data
+            }
+        })
+        
+    except Staff.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Staff tidak ditemukan'
+        })
+    except Exception as e:
+        logger.error(f"Error getting staff detail {staff_id}: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Terjadi kesalahan sistem: {str(e)}'
+        })
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def bulk_update_staff_status(request):
+    """Bulk update staff status"""
+    try:
+        data = json.loads(request.body)
+        staff_ids = data.get('staff_ids', [])
+        new_status = data.get('status')
+        status_message = data.get('status_message', '')
+        
+        if not staff_ids:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Tidak ada staff yang dipilih'
+            })
+        
+        if not new_status:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Status baru wajib diisi'
+            })
+        
+        # Validate status
+        valid_statuses = [choice[0] for choice in Staff.STATUS_CHOICES]
+        if new_status not in valid_statuses:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Status tidak valid'
+            })
+        
+        # Update staff
+        updated_count = Staff.objects.filter(
+            id__in=staff_ids,
+            is_active=True
+        ).update(
+            current_status=new_status,
+            status_message=status_message.strip() if status_message else None,
+            updated_at=timezone.now()
+        )
+        
+        if updated_count > 0:
+            # Create notification
+            status_display = dict(Staff.STATUS_CHOICES).get(new_status, new_status)
+            try:
+                create_notification(
+                    guest=None,
+                    notification_type='staff_bulk_update',
+                    title='Update Status Staff Massal',
+                    message=f'{updated_count} staff telah diubah statusnya menjadi {status_display}'
+                )
+            except:
+                pass
+            
+            logger.info(f"Bulk status update: {updated_count} staff updated to {new_status}")
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'{updated_count} staff berhasil diperbarui',
+            'updated_count': updated_count
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Data JSON tidak valid'
+        })
+    except Exception as e:
+        logger.error(f"Error bulk updating staff status: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Terjadi kesalahan sistem: {str(e)}'
+        })
+
+# Update the existing get_staff_list function to include more details
+def get_staff_list(request):
+    """API endpoint to get list of staff with enhanced information"""
+    try:
+        # Get query parameters
+        include_inactive = request.GET.get('include_inactive', 'false').lower() == 'true'
+        department = request.GET.get('department', '')
+        status = request.GET.get('status', '')
+        whatsapp_only = request.GET.get('whatsapp_only', 'false').lower() == 'true'
+        
+        # Build query
+        query = Staff.objects.all()
+        
+        if not include_inactive:
+            query = query.filter(is_active=True)
+        
+        if department:
+            query = query.filter(department=department)
+        
+        if status:
+            query = query.filter(current_status=status)
+        
+        if whatsapp_only:
+            query = query.filter(whatsapp_enabled=True)
+        
+        query = query.order_by('department', 'name')
+        
+        staff_list = []
+        for staff in query:
+            # Get visit statistics
+            total_visits = VisitLog.objects.filter(staff_to_meet=staff).count()
+            active_visits = VisitLog.objects.filter(
+                staff_to_meet=staff,
+                check_out_time__isnull=True
+            ).count()
+            
+            staff_data = {
+                'id': staff.id,
+                'name': staff.name,
+                'position': staff.position,
+                'department': staff.department,
+                'department_display': staff.department_display,
+                'current_status': staff.current_status,
+                'status_display': staff.get_current_status_display(),
+                'status_message': staff.status_message,
+                'office_room': staff.office_room,
+                'phone_number': staff.phone_number,
+                'email': staff.email,
+                'photo': staff.photo.url if staff.photo else None,
+                'whatsapp_enabled': staff.whatsapp_enabled,
+                'is_active': staff.is_active,
+                'created_at': staff.created_at.isoformat(),
+                'updated_at': staff.updated_at.isoformat(),
+                'statistics': {
+                    'total_visits': total_visits,
+                    'active_visits': active_visits,
+                }
+            }
+            staff_list.append(staff_data)
+        
+        return JsonResponse({
+            'status': 'success',
+            'data': staff_list,
+            'total_count': len(staff_list),
+            'filters_applied': {
+                'include_inactive': include_inactive,
+                'department': department,
+                'status': status,
+                'whatsapp_only': whatsapp_only
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting staff list: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)

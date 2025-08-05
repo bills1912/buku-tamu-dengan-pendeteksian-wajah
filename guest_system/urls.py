@@ -34,6 +34,11 @@ urlpatterns = [
     # Staff management
     path('api/staff/<int:staff_id>/status/', views.update_staff_status, name='update_staff_status'),
     path('api/staff/<int:staff_id>/test-whatsapp/', views.test_staff_whatsapp, name='test_staff_whatsapp'),
+    path('api/staff/create/', views.create_staff, name='create_staff'),
+    path('api/staff/<int:staff_id>/update/', views.update_staff, name='update_staff'),
+    path('api/staff/<int:staff_id>/delete/', views.delete_staff, name='delete_staff'),
+    path('api/staff/<int:staff_id>/detail/', views.get_staff_detail, name='get_staff_detail'),
+    path('api/staff/bulk-update-status/', views.bulk_update_staff_status, name='bulk_update_staff_status'),
     
     # Health check
     path('health/', views.health_check, name='health_check'),

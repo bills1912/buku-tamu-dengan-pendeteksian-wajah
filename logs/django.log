@@ -27,3 +27,854 @@ INFO 2025-08-05 07:11:09,176 basehttp 43416 30564 "POST /guest-book/ HTTP/1.1" 2
 INFO 2025-08-05 07:11:28,901 basehttp 43416 30564 "GET / HTTP/1.1" 200 24421
 INFO 2025-08-05 07:11:28,999 basehttp 43416 30564 "GET /api/changelog-data/ HTTP/1.1" 200 4021
 INFO 2025-08-05 07:12:01,667 autoreload 43416 53224 C:\xampp\htdocs\buku_tamu_frecog\guest_system\services\whatsapp_service.py changed, reloading.
+INFO 2025-08-05 08:15:12,103 autoreload 39624 51556 Watching for file changes with StatReloader
+INFO 2025-08-05 08:15:17,554 basehttp 39624 46836 "GET / HTTP/1.1" 200 24421
+INFO 2025-08-05 08:15:17,889 basehttp 39624 46836 "GET /api/changelog-data/ HTTP/1.1" 200 4021
+INFO 2025-08-05 08:15:24,722 basehttp 39624 46836 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:15:25,140 basehttp 39624 46836 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:15:25,366 basehttp 39624 46836 "GET /api/dashboard-data/ HTTP/1.1" 200 8673
+INFO 2025-08-05 08:15:27,762 basehttp 39624 46836 "GET /api/get-staff-list/ HTTP/1.1" 200 2447
+INFO 2025-08-05 08:15:39,328 basehttp 39624 46836 "POST /api/staff/5/test-whatsapp/ HTTP/1.1" 200 75
+INFO 2025-08-05 08:15:55,338 basehttp 39624 46836 "GET /api/dashboard-data/ HTTP/1.1" 200 8673
+INFO 2025-08-05 08:16:25,819 basehttp 39624 46836 "GET /api/dashboard-data/ HTTP/1.1" 200 8673
+INFO 2025-08-05 08:16:55,845 basehttp 39624 46836 "GET /api/dashboard-data/ HTTP/1.1" 200 8673
+INFO 2025-08-05 08:17:18,788 autoreload 39624 51556 C:\xampp\htdocs\buku_tamu_frecog\guest_system\urls.py changed, reloading.
+INFO 2025-08-05 08:17:19,628 autoreload 15212 36144 Watching for file changes with StatReloader
+INFO 2025-08-05 08:19:37,886 autoreload 15212 36144 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:19:38,543 autoreload 52596 16768 Watching for file changes with StatReloader
+INFO 2025-08-05 08:20:12,977 autoreload 52596 16768 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:20:13,646 autoreload 51680 1852 Watching for file changes with StatReloader
+INFO 2025-08-05 08:20:17,832 basehttp 51680 33088 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:20:18,332 basehttp 51680 33088 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:20:21,146 basehttp 51680 33088 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:20:21,569 basehttp 51680 33088 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:20:21,569 basehttp 51680 2704 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:20:21,741 basehttp 51680 2704 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+WARNING 2025-08-05 08:20:22,327 log 51680 2704 Not Found: /favicon.ico
+WARNING 2025-08-05 08:20:22,329 basehttp 51680 2704 "GET /favicon.ico HTTP/1.1" 404 6943
+WARNING 2025-08-05 08:20:35,432 log 51680 46944 Not Found: /api/get-staff-list/
+WARNING 2025-08-05 08:20:35,432 basehttp 51680 46944 "GET /api/get-staff-list/ HTTP/1.1" 404 6967
+WARNING 2025-08-05 08:20:40,172 log 51680 46944 Not Found: /api/get-staff-list/
+WARNING 2025-08-05 08:20:40,173 basehttp 51680 46944 "GET /api/get-staff-list/ HTTP/1.1" 404 6967
+WARNING 2025-08-05 08:20:46,439 log 51680 51572 Not Found: /api/get-staff-list/
+WARNING 2025-08-05 08:20:46,441 basehttp 51680 51572 "GET /api/get-staff-list/ HTTP/1.1" 404 6967
+INFO 2025-08-05 08:20:51,834 basehttp 51680 51548 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:21:21,813 basehttp 51680 51548 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:21:29,328 autoreload 51680 1852 C:\xampp\htdocs\buku_tamu_frecog\guest_system\urls.py changed, reloading.
+INFO 2025-08-05 08:21:30,007 autoreload 28360 47392 Watching for file changes with StatReloader
+INFO 2025-08-05 08:21:34,850 basehttp 28360 18036 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:21:37,912 basehttp 28360 18036 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:21:39,300 basehttp 28360 18036 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:21:39,904 basehttp 28360 18036 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:21:39,905 basehttp 28360 49752 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:21:40,414 basehttp 28360 49752 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+WARNING 2025-08-05 08:21:40,846 log 28360 49752 Not Found: /favicon.ico
+WARNING 2025-08-05 08:21:40,848 basehttp 28360 49752 "GET /favicon.ico HTTP/1.1" 404 6116
+INFO 2025-08-05 08:21:42,260 basehttp 28360 49752 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 08:22:10,814 basehttp 28360 49752 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:22:21,881 autoreload 28360 47392 C:\xampp\htdocs\buku_tamu_frecog\guest_system\urls.py changed, reloading.
+INFO 2025-08-05 08:22:22,615 autoreload 47040 42992 Watching for file changes with StatReloader
+INFO 2025-08-05 08:22:40,164 basehttp 47040 20152 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:22:40,581 basehttp 47040 20152 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:22:40,582 basehttp 47040 35876 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:22:40,928 basehttp 47040 35876 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+WARNING 2025-08-05 08:22:42,080 log 47040 2092 Not Found: /favicon.ico
+WARNING 2025-08-05 08:22:42,082 basehttp 47040 2092 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:22:43,124 basehttp 47040 2092 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 08:23:10,916 basehttp 47040 2092 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:23:40,929 basehttp 47040 2092 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:24:10,921 basehttp 47040 2092 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:24:41,828 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:25:11,810 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:25:41,816 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:26:11,814 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8674
+INFO 2025-08-05 08:27:08,430 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:27:10,914 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:27:40,916 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:28:10,927 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:28:40,921 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:29:10,935 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:29:40,929 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:30:11,806 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:30:41,824 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:31:11,814 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:31:41,811 basehttp 47040 38968 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:32:23,291 autoreload 47040 42992 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:32:24,032 autoreload 50544 28524 Watching for file changes with StatReloader
+INFO 2025-08-05 08:32:25,117 basehttp 50544 46872 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:32:27,544 basehttp 50544 46872 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:32:28,796 basehttp 50544 46872 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:32:29,205 basehttp 50544 31228 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:32:29,205 basehttp 50544 46872 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:32:29,355 basehttp 50544 46872 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+WARNING 2025-08-05 08:32:29,909 log 50544 46872 Not Found: /favicon.ico
+WARNING 2025-08-05 08:32:29,910 basehttp 50544 46872 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:32:32,413 basehttp 50544 46872 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 08:32:59,375 basehttp 50544 53196 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:33:29,922 basehttp 50544 53196 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:33:31,977 autoreload 50544 28524 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:33:32,683 autoreload 49324 49696 Watching for file changes with StatReloader
+INFO 2025-08-05 08:34:04,192 autoreload 19968 30644 Watching for file changes with StatReloader
+INFO 2025-08-05 08:34:06,274 basehttp 19968 49664 "GET / HTTP/1.1" 200 24421
+INFO 2025-08-05 08:34:06,691 basehttp 19968 49664 "GET /api/changelog-data/ HTTP/1.1" 200 4021
+INFO 2025-08-05 08:34:10,326 basehttp 19968 37220 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:34:10,572 basehttp 19968 37220 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:34:19,121 basehttp 19968 37220 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 08:34:40,831 basehttp 19968 37220 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:35:10,829 basehttp 19968 24620 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:35:18,005 autoreload 19968 30644 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:35:18,763 autoreload 18596 3720 Watching for file changes with StatReloader
+INFO 2025-08-05 08:35:20,616 basehttp 18596 50252 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:35:30,292 basehttp 18596 50252 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:35:30,843 basehttp 18596 50252 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:35:30,845 basehttp 18596 39348 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:35:31,534 basehttp 18596 39348 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+WARNING 2025-08-05 08:35:31,969 log 18596 39348 Not Found: /favicon.ico
+WARNING 2025-08-05 08:35:31,971 basehttp 18596 39348 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:35:32,884 basehttp 18596 39348 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 08:36:01,819 basehttp 18596 39348 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:36:13,128 autoreload 18596 3720 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:36:14,044 autoreload 11156 45376 Watching for file changes with StatReloader
+INFO 2025-08-05 08:36:31,834 basehttp 11156 34940 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:37:01,814 basehttp 11156 34940 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:37:31,819 basehttp 11156 34940 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:38:01,826 basehttp 11156 34940 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:38:11,372 autoreload 11156 45376 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:38:12,061 autoreload 7388 45476 Watching for file changes with StatReloader
+INFO 2025-08-05 08:38:55,521 autoreload 7388 45476 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:38:56,160 autoreload 46728 42292 Watching for file changes with StatReloader
+INFO 2025-08-05 08:39:01,839 basehttp 46728 31224 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:39:09,854 basehttp 46728 31224 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:39:10,272 basehttp 46728 26900 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:39:10,272 basehttp 46728 31224 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:39:10,756 basehttp 46728 31224 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+WARNING 2025-08-05 08:39:11,044 log 46728 31224 Not Found: /favicon.ico
+WARNING 2025-08-05 08:39:11,047 basehttp 46728 31224 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:39:12,037 basehttp 46728 31224 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 08:39:40,806 basehttp 46728 31224 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:40:10,821 basehttp 46728 31224 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:40:40,808 basehttp 46728 31224 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:41:10,825 basehttp 46728 31224 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:41:40,801 basehttp 46728 31224 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:42:10,816 basehttp 46728 31224 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:42:14,439 autoreload 46728 42292 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:42:15,129 autoreload 27408 52472 Watching for file changes with StatReloader
+INFO 2025-08-05 08:42:19,385 basehttp 27408 40816 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:42:19,841 basehttp 27408 40816 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:42:19,842 basehttp 27408 48356 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:42:20,091 basehttp 27408 48356 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+WARNING 2025-08-05 08:42:20,527 log 27408 48356 Not Found: /favicon.ico
+WARNING 2025-08-05 08:42:20,527 basehttp 27408 48356 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:42:21,220 basehttp 27408 48356 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 08:42:48,968 autoreload 27408 52472 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:42:49,638 autoreload 52004 4588 Watching for file changes with StatReloader
+INFO 2025-08-05 08:42:50,814 basehttp 52004 40644 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:42:51,971 basehttp 52004 40644 "GET /dashboard/ HTTP/1.1" 200 70965
+INFO 2025-08-05 08:42:52,444 basehttp 52004 40644 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:42:52,445 basehttp 52004 51164 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:42:52,700 basehttp 52004 51164 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:42:54,051 basehttp 52004 51164 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+WARNING 2025-08-05 08:42:55,642 log 52004 51164 Not Found: /favicon.ico
+WARNING 2025-08-05 08:42:55,643 basehttp 52004 51164 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:43:22,931 basehttp 52004 51164 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:43:52,821 basehttp 52004 51164 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:44:22,836 basehttp 52004 8508 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:44:29,805 basehttp 52004 8508 "GET /dashboard/ HTTP/1.1" 200 70602
+INFO 2025-08-05 08:44:29,829 basehttp 52004 8508 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:44:29,830 basehttp 52004 48588 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:44:30,550 basehttp 52004 8508 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+WARNING 2025-08-05 08:44:30,939 log 52004 8508 Not Found: /favicon.ico
+WARNING 2025-08-05 08:44:30,940 basehttp 52004 8508 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:44:31,315 basehttp 52004 8508 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+ERROR 2025-08-05 08:44:40,330 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 962, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:44:40,332 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 94510
+ERROR 2025-08-05 08:44:52,637 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 973, in create_staff
+    valid_departments = [choice[0] for choice in Staff.DEPARTMENT_CHOICES]
+AttributeError: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:44:52,639 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 95045
+ERROR 2025-08-05 08:44:53,414 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 973, in create_staff
+    valid_departments = [choice[0] for choice in Staff.DEPARTMENT_CHOICES]
+AttributeError: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:44:53,416 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 95045
+ERROR 2025-08-05 08:44:55,250 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 973, in create_staff
+    valid_departments = [choice[0] for choice in Staff.DEPARTMENT_CHOICES]
+AttributeError: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:44:55,252 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 95045
+INFO 2025-08-05 08:45:00,826 basehttp 52004 8508 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:45:30,568 basehttp 52004 8508 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+ERROR 2025-08-05 08:45:38,547 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 973, in create_staff
+    valid_departments = [choice[0] for choice in Staff.DEPARTMENT_CHOICES]
+AttributeError: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:45:38,550 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 95045
+ERROR 2025-08-05 08:45:39,119 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 973, in create_staff
+    valid_departments = [choice[0] for choice in Staff.DEPARTMENT_CHOICES]
+AttributeError: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:45:39,120 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 95045
+ERROR 2025-08-05 08:45:39,350 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 973, in create_staff
+    valid_departments = [choice[0] for choice in Staff.DEPARTMENT_CHOICES]
+AttributeError: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:45:39,352 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 95045
+ERROR 2025-08-05 08:45:39,485 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 973, in create_staff
+    valid_departments = [choice[0] for choice in Staff.DEPARTMENT_CHOICES]
+AttributeError: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:45:39,487 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 95045
+ERROR 2025-08-05 08:45:39,631 log 52004 8508 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 973, in create_staff
+    valid_departments = [choice[0] for choice in Staff.DEPARTMENT_CHOICES]
+AttributeError: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1056, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:45:39,632 basehttp 52004 8508 "POST /api/staff/create/ HTTP/1.1" 500 95045
+INFO 2025-08-05 08:46:00,813 basehttp 52004 8508 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:46:04,116 autoreload 52004 4588 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:46:04,861 autoreload 45892 47540 Watching for file changes with StatReloader
+INFO 2025-08-05 08:46:20,340 autoreload 45892 47540 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:46:20,976 autoreload 42416 480 Watching for file changes with StatReloader
+INFO 2025-08-05 08:46:23,242 basehttp 42416 51852 "GET /dashboard/ HTTP/1.1" 200 70602
+INFO 2025-08-05 08:46:23,790 basehttp 42416 51852 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:46:23,790 basehttp 42416 30748 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:46:23,974 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+WARNING 2025-08-05 08:46:24,593 log 42416 30748 Not Found: /favicon.ico
+WARNING 2025-08-05 08:46:24,595 basehttp 42416 30748 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:46:26,794 basehttp 42416 30748 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+ERROR 2025-08-05 08:46:36,385 log 42416 30748 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:46:36,387 basehttp 42416 30748 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:46:37,012 log 42416 30748 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:46:37,017 basehttp 42416 30748 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:46:37,171 log 42416 30748 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:46:37,173 basehttp 42416 30748 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:46:37,303 log 42416 30748 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:46:37,305 basehttp 42416 30748 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:46:37,434 log 42416 30748 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:46:37,436 basehttp 42416 30748 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:46:46,126 log 42416 30748 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:46:46,128 basehttp 42416 30748 "POST /api/staff/create/ HTTP/1.1" 500 94145
+INFO 2025-08-05 08:46:54,829 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:47:24,829 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:47:54,814 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:48:06,833 basehttp 42416 30748 "GET /dashboard/ HTTP/1.1" 200 70599
+INFO 2025-08-05 08:48:06,854 basehttp 42416 30748 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:48:06,854 basehttp 42416 51852 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 08:48:07,323 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+WARNING 2025-08-05 08:48:07,708 log 42416 30748 Not Found: /favicon.ico
+WARNING 2025-08-05 08:48:07,709 basehttp 42416 30748 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:48:08,335 basehttp 42416 30748 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+WARNING 2025-08-05 08:48:32,569 log 42416 30748 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-05 08:48:32,569 basehttp 42416 30748 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 7243
+INFO 2025-08-05 08:48:37,310 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:49:07,820 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:49:37,809 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:50:07,816 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:50:37,838 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:51:07,809 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8675
+INFO 2025-08-05 08:51:37,812 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:52:31,915 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:53:31,823 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:54:18,843 basehttp 42416 30748 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:54:19,913 basehttp 42416 30748 "GET /dashboard/ HTTP/1.1" 200 70592
+INFO 2025-08-05 08:54:19,940 basehttp 42416 30748 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 08:54:19,941 basehttp 42416 14888 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+WARNING 2025-08-05 08:54:19,982 log 42416 14888 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-05 08:54:19,984 basehttp 42416 14888 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 7243
+INFO 2025-08-05 08:54:21,081 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+WARNING 2025-08-05 08:54:22,369 log 42416 14888 Not Found: /favicon.ico
+WARNING 2025-08-05 08:54:22,371 basehttp 42416 14888 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 08:54:24,402 basehttp 42416 14888 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+ERROR 2025-08-05 08:54:33,404 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:33,406 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:34,295 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:34,298 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:34,571 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:34,573 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:34,762 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:34,764 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:35,286 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:35,288 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:35,463 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:35,464 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:35,607 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:35,610 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:35,758 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:35,760 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:47,266 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:47,268 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:47,432 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:47,434 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+ERROR 2025-08-05 08:54:47,573 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:54:47,575 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+INFO 2025-08-05 08:54:51,088 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:55:21,805 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:55:51,817 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:56:21,812 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:56:51,804 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+ERROR 2025-08-05 08:56:55,925 log 42416 14888 Internal Server Error: /api/staff/create/
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 961, in create_staff
+    email = data.get('email', '').strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\bilva\anaconda3\envs\buku-tamu-frecog\lib\site-packages\django\views\decorators\http.py", line 43, in inner
+    return func(request, *args, **kwargs)
+  File "C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py", line 1055, in create_staff
+    logger.error(f"Error creating staff: {str(e)}")
+NameError: name 'logger' is not defined
+ERROR 2025-08-05 08:56:55,926 basehttp 42416 14888 "POST /api/staff/create/ HTTP/1.1" 500 94145
+WARNING 2025-08-05 08:56:57,761 log 42416 14888 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-08-05 08:56:57,763 basehttp 42416 14888 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 7243
+INFO 2025-08-05 08:57:21,104 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:57:51,088 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:58:21,840 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:58:51,818 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:59:31,821 basehttp 42416 14888 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 08:59:56,195 autoreload 42416 480 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 08:59:56,895 autoreload 24988 5584 Watching for file changes with StatReloader
+INFO 2025-08-05 09:00:07,438 basehttp 24988 40436 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 09:00:10,056 basehttp 24988 40436 "GET /dashboard/ HTTP/1.1" 200 70592
+INFO 2025-08-05 09:00:10,662 basehttp 24988 40436 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 09:00:10,662 basehttp 24988 42776 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 09:00:10,823 basehttp 24988 42776 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+WARNING 2025-08-05 09:00:11,295 log 24988 42776 Not Found: /favicon.ico
+WARNING 2025-08-05 09:00:11,297 basehttp 24988 42776 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 09:00:11,891 basehttp 24988 42776 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+ERROR 2025-08-05 09:00:23,585 views 24988 42776 Error creating staff: 'NoneType' object has no attribute 'strip'
+INFO 2025-08-05 09:00:23,586 basehttp 24988 42776 "POST /api/staff/create/ HTTP/1.1" 200 102
+ERROR 2025-08-05 09:00:26,912 views 24988 42776 Error creating staff: 'NoneType' object has no attribute 'strip'
+INFO 2025-08-05 09:00:26,913 basehttp 24988 42776 "POST /api/staff/create/ HTTP/1.1" 200 102
+ERROR 2025-08-05 09:00:36,406 views 24988 42776 Error creating staff: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+INFO 2025-08-05 09:00:36,408 basehttp 24988 42776 "POST /api/staff/create/ HTTP/1.1" 200 117
+INFO 2025-08-05 09:00:40,802 basehttp 24988 42776 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+ERROR 2025-08-05 09:00:41,127 views 24988 42776 Error creating staff: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+INFO 2025-08-05 09:00:41,127 basehttp 24988 42776 "POST /api/staff/create/ HTTP/1.1" 200 117
+ERROR 2025-08-05 09:00:46,856 views 24988 42776 Error creating staff: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+INFO 2025-08-05 09:00:46,857 basehttp 24988 42776 "POST /api/staff/create/ HTTP/1.1" 200 117
+ERROR 2025-08-05 09:00:57,377 views 24988 42776 Error creating staff: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+INFO 2025-08-05 09:00:57,378 basehttp 24988 42776 "POST /api/staff/create/ HTTP/1.1" 200 117
+INFO 2025-08-05 09:01:10,819 basehttp 24988 42776 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 09:01:40,833 basehttp 24988 42776 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 09:02:10,814 basehttp 24988 42776 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 09:02:17,544 autoreload 24988 5584 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 09:02:18,257 autoreload 43552 47944 Watching for file changes with StatReloader
+INFO 2025-08-05 09:02:21,841 basehttp 43552 45952 "GET /dashboard/ HTTP/1.1" 200 70592
+INFO 2025-08-05 09:02:22,282 basehttp 43552 45952 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 09:02:22,282 basehttp 43552 37380 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 09:02:22,601 basehttp 43552 37380 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+WARNING 2025-08-05 09:02:23,052 log 43552 37380 Not Found: /favicon.ico
+WARNING 2025-08-05 09:02:23,052 basehttp 43552 37380 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 09:02:23,651 basehttp 43552 37380 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 09:02:52,596 basehttp 43552 37380 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+ERROR 2025-08-05 09:02:56,356 views 43552 37380 Error creating staff: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+INFO 2025-08-05 09:02:56,358 basehttp 43552 37380 "POST /api/staff/create/ HTTP/1.1" 200 117
+ERROR 2025-08-05 09:02:59,389 views 43552 37380 Error creating staff: type object 'Staff' has no attribute 'DEPARTMENT_CHOICES'
+INFO 2025-08-05 09:02:59,390 basehttp 43552 37380 "POST /api/staff/create/ HTTP/1.1" 200 117
+INFO 2025-08-05 09:03:12,333 autoreload 43552 47944 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 09:03:13,098 autoreload 45728 27532 Watching for file changes with StatReloader
+INFO 2025-08-05 09:03:15,556 autoreload 45728 27532 C:\xampp\htdocs\buku_tamu_frecog\guest_system\views.py changed, reloading.
+INFO 2025-08-05 09:03:16,302 autoreload 30768 49616 Watching for file changes with StatReloader
+INFO 2025-08-05 09:03:17,120 basehttp 30768 36756 "GET /dashboard/ HTTP/1.1" 200 70592
+INFO 2025-08-05 09:03:17,585 basehttp 30768 36756 "GET /static/css/style.css HTTP/1.1" 200 10164
+INFO 2025-08-05 09:03:17,691 basehttp 30768 48736 "GET /static/css/dashboard_style.css HTTP/1.1" 200 23799
+INFO 2025-08-05 09:03:17,841 basehttp 30768 48736 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+WARNING 2025-08-05 09:03:18,191 log 30768 48736 Not Found: /favicon.ico
+WARNING 2025-08-05 09:03:18,192 basehttp 30768 48736 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-05 09:03:19,378 basehttp 30768 48736 "GET /api/get-staff-list/ HTTP/1.1" 200 4777
+INFO 2025-08-05 09:03:47,823 basehttp 30768 48736 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 09:04:14,652 views 30768 48736 New staff created: Ashabul Kahfi Sipahutar (ID: 9)
+INFO 2025-08-05 09:04:14,653 basehttp 30768 48736 "POST /api/staff/create/ HTTP/1.1" 200 477
+INFO 2025-08-05 09:04:14,728 basehttp 30768 48736 "GET /api/get-staff-list/ HTTP/1.1" 200 5369
+INFO 2025-08-05 09:04:17,832 basehttp 30768 48736 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+ERROR 2025-08-05 09:04:39,587 views 30768 48736 Error updating staff 9: 'NoneType' object has no attribute 'strip'
+INFO 2025-08-05 09:04:39,588 basehttp 30768 48736 "PUT /api/staff/9/update/ HTTP/1.1" 200 102
+ERROR 2025-08-05 09:04:41,119 views 30768 48736 Error updating staff 9: 'NoneType' object has no attribute 'strip'
+INFO 2025-08-05 09:04:41,120 basehttp 30768 48736 "PUT /api/staff/9/update/ HTTP/1.1" 200 102
+ERROR 2025-08-05 09:04:46,590 views 30768 48736 Error updating staff 9: 'NoneType' object has no attribute 'strip'
+INFO 2025-08-05 09:04:46,591 basehttp 30768 48736 "PUT /api/staff/9/update/ HTTP/1.1" 200 102
+ERROR 2025-08-05 09:04:47,339 views 30768 48736 Error updating staff 9: 'NoneType' object has no attribute 'strip'
+INFO 2025-08-05 09:04:47,340 basehttp 30768 48736 "PUT /api/staff/9/update/ HTTP/1.1" 200 102
+INFO 2025-08-05 09:04:47,822 basehttp 30768 48736 "GET /api/dashboard-data/ HTTP/1.1" 200 8676
+INFO 2025-08-05 09:04:55,776 views 30768 48736 Staff updated: Ashabul Kahfi Sipahutar (ID: 9)
+INFO 2025-08-05 09:04:55,777 basehttp 30768 48736 "PUT /api/staff/9/update/ HTTP/1.1" 200 455
+INFO 2025-08-05 09:04:55,844 basehttp 30768 48736 "GET /api/get-staff-list/ HTTP/1.1" 200 5358
