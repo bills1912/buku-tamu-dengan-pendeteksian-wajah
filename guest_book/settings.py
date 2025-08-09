@@ -79,7 +79,7 @@ WHATSAPP_ENABLED = True
 
 # Fonnte API Configuration
 WHATSAPP_API_URL = 'https://api.fonnte.com/send'
-WHATSAPP_API_TOKEN = 'xn1uCaCcu5pzqHePnRpn'  # Your Fonnte API token
+WHATSAPP_API_TOKEN = 'saJk4PWovXL31HNG6BPo'  # Your Fonnte API token
 
 # WhatsApp Settings
 WHATSAPP_SETTINGS = {
@@ -168,7 +168,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'buku_tamu',
         'USER': 'postgres',
-        'PASSWORD': 'kuran1925',
+        'PASSWORD': 'ThinkVision11',
         'HOST': 'localhost',
         'PORT': '5432',
     }
