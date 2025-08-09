@@ -4709,3 +4709,118 @@ INFO 2025-08-09 17:39:53,526 face_recognition_service 19596 36244 Best similarit
 INFO 2025-08-09 17:39:53,527 face_recognition_service 19596 36244 Face not recognized - below threshold
 INFO 2025-08-09 17:39:53,528 basehttp 19596 36244 "POST /api/process-face/ HTTP/1.1" 200 48025
 >>>>>>> ae451c87cfb0ac18b6273f9aa0daa2668a77ee3b
+INFO 2025-08-09 17:51:34,312 autoreload 4664 9960 Watching for file changes with StatReloader
+INFO 2025-08-09 17:51:57,098 autoreload 12656 2860 Watching for file changes with StatReloader
+INFO 2025-08-09 17:51:59,842 basehttp 12656 1816 "GET / HTTP/1.1" 200 24421
+INFO 2025-08-09 17:52:00,024 basehttp 12656 1816 "GET /static/css/style.css HTTP/1.1" 304 0
+INFO 2025-08-09 17:52:00,106 basehttp 12656 1816 "GET /api/changelog-data/ HTTP/1.1" 200 4021
+WARNING 2025-08-09 17:52:00,123 log 12656 6396 Not Found: /favicon.ico
+WARNING 2025-08-09 17:52:00,123 basehttp 12656 6396 "GET /favicon.ico HTTP/1.1" 404 7132
+INFO 2025-08-09 17:52:01,942 basehttp 12656 9796 "GET /face-recognition/ HTTP/1.1" 200 14201
+INFO 2025-08-09 17:52:08,021 face_recognition_service 12656 6012 NumPy 2.0.2 loaded with legacy compatibility
+INFO 2025-08-09 17:52:08,028 face_recognition_service 12656 6012 OpenCV 4.12.0 loaded successfully
+INFO 2025-08-09 17:52:08,067 face_recognition_service 12656 6012 Face detectors initialized successfully
+INFO 2025-08-09 17:52:08,068 face_recognition_service 12656 6012 Loading known faces from database...
+INFO 2025-08-09 17:52:08,126 face_recognition_service 12656 6012 Loaded 12 known faces successfully
+INFO 2025-08-09 17:52:08,126 face_recognition_service 12656 6012 Simple Face Recognition Service initialized successfully
+INFO 2025-08-09 17:52:08,333 face_recognition_service 12656 6012 Detected 1 faces in frame
+INFO 2025-08-09 17:52:08,563 face_recognition_service 12656 6012 Generated encoding for face at (206, 178, 216, 216)
+INFO 2025-08-09 17:52:08,563 face_recognition_service 12656 6012 Best similarity: -0.008 (threshold: 0.7)
+INFO 2025-08-09 17:52:08,563 face_recognition_service 12656 6012 Face not recognized - below threshold
+INFO 2025-08-09 17:52:08,563 basehttp 12656 6012 "POST /api/process-face/ HTTP/1.1" 200 56202
+INFO 2025-08-09 17:52:18,330 face_recognition_service 12656 1744 Detected 1 faces in frame
+INFO 2025-08-09 17:52:18,365 face_recognition_service 12656 1744 Generated encoding for face at (311, 129, 213, 213)
+INFO 2025-08-09 17:52:18,366 face_recognition_service 12656 1744 Best similarity: -0.008 (threshold: 0.7)
+INFO 2025-08-09 17:52:18,366 face_recognition_service 12656 1744 Face not recognized - below threshold
+INFO 2025-08-09 17:52:18,367 basehttp 12656 1744 "POST /api/process-face/ HTTP/1.1" 200 57758
+INFO 2025-08-09 17:52:42,503 face_recognition_service 12656 16472 Detected 1 faces in frame
+INFO 2025-08-09 17:52:42,531 face_recognition_service 12656 16472 Generated encoding for face at (279, 143, 203, 203)
+INFO 2025-08-09 17:52:42,531 face_recognition_service 12656 16472 Best similarity: -0.009 (threshold: 0.7)
+INFO 2025-08-09 17:52:42,531 face_recognition_service 12656 16472 Face not recognized - below threshold
+INFO 2025-08-09 17:52:42,547 basehttp 12656 16472 "POST /api/process-face/ HTTP/1.1" 200 59347
+INFO 2025-08-09 17:52:56,324 face_recognition_service 12656 11892 Face image saved: face_images/Jonathan_20250809_105256.jpg
+INFO 2025-08-09 17:52:56,388 face_recognition_service 12656 11892 Loading known faces from database...
+INFO 2025-08-09 17:52:56,393 face_recognition_service 12656 11892 Loaded 13 known faces successfully
+INFO 2025-08-09 17:52:56,395 basehttp 12656 11892 "POST /api/register-guest/ HTTP/1.1" 200 72
+INFO 2025-08-09 17:52:58,615 basehttp 12656 11892 "GET /gesture-recognition/?guest_id=16 HTTP/1.1" 200 13959
+INFO 2025-08-09 17:53:01,101 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:01,281 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-09 17:53:01,435 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-09 17:53:01,570 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-09 17:53:01,712 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-09 17:53:01,842 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-09 17:53:01,977 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 109
+INFO 2025-08-09 17:53:02,112 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:02,253 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:02,392 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:02,552 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:02,702 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:02,852 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:03,012 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:03,153 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:03,312 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:03,472 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:03,612 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:03,762 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:03,914 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:04,068 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:04,212 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:04,359 basehttp 12656 11892 "POST /api/process-gesture/ HTTP/1.1" 200 83
+INFO 2025-08-09 17:53:07,466 basehttp 12656 4704 "GET /guest-book/?guest_id=16&purpose=data_service HTTP/1.1" 200 29750
+INFO 2025-08-09 17:53:07,724 basehttp 12656 4704 "GET /media/face_images/Jonathan_20250809_105256.jpg HTTP/1.1" 200 74394
+INFO 2025-08-09 17:53:13,952 basehttp 12656 4036 "POST /guest-book/ HTTP/1.1" 200 84
+INFO 2025-08-09 17:53:15,229 basehttp 12656 11128 "GET / HTTP/1.1" 200 24421
+INFO 2025-08-09 17:53:15,375 basehttp 12656 11128 "GET /api/changelog-data/ HTTP/1.1" 200 4021
+INFO 2025-08-09 17:53:16,670 basehttp 12656 11128 "GET /face-recognition/ HTTP/1.1" 200 14201
+INFO 2025-08-09 17:53:19,107 face_recognition_service 12656 11128 Detected 1 faces in frame
+INFO 2025-08-09 17:53:19,142 face_recognition_service 12656 11128 Generated encoding for face at (270, 120, 204, 204)
+INFO 2025-08-09 17:53:19,142 face_recognition_service 12656 11128 Best similarity: 1.000 (threshold: 0.7)
+INFO 2025-08-09 17:53:19,142 face_recognition_service 12656 11128 Face recognized as: Jonathan (ID: 16)
+INFO 2025-08-09 17:53:19,142 basehttp 12656 11128 "POST /api/process-face/ HTTP/1.1" 200 71
+INFO 2025-08-09 17:53:21,319 basehttp 12656 11128 "GET /gesture-recognition/?guest_id=16 HTTP/1.1" 200 13959
+INFO 2025-08-09 17:53:22,072 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:22,234 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:22,385 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:22,520 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:22,654 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:22,792 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:22,964 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:23,118 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:23,259 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:23,433 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:23,601 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:23,746 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:23,898 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:24,076 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:24,232 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:24,376 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:24,536 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:24,677 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:24,838 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:24,988 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:25,151 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:25,297 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:25,445 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:25,606 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:25,757 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:30,404 face_recognition_service 12656 11128 Detected 1 faces in frame
+INFO 2025-08-09 17:53:30,443 face_recognition_service 12656 11128 Generated encoding for face at (245, 158, 165, 165)
+INFO 2025-08-09 17:53:30,444 face_recognition_service 12656 11128 Best similarity: 0.982 (threshold: 0.7)
+INFO 2025-08-09 17:53:30,444 face_recognition_service 12656 11128 Face recognized as: Jonathan (ID: 16)
+INFO 2025-08-09 17:53:30,445 basehttp 12656 11128 "POST /api/process-face/ HTTP/1.1" 200 71
+INFO 2025-08-09 17:53:32,514 basehttp 12656 11128 "GET /gesture-recognition/?guest_id=16 HTTP/1.1" 200 13959
+INFO 2025-08-09 17:53:33,355 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:33,512 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:33,652 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:33,797 basehttp 12656 11128 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:35,938 face_recognition_service 12656 3908 Detected 1 faces in frame
+INFO 2025-08-09 17:53:35,972 face_recognition_service 12656 3908 Generated encoding for face at (280, 164, 147, 147)
+INFO 2025-08-09 17:53:35,972 face_recognition_service 12656 3908 Best similarity: 0.987 (threshold: 0.7)
+INFO 2025-08-09 17:53:35,972 face_recognition_service 12656 3908 Face recognized as: Jonathan (ID: 16)
+INFO 2025-08-09 17:53:35,972 basehttp 12656 3908 "POST /api/process-face/ HTTP/1.1" 200 71
+INFO 2025-08-09 17:53:38,035 basehttp 12656 3908 "GET /gesture-recognition/?guest_id=16 HTTP/1.1" 200 13959
+INFO 2025-08-09 17:53:38,822 basehttp 12656 3908 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:38,968 basehttp 12656 3908 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:39,123 basehttp 12656 3908 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:39,269 basehttp 12656 3908 "POST /api/process-gesture/ HTTP/1.1" 200 62
+INFO 2025-08-09 17:53:39,405 basehttp 12656 3908 "POST /api/process-gesture/ HTTP/1.1" 200 62
