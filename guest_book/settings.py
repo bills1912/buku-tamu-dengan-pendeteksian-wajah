@@ -214,3 +214,100 @@ CORS_ALLOW_ALL_ORIGINS = True
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Face Recognition Configuration using DeepFace
+FACE_RECOGNITION = {
+    'ENABLED': True,
+    'MODEL': 'Facenet',  # Options: Facenet, Facenet512, VGG-Face, OpenFace, DeepFace, DeepID, ArcFace, Dlib
+    'DISTANCE_METRIC': 'cosine',  # Options: cosine, euclidean, euclidean_l2
+    'THRESHOLD': 0.4,  # Lower = more strict, Higher = more lenient
+    'DETECTOR_BACKEND': 'opencv',  # Options: opencv, ssd, dlib, mtcnn, retinaface
+    'ENFORCE_DETECTION': True,
+    'ALIGN_FACES': True,
+    'NORMALIZATION': 'base',  # Options: base, raw, Facenet, Facenet2018, VGGFace, VGGFace2, ArcFace
+}
+
+# Advanced DeepFace Configuration
+DEEPFACE_CONFIG = {
+    # Model settings
+    'MODELS': {
+        'Facenet': {
+            'threshold': 0.4,
+            'input_shape': (160, 160),
+            'embedding_size': 128,
+        },
+        'Facenet512': {
+            'threshold': 0.3,
+            'input_shape': (160, 160), 
+            'embedding_size': 512,
+        },
+        'VGG-Face': {
+            'threshold': 0.68,
+            'input_shape': (224, 224),
+            'embedding_size': 2622,
+        },
+        'ArcFace': {
+            'threshold': 0.68,
+            'input_shape': (112, 112),
+            'embedding_size': 512,
+        }
+    },
+    
+    # Detection backends
+    'DETECTORS': {
+        'opencv': {'speed': 'fast', 'accuracy': 'medium'},
+        'ssd': {'speed': 'medium', 'accuracy': 'good'},
+        'dlib': {'speed': 'slow', 'accuracy': 'good'},
+        'mtcnn': {'speed': 'slow', 'accuracy': 'excellent'},
+        'retinaface': {'speed': 'slow', 'accuracy': 'excellent'},
+    },
+    
+    # Performance settings
+    'CACHE_MODELS': True,
+    'GPU_MEMORY_LIMIT': None,  # Set to limit GPU memory usage (e.g., 1024 for 1GB)
+    'BATCH_PROCESSING': False,  # Enable for processing multiple faces at once
+    'MAX_FACES_PER_IMAGE': 1,  # Limit faces processed per image
+    
+    # Quality settings
+    'MIN_FACE_SIZE': (30, 30),  # Minimum face size to process
+    'IMAGE_QUALITY': 95,  # JPEG quality for saved images
+    'FACE_CROP_MARGIN': 0.2,  # Margin around detected face when cropping
+    
+    # Logging
+    'LOG_LEVEL': 'INFO',
+    'ENABLE_PERFORMANCE_LOGGING': True,
+}
+
+# TensorFlow Configuration (for DeepFace)
+import os
+os.environ.setdefault('TF_CPP_MIN_LOG_LEVEL', '2')  # Reduce TensorFlow logging
+
+# For GPU usage (if available)
+TENSORFLOW_CONFIG = {
+    'ALLOW_MEMORY_GROWTH': True,  # Don't allocate all GPU memory at once
+    'MEMORY_LIMIT': None,  # Set to limit GPU memory (in MB)
+    'USE_GPU': True,  # Set to False to force CPU usage
+}
+
+# Face Recognition Logging
+LOGGING['loggers']['guest_system.services.face_recognition_service'] = {
+    'handlers': ['console', 'file'],
+    'level': 'DEBUG' if DEBUG else 'INFO',
+    'propagate': False,
+}
+
+# Create logs directory if it doesn't exist
+import os
+from pathlib import Path
+logs_dir = BASE_DIR / 'logs'
+logs_dir.mkdir(exist_ok=True)
+
+# Face images storage settings
+FACE_IMAGES_SETTINGS = {
+    'UPLOAD_PATH': 'face_images/',
+    'MAX_FILE_SIZE': 5 * 1024 * 1024,  # 5MB
+    'ALLOWED_FORMATS': ['JPEG', 'JPG', 'PNG'],
+    'THUMBNAIL_SIZE': (150, 150),
+    'ORIGINAL_SIZE': (512, 512),  # Resize large images for consistency
+    'QUALITY': 95,
+}

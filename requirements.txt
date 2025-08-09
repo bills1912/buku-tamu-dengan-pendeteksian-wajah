@@ -13,3 +13,5 @@ channels-redis
 daphne
 gtts
 pygame
+deepface
+tensorflow
