@@ -1,0 +1,253 @@
+<!-- Staff Management Tab with Fixed Delete Modal -->
+<div id="staff-management-content" class="tab-content" style="display: none">
+  <div class="content-section">
+    <div class="panel-header">
+      <div class="panel-icon">
+        <i class="fas fa-user-cog"></i>
+      </div>
+      <div class="panel-title">
+        <h3>Manajemen Staff</h3>
+        <p>Kelola data pegawai dan konfigurasi WhatsApp</p>
+      </div>
+      <div class="panel-actions">
+        <button class="btn btn-primary" onclick="openAddStaffModal()">
+          <i class="fas fa-plus"></i>
+          Tambah Staff Baru
+        </button>
+      </div>
+    </div>
+
+    <!-- Staff Filter and Search -->
+    <div class="staff-filters">
+      <div class="filter-group">
+        <label for="department-filter">Filter Departemen:</label>
+        <select id="department-filter" onchange="filterStaff()">
+          <option value="">Semua Departemen</option>
+          <option value="kepala_kantor">Kepala Kantor</option>
+          <option value="subbag_umum">Subbag Umum & Kepegawaian</option>
+          <option value="pst">Fungsi PST</option>
+          <option value="ipds">Fungsi IPDS</option>
+          <option value="distribusi">Fungsi Statistik Distribusi</option>
+          <option value="produksi">Fungsi Statistik Produksi</option>
+          <option value="sosial">Fungsi Statistik Sosial</option>
+          <option value="neraca">Fungsi Neraca & Analisis</option>
+          <option value="sekretaris">Sekretaris</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="status-filter">Filter Status:</label>
+        <select id="status-filter" onchange="filterStaff()">
+          <option value="">Semua Status</option>
+          <option value="available">Tersedia</option>
+          <option value="busy">Sedang Sibuk</option>
+          <option value="meeting">Sedang Rapat</option>
+          <option value="out">Sedang Keluar</option>
+          <option value="off">Tidak Masuk</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="whatsapp-filter">Filter WhatsApp:</label>
+        <select id="whatsapp-filter" onchange="filterStaff()">
+          <option value="">Semua</option>
+          <option value="enabled">WhatsApp Aktif</option>
+          <option value="disabled">WhatsApp Nonaktif</option>
+        </select>
+      </div>
+
+      <div class="search-group">
+        <label for="staff-search">Cari Staff:</label>
+        <input
+          type="text"
+          id="staff-search"
+          placeholder="Cari nama atau jabatan..."
+          onkeyup="filterStaff()"
+        />
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <div id="staff-management-list">
+        <!-- Staff list will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Staff Modal for Add/Edit -->
+  <div id="staff-modal" class="modal" style="display: none">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Tambah Staff Baru</h3>
+        <button class="modal-close" onclick="closeStaffModal()">&times;</button>
+      </div>
+
+      <form id="staff-form" onsubmit="saveStaff(event)">
+        <div class="modal-body">
+          <input type="hidden" id="staff-id" name="staff_id" />
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="staff-name">Nama Lengkap *</label>
+              <input type="text" id="staff-name" name="name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-position">Jabatan *</label>
+              <input type="text" id="staff-position" name="position" required />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-department">Departemen/Fungsi *</label>
+              <select id="staff-department" name="department" required>
+                <option value="">Pilih Departemen</option>
+                <option value="kepala_kantor">Kepala Kantor</option>
+                <option value="subbag_umum">Subbag Umum & Kepegawaian</option>
+                <option value="pst">Fungsi PST</option>
+                <option value="ipds">Fungsi IPDS</option>
+                <option value="distribusi">Fungsi Statistik Distribusi</option>
+                <option value="produksi">Fungsi Statistik Produksi</option>
+                <option value="sosial">Fungsi Statistik Sosial</option>
+                <option value="neraca">Fungsi Neraca & Analisis</option>
+                <option value="sekretaris">Sekretaris</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="staff-phone">Nomor Telepon *</label>
+              <input
+                type="tel"
+                id="staff-phone"
+                name="phone_number"
+                required
+                placeholder="08xxxxxxxxxx atau 62xxxxxxxxxx"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-email">Email</label>
+              <input type="email" id="staff-email" name="email" />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-room">Ruang Kantor</label>
+              <input
+                type="text"
+                id="staff-room"
+                name="office_room"
+                placeholder="Ruang PST, Lt. 2, dll"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-status">Status Saat Ini</label>
+              <select id="staff-status" name="current_status">
+                <option value="available">Tersedia</option>
+                <option value="busy">Sedang Sibuk</option>
+                <option value="meeting">Sedang Rapat</option>
+                <option value="out">Sedang Keluar</option>
+                <option value="off">Tidak Masuk</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="staff-status-message">Pesan Status</label>
+              <input
+                type="text"
+                id="staff-status-message"
+                name="status_message"
+                placeholder="Rapat koordinasi, Dinas luar, dll"
+              />
+            </div>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                id="staff-whatsapp"
+                name="whatsapp_enabled"
+                checked
+              />
+              <span class="checkbox-custom"></span>
+              Aktifkan Notifikasi WhatsApp
+            </label>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                id="staff-active"
+                name="is_active"
+                checked
+              />
+              <span class="checkbox-custom"></span>
+              Staff Aktif
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="closeStaffModal()"
+          >
+            <i class="fas fa-times"></i>
+            Batal
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i>
+            <span id="save-btn-text">Simpan</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Staff Delete Modal - ID Unik dan Terpisah -->
+  <div id="staff-delete-modal" class="modal" style="display: none">
+    <div class="modal-content small-modal">
+      <div class="modal-header">
+        <h3>Konfirmasi Hapus Staff</h3>
+        <button class="modal-close" onclick="closeStaffDeleteModal()">
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="delete-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>
+            Apakah Anda yakin ingin menghapus staff
+            <strong id="staff-delete-target-name"></strong>?
+          </p>
+          <p class="warning-text">
+            Staff akan dinonaktifkan dan tidak dapat menggunakan sistem!
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          onclick="closeStaffDeleteModal()"
+        >
+          <i class="fas fa-times"></i>
+          Batal
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          onclick="confirmStaffDelete()"
+          id="confirm-staff-delete-btn"
+        >
+          <i class="fas fa-trash"></i>
+          Hapus Staff
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

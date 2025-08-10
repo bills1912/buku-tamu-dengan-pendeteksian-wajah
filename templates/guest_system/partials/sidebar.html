@@ -1,0 +1,66 @@
+<!-- Sidebar Navigation -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>
+      <div class="icon">
+        <i class="fas fa-tachometer-alt"></i>
+      </div>
+      Smart Guest Book
+    </h2>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-item">
+      <a href="#overview" class="nav-link active" data-tab="overview">
+        <i class="fas fa-chart-pie"></i>
+        <span>Overview</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a href="#guests" class="nav-link" data-tab="guests">
+        <i class="fas fa-users"></i>
+        <span>Data Tamu</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a href="#visits" class="nav-link" data-tab="visits">
+        <i class="fas fa-door-open"></i>
+        <span>Kunjungan</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a href="#notifications" class="nav-link" data-tab="notifications">
+        <i class="fas fa-bell"></i>
+        <span>Notifikasi</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a href="#staff-management" class="nav-link" data-tab="staff-management">
+        <i class="fas fa-user-cog"></i>
+        <span>Staff Management</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a
+        href="#changelog-management"
+        class="nav-link"
+        data-tab="changelog-management"
+      >
+        <i class="fas fa-code-branch"></i>
+        <span>Changelog Management</span>
+      </a>
+    </div>
+
+    <div class="nav-item">
+      <a href="{% url 'guest_system:face_recognition' %}" class="nav-link">
+        <i class="fas fa-camera"></i>
+        <span>Face Recognition</span>
+      </a>
+    </div>
+  </nav>
+</div>

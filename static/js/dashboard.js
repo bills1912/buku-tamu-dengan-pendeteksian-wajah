@@ -4,6 +4,17 @@ let dailyChart = null;
 let purposeChart = null;
 let currentTab = "overview";
 
+// Changelog Management Variables
+let versionsData = [];
+let editingVersionId = null;
+let deleteTarget = null;
+let changelogItemCounter = 0;
+
+// Staff Management Variables
+let staffData = [];
+let filteredStaffData = [];
+let editingStaffId = null;
+
 // CSRF Token for Django
 function getCookie(name) {
     let cookieValue = null;
@@ -12,9 +23,7 @@ function getCookie(name) {
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             if (cookie.substring(0, name.length + 1) === name + "=") {
-                cookieValue = decodeURIComponent(
-                    cookie.substring(name.length + 1)
-                );
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
         }
@@ -51,6 +60,9 @@ document.addEventListener("DOMContentLoaded", function () {
             sidebar.classList.remove("open");
         }
     });
+
+    // Setup keyboard shortcuts
+    setupKeyboardShortcuts();
 });
 
 // Navigation functionality
@@ -76,9 +88,7 @@ function switchTab(tabName) {
     document.querySelectorAll(".nav-link").forEach((link) => {
         link.classList.remove("active");
     });
-    document
-        .querySelector(`[data-tab="${tabName}"]`)
-        .classList.add("active");
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add("active");
 
     // Update content
     document.querySelectorAll(".tab-content").forEach((content) => {
@@ -87,21 +97,25 @@ function switchTab(tabName) {
     document.getElementById(`${tabName}-content`).style.display = "block";
 
     currentTab = tabName;
+
+    // Load specific tab data
+    if (tabName === "changelog-management") {
+        initializeChangelogManagement();
+    } else if (tabName === "staff-management") {
+        initializeStaffManagement();
+    }
 }
 
 // Load dashboard data from Django backend
 async function loadDashboardData() {
     try {
-        const response = await fetch(
-            '{% url "guest_system:dashboard_data" %}',
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-            }
-        );
+        const response = await fetch("/api/dashboard-data/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -156,12 +170,12 @@ function updateRecentActivity() {
         dashboardData.notifications.length === 0
     ) {
         container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-history"></i>
-                        <h3>Belum Ada Aktivitas</h3>
-                        <p>Aktivitas sistem akan muncul di sini</p>
-                    </div>
-                `;
+            <div class="empty-state">
+                <i class="fas fa-history"></i>
+                <h3>Belum Ada Aktivitas</h3>
+                <p>Aktivitas sistem akan muncul di sini</p>
+            </div>
+        `;
         return;
     }
 
@@ -174,15 +188,15 @@ function updateRecentActivity() {
         item.className = "activity-item";
 
         item.innerHTML = `
-                    <div class="activity-icon-small">
-                        <i class="${iconClass}"></i>
-                    </div>
-                    <div class="activity-content">
-                        <h4>${activity.title}</h4>
-                        <p>${activity.message}</p>
-                        <div class="activity-time">${activity.time_ago}</div>
-                    </div>
-                `;
+            <div class="activity-icon-small">
+                <i class="${iconClass}"></i>
+            </div>
+            <div class="activity-content">
+                <h4>${activity.title}</h4>
+                <p>${activity.message}</p>
+                <div class="activity-time">${activity.time_ago}</div>
+            </div>
+        `;
 
         container.appendChild(item);
     });
@@ -198,12 +212,12 @@ function updateGuestsList() {
         dashboardData.recent_guests.length === 0
     ) {
         container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <h3>Belum Ada Tamu</h3>
-                        <p>Tamu yang terdaftar akan muncul di sini</p>
-                    </div>
-                `;
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <h3>Belum Ada Tamu</h3>
+                <p>Tamu yang terdaftar akan muncul di sini</p>
+            </div>
+        `;
         return;
     }
 
@@ -219,40 +233,40 @@ function updateGuestsList() {
         const statusClass = `status-${guest.status.replace("_", "-")}`;
 
         card.innerHTML = `
-                    <div class="guest-header">
-                        <div class="guest-avatar">
-                            ${guest.face_image_url
+            <div class="guest-header">
+                <div class="guest-avatar">
+                    ${guest.face_image_url
                 ? `<img src="${guest.face_image_url}" alt="${guest.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
                 : initials
             }
-                        </div>
-                        <div class="guest-info">
-                            <h4>${guest.name}</h4>
-                            <p>${guest.company || "Tidak ada perusahaan"}</p>
-                        </div>
-                    </div>
-                    <div class="guest-meta">
-                        <div class="guest-time">Terdaftar: ${guest.registration_time
+                </div>
+                <div class="guest-info">
+                    <h4>${guest.name}</h4>
+                    <p>${guest.company || "Tidak ada perusahaan"}</p>
+                </div>
+            </div>
+            <div class="guest-meta">
+                <div class="guest-time">Terdaftar: ${guest.registration_time
             }</div>
-                        <div class="status-badge ${statusClass}">
-                            ${guest.status_info.text}
-                        </div>
-                    </div>
-                    <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
-                        ${guest.status === "pending_guestbook"
+                <div class="status-badge ${statusClass}">
+                    ${guest.status_info.text}
+                </div>
+            </div>
+            <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                ${guest.status === "pending_guestbook"
                 ? `<button class="btn btn-warning" onclick="sendReminder(${guest.id})">
-                                <i class="fas fa-bell"></i> Kirim Pengingat
-                            </button>`
+                            <i class="fas fa-bell"></i> Kirim Pengingat
+                        </button>`
                 : ""
             }
-                        ${guest.status === "active_visit"
+                ${guest.status === "active_visit"
                 ? `<button class="btn btn-danger" onclick="checkoutGuest(${guest.id})">
-                                <i class="fas fa-sign-out-alt"></i> Check Out
-                            </button>`
+                            <i class="fas fa-sign-out-alt"></i> Check Out
+                        </button>`
                 : ""
             }
-                    </div>
-                `;
+            </div>
+        `;
 
         container.appendChild(card);
     });
@@ -268,12 +282,12 @@ function updateActiveVisits() {
         dashboardData.active_visits.length === 0
     ) {
         container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-door-open"></i>
-                        <h3>Tidak Ada Kunjungan Aktif</h3>
-                        <p>Kunjungan yang sedang berlangsung akan muncul di sini</p>
-                    </div>
-                `;
+            <div class="empty-state">
+                <i class="fas fa-door-open"></i>
+                <h3>Tidak Ada Kunjungan Aktif</h3>
+                <p>Kunjungan yang sedang berlangsung akan muncul di sini</p>
+            </div>
+        `;
         return;
     }
 
@@ -286,34 +300,33 @@ function updateActiveVisits() {
 
         const item = document.createElement("div");
         item.className = "guest-card";
-        item.style.borderLeft = `4px solid ${urgencyColor[visit.urgency_level]
-            }`;
+        item.style.borderLeft = `4px solid ${urgencyColor[visit.urgency_level]}`;
 
         item.innerHTML = `
-                    <div class="guest-header">
-                        <div class="guest-avatar">
-                            ${visit.guest_name
+            <div class="guest-header">
+                <div class="guest-avatar">
+                    ${visit.guest_name
                 .split(" ")
                 .map((n) => n[0])
                 .join("")
                 .substring(0, 2)}
-                        </div>
-                        <div class="guest-info">
-                            <h4>${visit.guest_name}</h4>
-                            <p>${visit.purpose}</p>
-                        </div>
-                    </div>
-                    <div class="guest-meta">
-                        <div class="guest-time">
-                            Check-in: ${visit.check_in_time} | Durasi: ${visit.duration_minutes
+                </div>
+                <div class="guest-info">
+                    <h4>${visit.guest_name}</h4>
+                    <p>${visit.purpose}</p>
+                </div>
+            </div>
+            <div class="guest-meta">
+                <div class="guest-time">
+                    Check-in: ${visit.check_in_time} | Durasi: ${visit.duration_minutes
             } menit
-                        </div>
-                        <div class="status-badge ${visit.is_overdue ? "status-pending" : "status-active"
+                </div>
+                <div class="status-badge ${visit.is_overdue ? "status-pending" : "status-active"
             }">
-                            ${visit.is_overdue ? "Terlambat" : "Aktif"}
-                        </div>
-                    </div>
-                `;
+                    ${visit.is_overdue ? "Terlambat" : "Aktif"}
+                </div>
+            </div>
+        `;
 
         container.appendChild(item);
     });
@@ -329,12 +342,12 @@ function updateNotifications() {
         dashboardData.notifications.length === 0
     ) {
         container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-bell"></i>
-                        <h3>Tidak Ada Notifikasi</h3>
-                        <p>Notifikasi sistem akan muncul di sini</p>
-                    </div>
-                `;
+            <div class="empty-state">
+                <i class="fas fa-bell"></i>
+                <h3>Tidak Ada Notifikasi</h3>
+                <p>Notifikasi sistem akan muncul di sini</p>
+            </div>
+        `;
         return;
     }
 
@@ -349,21 +362,18 @@ function updateNotifications() {
         item.onclick = () => markNotificationRead(notification.id);
 
         item.innerHTML = `
-                    <div class="activity-icon-small" style="background: ${isUrgent ? "#ef4444" : "#3b82f6"
+            <div class="activity-icon-small" style="background: ${isUrgent ? "#ef4444" : "#3b82f6"
             }">
-                        <i class="${iconClass}"></i>
-                    </div>
-                    <div class="activity-content">
-                        <h4>${notification.title} ${!notification.is_read
-                ? '<span style="color: #ef4444;">●</span>'
-                : ""
+                <i class="${iconClass}"></i>
+            </div>
+            <div class="activity-content">
+                <h4>${notification.title} ${!notification.is_read ? '<span style="color: #ef4444;">●</span>' : ""
             }</h4>
-                        <p><strong>${notification.guest_name}:</strong> ${notification.message
+                <p><strong>${notification.guest_name}:</strong> ${notification.message
             }</p>
-                        <div class="activity-time">${notification.time_ago
-            }</div>
-                    </div>
-                `;
+                <div class="activity-time">${notification.time_ago}</div>
+            </div>
+        `;
 
         container.appendChild(item);
     });
@@ -372,9 +382,7 @@ function updateNotifications() {
 // Initialize charts
 function initializeCharts() {
     // Daily registrations chart
-    const dailyCtx = document
-        .getElementById("daily-chart")
-        .getContext("2d");
+    const dailyCtx = document.getElementById("daily-chart").getContext("2d");
     dailyChart = new Chart(dailyCtx, {
         type: "line",
         data: {
@@ -480,8 +488,9 @@ function updateCharts() {
         purposeChart.data.labels = dashboardData.purpose_breakdown.map(
             (stat) => stat.purpose_display
         );
-        purposeChart.data.datasets[0].data =
-            dashboardData.purpose_breakdown.map((stat) => stat.count);
+        purposeChart.data.datasets[0].data = dashboardData.purpose_breakdown.map(
+            (stat) => stat.count
+        );
         purposeChart.update();
     }
 }
@@ -506,6 +515,51 @@ function updateLastUpdateTime() {
         second: "2-digit",
     });
     document.getElementById("last-update-time").textContent = timeString;
+}
+
+// Keyboard shortcuts
+function setupKeyboardShortcuts() {
+    document.addEventListener("keydown", function (e) {
+        // Ctrl/Cmd + R to refresh
+        if ((e.ctrlKey || e.metaKey) && e.key === "r") {
+            e.preventDefault();
+            refreshDashboard();
+        }
+
+        // Number keys 1-6 to switch tabs
+        if (
+            e.key >= "1" &&
+            e.key <= "6" &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey
+        ) {
+            const tabNames = [
+                "overview",
+                "guests",
+                "visits",
+                "notifications",
+                "staff-management",
+                "changelog-management",
+            ];
+            const tabIndex = parseInt(e.key) - 1;
+            if (tabNames[tabIndex]) {
+                switchTab(tabNames[tabIndex]);
+            }
+        }
+
+        // Escape key to close sidebar on mobile
+        if (e.key === "Escape" && window.innerWidth <= 1024) {
+            document.getElementById("sidebar").classList.remove("open");
+        }
+
+        // Close modals with Escape key
+        if (e.key === "Escape") {
+            closeStaffModal();
+            closeVersionModal();
+            closeDeleteModal();
+        }
+    });
 }
 
 // Action functions
@@ -603,12 +657,17 @@ async function refreshDashboard() {
     const refreshBtn = document.querySelector(".refresh-btn");
     const originalHTML = refreshBtn.innerHTML;
 
-    refreshBtn.innerHTML =
-        '<div class="loading"></div> <span>Memuat...</span>';
+    refreshBtn.innerHTML = '<div class="loading"></div> <span>Memuat...</span>';
     refreshBtn.disabled = true;
 
     try {
         await loadDashboardData();
+        if (currentTab === "changelog-management") {
+            await loadVersionsData();
+        }
+        if (currentTab === "staff-management") {
+            await loadStaffData();
+        }
         showToast("Dashboard berhasil diperbarui!", "success");
     } catch (error) {
         showToast("Gagal memperbarui dashboard: " + error.message, "error");
@@ -630,12 +689,12 @@ function showToast(message, type = "success") {
         type === "success" ? "fa-check-circle" : "fa-exclamation-circle";
 
     toast.innerHTML = `
-                <i class="fas ${iconClass}"></i>
-                <span>${message}</span>
-                <button onclick="this.parentElement.remove()" style="background: none; border: none; color: inherit; margin-left: auto; cursor: pointer;">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
+        <i class="fas ${iconClass}"></i>
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: inherit; margin-left: auto; cursor: pointer;">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
 
     document.body.appendChild(toast);
 
@@ -647,39 +706,1049 @@ function showToast(message, type = "success") {
     }, 4000);
 }
 
-// Keyboard shortcuts
-document.addEventListener("keydown", function (e) {
-    // Ctrl/Cmd + R to refresh
-    if ((e.ctrlKey || e.metaKey) && e.key === "r") {
-        e.preventDefault();
-        refreshDashboard();
+// STAFF MANAGEMENT FUNCTIONS
+async function initializeStaffManagement() {
+    if (staffData.length === 0) {
+        await loadStaffData();
+    }
+}
+
+async function loadStaffData() {
+    try {
+        const response = await fetch("/api/get-staff-list/", {
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            staffData = result.data;
+            filteredStaffData = [...staffData];
+            renderStaffList();
+        } else {
+            throw new Error(result.message || "Failed to load staff data");
+        }
+    } catch (error) {
+        console.error("Error loading staff data:", error);
+        showToast("Gagal memuat data staff: " + error.message, "error");
+    }
+}
+
+function renderStaffList() {
+    const container = document.getElementById("staff-management-list");
+
+    if (!filteredStaffData || filteredStaffData.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <h3>Tidak Ada Staff</h3>
+                <p>Belum ada data staff yang sesuai dengan filter yang diterapkan</p>
+            </div>
+        `;
+        return;
     }
 
-    // Number keys 1-4 to switch tabs
-    if (
-        e.key >= "1" &&
-        e.key <= "4" &&
-        !e.ctrlKey &&
-        !e.metaKey &&
-        !e.altKey
-    ) {
-        const tabNames = ["overview", "guests", "visits", "notifications"];
-        const tabIndex = parseInt(e.key) - 1;
-        if (tabNames[tabIndex]) {
-            switchTab(tabNames[tabIndex]);
+    const staffGrid = document.createElement("div");
+    staffGrid.className = "staff-grid";
+
+    filteredStaffData.forEach((staff) => {
+        const card = createStaffCard(staff);
+        staffGrid.appendChild(card);
+    });
+
+    container.innerHTML = "";
+    container.appendChild(staffGrid);
+}
+
+function createStaffCard(staff) {
+    const initials = staff.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .substring(0, 2);
+    const statusText = getStatusText(staff.current_status);
+    const departmentText = getDepartmentText(staff.department);
+
+    const card = document.createElement("div");
+    card.className = `staff-management-card ${staff.current_status}`;
+    card.dataset.staffId = staff.id;
+
+    card.innerHTML = `
+        <div class="staff-card-header">
+            <div class="staff-avatar-large">
+                ${staff.photo
+            ? `<img src="${staff.photo}" alt="${staff.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;">`
+            : initials
+        }
+            </div>
+            <div class="staff-main-info">
+                <h4>${staff.name}</h4>
+                <div class="position">${staff.position}</div>
+                <div class="department">${departmentText}</div>
+            </div>
+        </div>
+        
+        <div class="staff-details">
+            <div class="detail-row">
+                <i class="fas fa-phone"></i>
+                <span>${staff.phone_number}</span>
+            </div>
+            ${staff.email
+            ? `
+                <div class="detail-row">
+                    <i class="fas fa-envelope"></i>
+                    <span>${staff.email}</span>
+                </div>
+            `
+            : ""
+        }
+            ${staff.office_room
+            ? `
+                <div class="detail-row">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${staff.office_room}</span>
+                </div>
+            `
+            : ""
+        }
+        </div>
+        
+        <div class="status-row">
+            <div class="current-status">
+                <span class="status-dot ${staff.current_status}"></span>
+                <span>${statusText}</span>
+                ${staff.status_message
+            ? `<span class="status-message">- ${staff.status_message}</span>`
+            : ""
+        }
+            </div>
+            <div class="whatsapp-badge ${staff.whatsapp_enabled ? "enabled" : "disabled"
+        }">
+                <i class="fab fa-whatsapp"></i>
+                <span>${staff.whatsapp_enabled ? "Aktif" : "Nonaktif"}</span>
+            </div>
+        </div>
+        
+        <div class="staff-actions">
+            ${staff.whatsapp_enabled
+            ? `
+                <button class="btn-icon btn-whatsapp" onclick="testWhatsApp(${staff.id})" title="Test WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+            `
+            : ""
+        }
+            <button class="btn-icon btn-edit" onclick="editStaff(${staff.id
+        })" title="Edit Staff">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon btn-delete" onclick="deleteStaff(${staff.id
+        })" title="Hapus Staff">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+
+    return card;
+}
+
+function getStatusText(status) {
+    const statusMap = {
+        available: "Tersedia",
+        busy: "Sedang Sibuk",
+        meeting: "Sedang Rapat",
+        out: "Sedang Keluar",
+        off: "Tidak Masuk",
+    };
+    return statusMap[status] || status;
+}
+
+function getDepartmentText(department) {
+    const departmentMap = {
+        kepala_kantor: "Kepala Kantor",
+        subbag_umum: "Subbag Umum & Kepegawaian",
+        pst: "Fungsi PST",
+        ipds: "Fungsi IPDS",
+        distribusi: "Fungsi Statistik Distribusi",
+        produksi: "Fungsi Statistik Produksi",
+        sosial: "Fungsi Statistik Sosial",
+        neraca: "Fungsi Neraca & Analisis",
+        sekretaris: "Sekretaris",
+    };
+    return departmentMap[department] || department;
+}
+
+function filterStaff() {
+    const departmentFilter = document.getElementById("department-filter").value;
+    const statusFilter = document.getElementById("status-filter").value;
+    const whatsappFilter = document.getElementById("whatsapp-filter").value;
+    const searchTerm = document
+        .getElementById("staff-search")
+        .value.toLowerCase()
+        .trim();
+
+    filteredStaffData = staffData.filter((staff) => {
+        const matchDepartment =
+            !departmentFilter || staff.department === departmentFilter;
+        const matchStatus =
+            !statusFilter || staff.current_status === statusFilter;
+        const matchWhatsApp =
+            !whatsappFilter ||
+            (whatsappFilter === "enabled" && staff.whatsapp_enabled) ||
+            (whatsappFilter === "disabled" && !staff.whatsapp_enabled);
+        const matchSearch =
+            !searchTerm ||
+            staff.name.toLowerCase().includes(searchTerm) ||
+            staff.position.toLowerCase().includes(searchTerm) ||
+            staff.email?.toLowerCase().includes(searchTerm) ||
+            staff.office_room?.toLowerCase().includes(searchTerm);
+
+        return matchDepartment && matchStatus && matchWhatsApp && matchSearch;
+    });
+
+    renderStaffList();
+}
+
+function openAddStaffModal() {
+    editingStaffId = null;
+    document.getElementById("modal-title").textContent = "Tambah Staff Baru";
+    document.getElementById("save-btn-text").textContent = "Simpan";
+
+    const form = document.getElementById("staff-form");
+    form.reset();
+
+    document.getElementById("staff-status").value = "available";
+    document.getElementById("staff-whatsapp").checked = true;
+    document.getElementById("staff-active").checked = true;
+
+    document.getElementById("staff-modal").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("staff-name").focus();
+    }, 100);
+}
+
+function editStaff(staffId) {
+    const staff = staffData.find((s) => s.id === staffId);
+    if (!staff) return;
+
+    editingStaffId = staffId;
+    document.getElementById(
+        "modal-title"
+    ).textContent = `Edit Staff: ${staff.name}`;
+    document.getElementById("save-btn-text").textContent = "Update";
+
+    // Populate form
+    document.getElementById("staff-id").value = staff.id;
+    document.getElementById("staff-name").value = staff.name || "";
+    document.getElementById("staff-position").value = staff.position || "";
+    document.getElementById("staff-department").value = staff.department || "";
+    document.getElementById("staff-phone").value = staff.phone_number || "";
+    document.getElementById("staff-email").value = staff.email || "";
+    document.getElementById("staff-room").value = staff.office_room || "";
+    document.getElementById("staff-status").value =
+        staff.current_status || "available";
+    document.getElementById("staff-status-message").value =
+        staff.status_message || "";
+    document.getElementById("staff-whatsapp").checked = staff.whatsapp_enabled;
+    document.getElementById("staff-active").checked = staff.is_active;
+
+    document.getElementById("staff-modal").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("staff-name").focus();
+        document.getElementById("staff-name").select();
+    }, 100);
+}
+
+function closeStaffModal() {
+    const modal = document.getElementById("staff-modal");
+    modal.style.display = "none";
+    editingStaffId = null;
+}
+
+function deleteStaff(staffId) {
+    const staff = staffData.find((s) => s.id === staffId);
+    if (!staff) return;
+
+    deleteTarget = { type: "staff", id: staffId, name: staff.name };
+    document.getElementById("delete-target-type").textContent = "staff";
+    document.getElementById("delete-target-name").textContent = staff.name;
+    document.getElementById("delete-modal").style.display = "flex";
+}
+
+async function saveStaff(event) {
+    event.preventDefault();
+
+    const saveBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = saveBtn.innerHTML;
+
+    saveBtn.innerHTML = '<div class="loading"></div> <span>Menyimpan...</span>';
+    saveBtn.disabled = true;
+
+    const formData = new FormData(event.target);
+
+    // Validation
+    const validationErrors = [];
+    const name = formData.get("name").trim();
+    if (!name) validationErrors.push("Nama wajib diisi");
+
+    const phone = formData.get("phone_number").trim();
+    const phoneRegex = /^(\+62|62|0)[0-9]{8,12}$/;
+    if (!phone) {
+        validationErrors.push("Nomor telepon wajib diisi");
+    } else if (!phoneRegex.test(phone)) {
+        validationErrors.push("Format nomor telepon tidak valid");
+    }
+
+    if (validationErrors.length > 0) {
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+        showToast("Validasi gagal: " + validationErrors.join(", "), "error");
+        return;
+    }
+
+    const staffDataPayload = {
+        name: name,
+        position: formData.get("position").trim(),
+        department: formData.get("department"),
+        phone_number: phone,
+        email: formData.get("email").trim() || null,
+        office_room: formData.get("office_room").trim() || null,
+        current_status: formData.get("current_status"),
+        status_message: formData.get("status_message").trim() || null,
+        whatsapp_enabled: formData.get("whatsapp_enabled") === "on",
+        is_active: formData.get("is_active") === "on",
+    };
+
+    try {
+        let url, method;
+        if (editingStaffId) {
+            url = `/api/staff/${editingStaffId}/update/`;
+            method = "PUT";
+            staffDataPayload.id = editingStaffId;
+        } else {
+            url = "/api/staff/create/";
+            method = "POST";
+        }
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify(staffDataPayload),
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            showToast(
+                editingStaffId
+                    ? `Data ${staffDataPayload.name} berhasil diperbarui!`
+                    : `Staff ${staffDataPayload.name} berhasil ditambahkan!`,
+                "success"
+            );
+
+            closeStaffModal();
+            await loadStaffData();
+        } else {
+            throw new Error(result.message || "Gagal menyimpan data staff");
+        }
+    } catch (error) {
+        console.error("Error saving staff:", error);
+        showToast("Gagal menyimpan data staff: " + error.message, "error");
+    } finally {
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+    }
+}
+
+async function testWhatsApp(staffId) {
+    const staff = staffData.find((s) => s.id === staffId);
+    if (!staff) return;
+
+    const whatsappBtn = document.querySelector(
+        `[data-staff-id="${staffId}"] .btn-whatsapp`
+    );
+    const originalContent = whatsappBtn.innerHTML;
+
+    whatsappBtn.innerHTML = '<div class="loading"></div>';
+    whatsappBtn.disabled = true;
+
+    try {
+        showToast(`Mengirim test WhatsApp ke ${staff.name}...`, "info");
+
+        const response = await fetch(`/api/staff/${staffId}/test-whatsapp/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            showToast(
+                `✅ Test WhatsApp berhasil dikirim ke ${staff.name}!`,
+                "success"
+            );
+        } else {
+            throw new Error(result.message || "Gagal mengirim test WhatsApp");
+        }
+    } catch (error) {
+        console.error("Error testing WhatsApp:", error);
+        showToast(`❌ Gagal mengirim test WhatsApp: ${error.message}`, "error");
+    } finally {
+        whatsappBtn.innerHTML = originalContent;
+        whatsappBtn.disabled = false;
+    }
+}
+
+// CHANGELOG MANAGEMENT FUNCTIONS
+async function initializeChangelogManagement() {
+    if (versionsData.length === 0) {
+        await loadVersionsData();
+    }
+}
+
+async function loadVersionsData() {
+    try {
+        const response = await fetch('{% url "guest_system:changelog_data" %}', {
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            versionsData = result.data.versions || [];
+            updateCurrentVersionInfo(result.data.current_version);
+            renderVersionsList();
+        } else {
+            throw new Error(result.message || "Failed to load versions data");
+        }
+    } catch (error) {
+        console.error("Error loading versions data:", error);
+        showToast("Gagal memuat data versi: " + error.message, "error");
+    }
+}
+
+function updateCurrentVersionInfo(currentVersion) {
+    if (currentVersion) {
+        document.getElementById(
+            "current-version-number"
+        ).textContent = `v${currentVersion.version_number}`;
+        document.getElementById("current-version-title").textContent =
+            currentVersion.title;
+        document.getElementById("current-version-description").textContent =
+            currentVersion.description || "Tidak ada deskripsi";
+    }
+}
+
+function renderVersionsList() {
+    const container = document.getElementById("changelog-versions-list");
+    container.innerHTML = "";
+
+    if (!versionsData || versionsData.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-code-branch"></i>
+                <h3>Belum Ada Versi</h3>
+                <p>Versi aplikasi akan muncul di sini setelah ditambahkan</p>
+            </div>
+        `;
+        return;
+    }
+
+    versionsData.forEach((version) => {
+        const versionCard = createVersionCard(version);
+        container.appendChild(versionCard);
+    });
+}
+
+function createVersionCard(version) {
+    const card = document.createElement("div");
+    card.className = `version-card ${version.is_current ? "" : "past-version"}`;
+
+    const releaseDate = new Date(version.release_date);
+    const formattedDate = releaseDate.toLocaleDateString("id-ID", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+
+    let changelogHtml = "";
+    if (version.changelog_items && version.changelog_items.length > 0) {
+        const itemsByType = {};
+        version.changelog_items.forEach((item) => {
+            if (!itemsByType[item.item_type]) {
+                itemsByType[item.item_type] = [];
+            }
+            itemsByType[item.item_type].push(item);
+        });
+
+        const typeOrder = ["new", "improvement", "fix", "security", "breaking"];
+        const typeLabels = {
+            new: "Fitur Baru",
+            improvement: "Peningkatan",
+            fix: "Perbaikan Bug",
+            security: "Keamanan",
+            breaking: "Perubahan Breaking",
+        };
+
+        typeOrder.forEach((type) => {
+            if (itemsByType[type] && itemsByType[type].length > 0) {
+                const items = itemsByType[type];
+                const itemsHtml = items
+                    .map(
+                        (item) => `
+                    <div class="changelog-item ${item.is_highlighted ? "highlighted" : ""
+                            }">
+                        <div class="item-icon ${item.item_type}">
+                            <i class="${getItemIcon(item.item_type)}"></i>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">${item.title}</div>
+                            <div class="item-description">${item.description
+                            }</div>
+                        </div>
+                    </div>
+                `
+                    )
+                    .join("");
+
+                changelogHtml += `
+                    <div class="changelog-section">
+                        <div class="section-title">
+                            <i class="${getTypeIcon(type)}"></i>
+                            ${typeLabels[type]} (${items.length})
+                        </div>
+                        <div class="changelog-list">
+                            ${itemsHtml}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    card.innerHTML = `
+        <div class="version-header">
+            <div class="version-info">
+                <div class="version-main">
+                    <div class="version-icon">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                    <div class="version-details">
+                        <h3>
+                            Version ${version.version_number}
+                            ${version.is_current
+            ? '<i class="fas fa-star" style="color: #10b981;"></i>'
+            : ""
+        }
+                        </h3>
+                        <div class="version-title">${version.title}</div>
+                    </div>
+                </div>
+                <div class="version-meta">
+                    <div class="version-date">${formattedDate}</div>
+                    <div class="version-status ${version.is_current ? "current" : "previous"
+        }">
+                        <i class="fas ${version.is_current ? "fa-check-circle" : "fa-history"
+        }"></i>
+                        ${version.is_current ? "Current" : "Previous"}
+                    </div>
+                </div>
+            </div>
+            <div class="version-actions">
+                ${!version.is_current
+            ? `
+                    <button class="btn-icon btn-edit" onclick="editVersion(${version.id})" title="Edit Version">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon btn-delete" onclick="deleteVersion(${version.id})" title="Hapus Version">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `
+            : `
+                    <button class="btn-icon btn-edit" onclick="editVersion(${version.id})" title="Edit Version">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                `
+        }
+            </div>
+        </div>
+        ${version.description
+            ? `
+            <div class="version-description">
+                <p>${version.description}</p>
+            </div>
+        `
+            : ""
+        }
+        ${changelogHtml
+            ? `
+            <div class="changelog-items">
+                ${changelogHtml}
+            </div>
+        `
+            : ""
+        }
+    `;
+
+    return card;
+}
+
+function getItemIcon(itemType) {
+    const icons = {
+        new: "fas fa-plus",
+        improvement: "fas fa-arrow-up",
+        fix: "fas fa-wrench",
+        security: "fas fa-shield-alt",
+        breaking: "fas fa-exclamation-triangle",
+    };
+    return icons[itemType] || "fas fa-circle";
+}
+
+function getTypeIcon(type) {
+    const icons = {
+        new: "fas fa-plus",
+        improvement: "fas fa-arrow-up",
+        fix: "fas fa-wrench",
+        security: "fas fa-shield-alt",
+        breaking: "fas fa-exclamation-triangle",
+    };
+    return icons[type] || "fas fa-circle";
+}
+
+function openAddVersionModal() {
+    editingVersionId = null;
+    document.getElementById("version-modal-title").textContent =
+        "Tambah Versi Baru";
+    document.getElementById("version-save-btn-text").textContent =
+        "Simpan Versi";
+
+    const form = document.getElementById("version-form");
+    form.reset();
+
+    document.getElementById("version-current").checked = true;
+
+    // Clear dan reset changelog items
+    const container = document.getElementById("changelog-items-container");
+    container.innerHTML = "";
+    changelogItemCounter = 0;
+
+    // Add default changelog item
+    addChangelogItem();
+
+    // Show modal
+    const modal = document.getElementById("version-modal");
+    modal.style.display = "flex";
+
+    // Reset scroll position
+    const modalBody = modal.querySelector(".modal-body");
+    if (modalBody) {
+        modalBody.scrollTop = 0;
+    }
+
+    // Focus on version number input
+    setTimeout(() => {
+        document.getElementById("version-number").focus();
+    }, 100);
+}
+
+function editVersion(versionId) {
+    const version = versionsData.find((v) => v.id === versionId);
+    if (!version) return;
+
+    editingVersionId = versionId;
+    document.getElementById(
+        "version-modal-title"
+    ).textContent = `Edit Version ${version.version_number}`;
+    document.getElementById("version-save-btn-text").textContent =
+        "Update Versi";
+
+    document.getElementById("version-id").value = version.id;
+    document.getElementById("version-number").value = version.version_number;
+    document.getElementById("version-title").value = version.title;
+    document.getElementById("version-description").value =
+        version.description || "";
+    document.getElementById("version-current").checked = version.is_current;
+
+    document.getElementById("changelog-items-container").innerHTML = "";
+    changelogItemCounter = 0;
+
+    if (version.changelog_items && version.changelog_items.length > 0) {
+        version.changelog_items.forEach((item) => {
+            addChangelogItem(item);
+        });
+    } else {
+        addChangelogItem();
+    }
+
+    document.getElementById("version-modal").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("version-number").focus();
+        document.getElementById("version-number").select();
+    }, 100);
+}
+
+function closeVersionModal() {
+    const modal = document.getElementById("version-modal");
+    if (modal) {
+        // Add fade out animation
+        modal.style.opacity = "0";
+
+        setTimeout(() => {
+            modal.style.display = "none";
+            modal.style.opacity = "1"; // Reset for next time
+
+            // Reset form dan variables
+            editingVersionId = null;
+            changelogItemCounter = 0;
+
+            // Clear container
+            const container = document.getElementById("changelog-items-container");
+            if (container) {
+                container.innerHTML = "";
+            }
+        }, 200);
+    }
+}
+
+function scrollModalToTop(modalId = "version-modal") {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const modalBody = modal.querySelector(".modal-body");
+        if (modalBody) {
+            modalBody.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
+        }
+    }
+}
+
+function addChangelogItem(existingItem = null) {
+    const container = document.getElementById("changelog-items-container");
+    const itemId = changelogItemCounter++;
+
+    const itemDiv = document.createElement("div");
+    itemDiv.className = "changelog-item-form";
+    itemDiv.dataset.itemId = itemId;
+
+    itemDiv.innerHTML = `
+        <div class="changelog-item-header">
+            <h5>
+                <i class="fas fa-list-ul"></i>
+                Changelog Item #${itemId + 1}
+            </h5>
+            <button type="button" class="btn-icon btn-delete" onclick="removeChangelogItem(${itemId})" title="Hapus Item">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+        <div class="changelog-item-fields">
+            <div class="form-group">
+                <label>Tipe *</label>
+                <select name="changelog_type_${itemId}" required>
+                    <option value="">Pilih Tipe</option>
+                    <option value="new">Fitur Baru</option>
+                    <option value="improvement">Peningkatan</option>
+                    <option value="fix">Perbaikan Bug</option>
+                    <option value="security">Keamanan</option>
+                    <option value="breaking">Perubahan Breaking</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Judul *</label>
+                <input type="text" name="changelog_title_${itemId}" required placeholder="Judul changelog item">
+            </div>
+            <div class="form-group">
+                <label>Deskripsi *</label>
+                <textarea name="changelog_description_${itemId}" required rows="2" placeholder="Deskripsi detail perubahan..."></textarea>
+            </div>
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="changelog_highlighted_${itemId}">
+                    <span class="checkbox-custom"></span>
+                    Highlight item ini
+                </label>
+            </div>
+        </div>
+    `;
+
+    container.appendChild(itemDiv);
+
+    // Populate existing data if provided
+    if (existingItem) {
+        itemDiv.querySelector(`select[name="changelog_type_${itemId}"]`).value =
+            existingItem.item_type;
+        itemDiv.querySelector(`input[name="changelog_title_${itemId}"]`).value =
+            existingItem.title;
+        itemDiv.querySelector(
+            `textarea[name="changelog_description_${itemId}"]`
+        ).value = existingItem.description;
+        itemDiv.querySelector(
+            `input[name="changelog_highlighted_${itemId}"]`
+        ).checked = existingItem.is_highlighted;
+    }
+
+    // Auto scroll to new item (dengan delay untuk memastikan render selesai)
+    setTimeout(() => {
+        const modalBody = document.querySelector("#version-modal .modal-body");
+        if (modalBody) {
+            // Scroll ke item yang baru ditambah
+            itemDiv.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "nearest",
+            });
+        }
+    }, 100);
+}
+
+function removeChangelogItem(itemId) {
+    const itemElement = document.querySelector(`[data-item-id="${itemId}"]`);
+    if (itemElement) {
+        // Smooth remove animation
+        itemElement.style.opacity = "0";
+        itemElement.style.transform = "translateX(-20px)";
+
+        setTimeout(() => {
+            itemElement.remove();
+
+            // Renumber remaining items
+            const remainingItems = document.querySelectorAll(
+                ".changelog-item-form"
+            );
+            remainingItems.forEach((item, index) => {
+                const header = item.querySelector(".changelog-item-header h5");
+                if (header) {
+                    header.innerHTML = `<i class="fas fa-list-ul"></i> Changelog Item #${index + 1
+                        }`;
+                }
+            });
+        }, 300);
+    }
+}
+
+async function saveVersion(event) {
+    event.preventDefault();
+
+    const saveBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = saveBtn.innerHTML;
+
+    saveBtn.innerHTML = '<div class="loading"></div> <span>Menyimpan...</span>';
+    saveBtn.disabled = true;
+
+    const formData = new FormData(event.target);
+
+    // Collect changelog items
+    const changelogItems = [];
+    const changelogItemElements = document.querySelectorAll(
+        ".changelog-item-form"
+    );
+
+    for (let i = 0; i < changelogItemElements.length; i++) {
+        const itemElement = changelogItemElements[i];
+        const itemId = itemElement.dataset.itemId;
+
+        const type = formData.get(`changelog_type_${itemId}`);
+        const title = formData.get(`changelog_title_${itemId}`);
+        const description = formData.get(`changelog_description_${itemId}`);
+        const highlighted =
+            formData.get(`changelog_highlighted_${itemId}`) === "on";
+
+        if (type && title && description) {
+            changelogItems.push({
+                item_type: type,
+                title: title.trim(),
+                description: description.trim(),
+                is_highlighted: highlighted,
+            });
         }
     }
 
-    // Escape key to close sidebar on mobile
-    if (e.key === "Escape" && window.innerWidth <= 1024) {
-        document.getElementById("sidebar").classList.remove("open");
+    // Validation
+    const validationErrors = [];
+    const versionNumber = formData.get("version_number").trim();
+    if (!versionNumber) validationErrors.push("Nomor versi wajib diisi");
+
+    const title = formData.get("title").trim();
+    if (!title) validationErrors.push("Judul versi wajib diisi");
+
+    if (changelogItems.length === 0) {
+        validationErrors.push("Minimal satu changelog item harus diisi");
+    }
+
+    if (validationErrors.length > 0) {
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+        showToast("Validasi gagal: " + validationErrors.join(", "), "error");
+
+        // Scroll modal ke atas untuk melihat error
+        scrollModalToTop("version-modal");
+        return;
+    }
+
+    const versionData = {
+        version_number: versionNumber,
+        title: title,
+        description: formData.get("description").trim() || null,
+        is_current: formData.get("is_current") === "on",
+        changelog_items: changelogItems,
+    };
+
+    try {
+        let url, method;
+        if (editingVersionId) {
+            url = `/api/version/${editingVersionId}/update/`;
+            method = "PUT";
+            versionData.id = editingVersionId;
+        } else {
+            url = "/api/version/create/";
+            method = "POST";
+        }
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify(versionData),
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            showToast(
+                editingVersionId
+                    ? `Version ${versionData.version_number} berhasil diperbarui!`
+                    : `Version ${versionData.version_number} berhasil ditambahkan!`,
+                "success"
+            );
+
+            closeVersionModal();
+            await loadVersionsData();
+        } else {
+            throw new Error(result.message || "Gagal menyimpan version");
+        }
+    } catch (error) {
+        console.error("Error saving version:", error);
+        showToast("Gagal menyimpan version: " + error.message, "error");
+
+        // Scroll modal ke atas saat ada error
+        scrollModalToTop("version-modal");
+    } finally {
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+    }
+}
+
+function deleteVersion(versionId) {
+    const version = versionsData.find((v) => v.id === versionId);
+    if (!version) return;
+
+    deleteTarget = {
+        type: "version",
+        id: versionId,
+        name: `Version ${version.version_number}`,
+    };
+    document.getElementById("delete-target-type").textContent = "version";
+    document.getElementById(
+        "delete-target-name"
+    ).textContent = `Version ${version.version_number}`;
+    document.getElementById("delete-modal").style.display = "flex";
+}
+
+function closeDeleteModal() {
+    document.getElementById("delete-modal").style.display = "none";
+    deleteTarget = null;
+}
+
+async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    const deleteBtn = document.getElementById("confirm-delete-btn");
+    const originalText = deleteBtn.innerHTML;
+
+    deleteBtn.innerHTML =
+        '<div class="loading"></div> <span>Menghapus...</span>';
+    deleteBtn.disabled = true;
+
+    try {
+        let url;
+        if (deleteTarget.type === "version") {
+            url = `/api/version/${deleteTarget.id}/delete/`;
+        } else if (deleteTarget.type === "staff") {
+            url = `/api/staff/${deleteTarget.id}/delete/`;
+        }
+
+        const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            showToast(`${deleteTarget.name} berhasil dihapus!`, "success");
+            closeDeleteModal();
+
+            if (deleteTarget.type === "version") {
+                await loadVersionsData();
+            } else if (deleteTarget.type === "staff") {
+                await loadStaffData();
+            }
+        } else {
+            throw new Error(result.message || "Gagal menghapus item");
+        }
+    } catch (error) {
+        console.error("Error deleting item:", error);
+        showToast("Gagal menghapus: " + error.message, "error");
+    } finally {
+        deleteBtn.innerHTML = originalText;
+        deleteBtn.disabled = false;
+    }
+}
+
+// Close modals when clicking outside
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("modal")) {
+        if (e.target.id === "staff-modal") {
+            closeStaffModal();
+        } else if (e.target.id === "version-modal") {
+            closeVersionModal();
+        } else if (e.target.id === "delete-modal") {
+            closeDeleteModal();
+        }
     }
 });
 
-// Console log for debugging
 console.log("🚀 Smart Guest Book Dashboard Loaded");
 console.log("📊 Auto-refresh: 30 seconds");
 console.log("⌨️ Keyboard shortcuts:");
 console.log("   - Ctrl+R: Refresh dashboard");
-console.log("   - 1-4: Switch tabs");
+console.log("   - 1-6: Switch tabs");
 console.log("   - Escape: Close sidebar (mobile)");

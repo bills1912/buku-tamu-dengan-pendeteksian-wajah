@@ -1,0 +1,113 @@
+<!-- Overview Tab -->
+<div id="overview-content" class="tab-content active">
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card total-guests">
+      <div class="stat-header">
+        <div>
+          <div class="stat-value" id="total-guests">--</div>
+          <div class="stat-label">Total Tamu Terdaftar</div>
+          <div class="stat-trend positive">
+            <i class="fas fa-arrow-up"></i>
+            <span>Terdaftar di sistem</span>
+          </div>
+        </div>
+        <div class="stat-icon">
+          <i class="fas fa-users"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card today-guests">
+      <div class="stat-header">
+        <div>
+          <div class="stat-value" id="today-guests">--</div>
+          <div class="stat-label">Tamu Hari Ini</div>
+          <div class="stat-trend positive">
+            <i class="fas fa-calendar-day"></i>
+            <span>Registrasi hari ini</span>
+          </div>
+        </div>
+        <div class="stat-icon">
+          <i class="fas fa-user-plus"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card active-visits">
+      <div class="stat-header">
+        <div>
+          <div class="stat-value" id="active-visits">--</div>
+          <div class="stat-label">Sedang Berkunjung</div>
+          <div class="stat-trend neutral">
+            <i class="fas fa-clock"></i>
+            <span>Aktif sekarang</span>
+          </div>
+        </div>
+        <div class="stat-icon">
+          <i class="fas fa-door-open"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card pending-guestbook">
+      <div class="stat-header">
+        <div>
+          <div class="stat-value" id="pending-guestbook">--</div>
+          <div class="stat-label">Belum Isi Buku Tamu</div>
+          <div class="stat-trend urgent">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Perlu perhatian</span>
+          </div>
+        </div>
+        <div class="stat-icon">
+          <i class="fas fa-edit"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+    <!-- Recent Activity -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">
+          <i class="fas fa-history"></i>
+        </div>
+        <div class="panel-title">
+          <h3>Aktivitas Terbaru</h3>
+          <p>Real-time monitoring sistem</p>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="activity-list" id="recent-activity">
+          <!-- Activities will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics & Analytics -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="panel-title">
+          <h3>Statistik & Analytics</h3>
+          <p>Tren kunjungan harian</p>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="charts-container">
+          <div class="chart-box">
+            <canvas id="daily-chart"></canvas>
+          </div>
+          <div class="chart-box">
+            <canvas id="purpose-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

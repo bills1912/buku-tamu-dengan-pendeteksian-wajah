@@ -168,7 +168,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'buku_tamu',
         'USER': 'postgres',
-        'PASSWORD': 'ThinkVision11',
+        'PASSWORD': 'kuran1925',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -229,65 +229,177 @@ FACE_RECOGNITION = {
 
 # Advanced DeepFace Configuration
 DEEPFACE_CONFIG = {
-    # Model settings
+    # Model-specific settings dengan threshold yang optimal
     'MODELS': {
         'Facenet': {
             'threshold': 0.4,
             'input_shape': (160, 160),
             'embedding_size': 128,
+            'description': 'Google FaceNet model - fast and accurate'
         },
         'Facenet512': {
             'threshold': 0.3,
             'input_shape': (160, 160), 
             'embedding_size': 512,
+            'description': 'FaceNet with 512-dimensional embeddings - more accurate'
         },
         'VGG-Face': {
             'threshold': 0.68,
             'input_shape': (224, 224),
             'embedding_size': 2622,
+            'description': 'VGG-Face model - classical approach'
         },
         'ArcFace': {
             'threshold': 0.68,
             'input_shape': (112, 112),
             'embedding_size': 512,
+            'description': 'ArcFace model - state-of-the-art accuracy'
+        },
+        'OpenFace': {
+            'threshold': 0.1,
+            'input_shape': (96, 96),
+            'embedding_size': 128,
+            'description': 'OpenFace model - lightweight'
+        },
+        'DeepFace': {
+            'threshold': 0.23,
+            'input_shape': (152, 152),
+            'embedding_size': 4096,
+            'description': 'Facebook DeepFace model'
+        },
+        'SFace': {
+            'threshold': 0.593,
+            'input_shape': (112, 112),
+            'embedding_size': 128,
+            'description': 'SFace model - good for edge devices'
         }
     },
     
-    # Detection backends
+    # Detection backends dengan karakteristik masing-masing
     'DETECTORS': {
-        'opencv': {'speed': 'fast', 'accuracy': 'medium'},
-        'ssd': {'speed': 'medium', 'accuracy': 'good'},
-        'dlib': {'speed': 'slow', 'accuracy': 'good'},
-        'mtcnn': {'speed': 'slow', 'accuracy': 'excellent'},
-        'retinaface': {'speed': 'slow', 'accuracy': 'excellent'},
+        'opencv': {
+            'speed': 'very_fast', 
+            'accuracy': 'medium',
+            'description': 'Haar Cascade - fastest but less accurate'
+        },
+        'ssd': {
+            'speed': 'fast', 
+            'accuracy': 'good',
+            'description': 'SSD MobileNet - good balance'
+        },
+        'dlib': {
+            'speed': 'medium', 
+            'accuracy': 'good',
+            'description': 'HOG + Linear SVM - reliable'
+        },
+        'mtcnn': {
+            'speed': 'slow', 
+            'accuracy': 'excellent',
+            'description': 'Multi-task CNN - very accurate'
+        },
+        'retinaface': {
+            'speed': 'slow', 
+            'accuracy': 'excellent',
+            'description': 'RetinaFace - state-of-the-art detection'
+        },
     },
     
-    # Performance settings
-    'CACHE_MODELS': True,
-    'GPU_MEMORY_LIMIT': None,  # Set to limit GPU memory usage (e.g., 1024 for 1GB)
-    'BATCH_PROCESSING': False,  # Enable for processing multiple faces at once
-    'MAX_FACES_PER_IMAGE': 1,  # Limit faces processed per image
+    # Performance dan Memory Management
+    'PERFORMANCE': {
+        'CACHE_MODELS': True,              # Cache loaded models in memory
+        'GPU_MEMORY_LIMIT': None,          # GPU memory limit dalam MB (None = unlimited)
+        'ALLOW_MEMORY_GROWTH': True,       # Allow TensorFlow GPU memory growth
+        'BATCH_PROCESSING': False,         # Enable batch processing for multiple faces
+        'MAX_FACES_PER_IMAGE': 5,         # Maximum faces to process per image
+        'PARALLEL_PROCESSING': False,      # Enable parallel processing (experimental)
+        'MODEL_WARMUP': True,             # Warm up models pada startup
+    },
     
-    # Quality settings
-    'MIN_FACE_SIZE': (30, 30),  # Minimum face size to process
-    'IMAGE_QUALITY': 95,  # JPEG quality for saved images
-    'FACE_CROP_MARGIN': 0.2,  # Margin around detected face when cropping
+    # Quality Control Settings
+    'QUALITY': {
+        'MIN_FACE_SIZE': (30, 30),        # Minimum face size untuk detection
+        'MAX_FACE_SIZE': (1000, 1000),    # Maximum face size
+        'FACE_CONFIDENCE_THRESHOLD': 0.9, # Minimum confidence untuk face detection
+        'BLUR_THRESHOLD': 100,            # Threshold untuk blur detection (Laplacian variance)
+        'BRIGHTNESS_RANGE': (50, 200),    # Range kecerahan yang acceptable
+        'CONTRAST_THRESHOLD': 0.3,        # Minimum contrast ratio
+    },
     
-    # Logging
-    'LOG_LEVEL': 'INFO',
-    'ENABLE_PERFORMANCE_LOGGING': True,
+    # Image Processing Settings
+    'IMAGE_PROCESSING': {
+        'FACE_CROP_MARGIN': 0.2,         # Margin around detected face saat cropping
+        'IMAGE_QUALITY': 95,              # JPEG quality untuk saved images
+        'RESIZE_METHOD': 'lanczos',       # Resize method: lanczos, bicubic, bilinear
+        'COLOR_CONVERSION': 'rgb',        # Color space: rgb, bgr, gray
+        'NORMALIZE_LIGHTING': True,       # Normalize lighting conditions
+        'HISTOGRAM_EQUALIZATION': False,   # Apply histogram equalization
+    },
+    
+    # Logging dan Debugging
+    'LOGGING': {
+        'LOG_LEVEL': 'INFO',              # DEBUG, INFO, WARNING, ERROR
+        'ENABLE_PERFORMANCE_LOGGING': True, # Log performance metrics
+        'LOG_MODEL_LOADING': True,        # Log model loading progress
+        'LOG_FACE_DETECTION': True,       # Log face detection results
+        'LOG_RECOGNITION_RESULTS': True,  # Log recognition results
+        'SAVE_DEBUG_IMAGES': DEBUG,       # Save intermediate images untuk debugging
+    },
+    
+    # Error Handling
+    'ERROR_HANDLING': {
+        'FALLBACK_DETECTOR': 'opencv',    # Fallback detector jika primary gagal
+        'RETRY_ATTEMPTS': 3,              # Number of retry attempts
+        'TIMEOUT_SECONDS': 30,            # Timeout untuk processing
+        'GRACEFUL_DEGRADATION': True,     # Continue dengan reduced functionality
+    }
 }
 
 # TensorFlow Configuration (for DeepFace)
 import os
 os.environ.setdefault('TF_CPP_MIN_LOG_LEVEL', '2')  # Reduce TensorFlow logging
 
-# For GPU usage (if available)
+import os
+os.environ.setdefault('TF_CPP_MIN_LOG_LEVEL', '2')
+os.environ.setdefault('TF_ENABLE_ONEDNN_OPTS', '0')
+os.environ.setdefault('CUDA_VISIBLE_DEVICES', '')
+
+# TensorFlow Configuration dengan safe import
 TENSORFLOW_CONFIG = {
-    'ALLOW_MEMORY_GROWTH': True,  # Don't allocate all GPU memory at once
-    'MEMORY_LIMIT': None,  # Set to limit GPU memory (in MB)
-    'USE_GPU': True,  # Set to False to force CPU usage
+    'ALLOW_MEMORY_GROWTH': True,
+    'MEMORY_LIMIT': None,
+    'USE_GPU': False,  # Force CPU
+    'SUPPRESS_WARNINGS': True,
 }
+
+def configure_tensorflow_safe():
+    """Configure TensorFlow dengan error handling"""
+    try:
+        import tensorflow as tf
+        
+        # Suppress warnings
+        if hasattr(tf, 'get_logger'):
+            tf.get_logger().setLevel('ERROR')
+        
+        # Configure GPU hanya jika tf.config ada
+        if hasattr(tf, 'config') and hasattr(tf.config, 'experimental'):
+            try:
+                gpus = tf.config.experimental.list_physical_devices('GPU')
+                if gpus and TENSORFLOW_CONFIG.get('USE_GPU', False):
+                    for gpu in gpus:
+                        tf.config.experimental.set_memory_growth(gpu, True)
+                else:
+                    # Force CPU
+                    tf.config.set_visible_devices([], 'GPU')
+            except Exception as e:
+                print(f"GPU config warning: {e}")
+        
+        return True
+    except Exception as e:
+        print(f"TensorFlow config error: {e}")
+        return False
+
+# Configure TensorFlow saat startup
+tensorflow_available = configure_tensorflow_safe()
 
 # Face Recognition Logging
 LOGGING['loggers']['guest_system.services.face_recognition_service'] = {

@@ -30,6 +30,11 @@ urlpatterns = [
     # Version & Changelog
     path('changelog/', views.ChangelogView.as_view(), name='changelog'),
     path('api/changelog-data/', views.changelog_data, name='changelog_data'),
+    # Changelog Management URLs
+    path('api/version/create/', views.create_version, name='create_version'),
+    path('api/version/<int:version_id>/update/', views.update_version, name='update_version'),
+    path('api/version/<int:version_id>/delete/', views.delete_version, name='delete_version'),
+    path('api/versions/list/', views.get_versions_list, name='get_versions_list'),
     
     # Staff management
     path('api/staff/<int:staff_id>/status/', views.update_staff_status, name='update_staff_status'),

@@ -23,6 +23,15 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import re
 import logging
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
+import json
+
+from .models import Version, ChangelogItem
 logger = logging.getLogger(__name__)
 
 # LAZY LOADING SERVICES - Avoid immediate import to prevent pygame startup message
@@ -1487,6 +1496,263 @@ def get_staff_list(request):
         
     except Exception as e:
         logger.error(f"Error getting staff list: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+        
+@csrf_exempt
+@require_http_methods(["POST"])
+def create_version(request):
+    """Create a new version with changelog items"""
+    try:
+        data = json.loads(request.body)
+        
+        # Validate required fields
+        if not data.get('version_number') or not data.get('title'):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Version number and title are required'
+            }, status=400)
+        
+        # Check if version number already exists
+        if Version.objects.filter(version_number=data['version_number']).exists():
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Version {data["version_number"]} already exists'
+            }, status=400)
+        
+        # Create version
+        version = Version.objects.create(
+            version_number=data['version_number'],
+            title=data['title'],
+            description=data.get('description', ''),
+            is_current=data.get('is_current', False),
+            release_date=timezone.now()
+        )
+        
+        # Create changelog items
+        changelog_items = data.get('changelog_items', [])
+        for item_data in changelog_items:
+            ChangelogItem.objects.create(
+                version=version,
+                item_type=item_data['item_type'],
+                title=item_data['title'],
+                description=item_data['description'],
+                is_highlighted=item_data.get('is_highlighted', False)
+            )
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Version {version.version_number} created successfully',
+            'data': {
+                'id': version.id,
+                'version_number': version.version_number,
+                'title': version.title,
+                'is_current': version.is_current
+            }
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid JSON data'
+        }, status=400)
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def update_version(request, version_id):
+    """Update an existing version"""
+    try:
+        version = get_object_or_404(Version, id=version_id)
+        data = json.loads(request.body)
+        
+        # Update version fields
+        version.version_number = data.get('version_number', version.version_number)
+        version.title = data.get('title', version.title)
+        version.description = data.get('description', version.description)
+        
+        # Handle current version logic
+        if data.get('is_current', False) and not version.is_current:
+            version.is_current = True
+        
+        version.save()
+        
+        # Update changelog items - delete existing and create new ones
+        version.changelog_items.all().delete()
+        
+        changelog_items = data.get('changelog_items', [])
+        for item_data in changelog_items:
+            ChangelogItem.objects.create(
+                version=version,
+                item_type=item_data['item_type'],
+                title=item_data['title'],
+                description=item_data['description'],
+                is_highlighted=item_data.get('is_highlighted', False)
+            )
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Version {version.version_number} updated successfully'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid JSON data'
+        }, status=400)
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_version(request, version_id):
+    """Delete a version (only if not current)"""
+    try:
+        version = get_object_or_404(Version, id=version_id)
+        
+        # Prevent deletion of current version
+        if version.is_current:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Cannot delete the current version'
+            }, status=400)
+        
+        version_number = version.version_number
+        version.delete()
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Version {version_number} deleted successfully'
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+
+def get_versions_list(request):
+    """Get list of all versions with changelog items"""
+    try:
+        versions = Version.objects.all().order_by('-release_date')
+        current_version = versions.filter(is_current=True).first()
+        
+        versions_data = []
+        for version in versions:
+            changelog_items = []
+            for item in version.changelog_items.all():
+                changelog_items.append({
+                    'id': item.id,
+                    'item_type': item.item_type,
+                    'title': item.title,
+                    'description': item.description,
+                    'is_highlighted': item.is_highlighted,
+                    'created_at': item.created_at.isoformat()
+                })
+            
+            versions_data.append({
+                'id': version.id,
+                'version_number': version.version_number,
+                'title': version.title,
+                'description': version.description,
+                'release_date': version.release_date.isoformat(),
+                'is_current': version.is_current,
+                'created_at': version.created_at.isoformat(),
+                'changelog_items': changelog_items
+            })
+        
+        current_version_data = None
+        if current_version:
+            current_version_data = {
+                'id': current_version.id,
+                'version_number': current_version.version_number,
+                'title': current_version.title,
+                'description': current_version.description,
+                'release_date': current_version.release_date.isoformat()
+            }
+        
+        return JsonResponse({
+            'status': 'success',
+            'data': {
+                'current_version': current_version_data,
+                'versions': versions_data
+            }
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+
+# Juga update view changelog_data yang sudah ada untuk memastikan konsistensi
+def changelog_data(request):
+    """Enhanced changelog data view"""
+    try:
+        # Get current version
+        current_version = Version.objects.filter(is_current=True).first()
+        
+        # Get all versions ordered by release date (newest first)
+        versions = Version.objects.all().order_by('-release_date')
+        
+        versions_data = []
+        for version in versions:
+            # Get changelog items for this version
+            changelog_items = []
+            for item in version.changelog_items.all().order_by('item_type', 'created_at'):
+                changelog_items.append({
+                    'id': item.id,
+                    'item_type': item.item_type,
+                    'title': item.title,
+                    'description': item.description,
+                    'is_highlighted': item.is_highlighted,
+                })
+            
+            versions_data.append({
+                'id': version.id,
+                'version_number': version.version_number,
+                'title': version.title,
+                'description': version.description,
+                'release_date': version.release_date.isoformat(),
+                'is_current': version.is_current,
+                'changelog_items': changelog_items
+            })
+        
+        # Prepare current version data
+        current_version_data = None
+        if current_version:
+            current_version_data = {
+                'id': current_version.id,
+                'version_number': current_version.version_number,
+                'title': current_version.title,
+                'description': current_version.description,
+                'release_date': current_version.release_date.isoformat()
+            }
+        
+        return JsonResponse({
+            'status': 'success',
+            'data': {
+                'current_version': current_version_data,
+                'versions': versions_data
+            }
+        })
+        
+    except Exception as e:
         return JsonResponse({
             'status': 'error',
             'message': str(e)
