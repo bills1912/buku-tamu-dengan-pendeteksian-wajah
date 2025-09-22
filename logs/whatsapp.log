@@ -210,3 +210,70 @@ INFO 2025-08-22 09:10:50,134 whatsapp_service 7896 6084 API Token configured: sa
 INFO 2025-08-22 15:53:40,367 whatsapp_service 7896 1472 Sending WhatsApp to 6285206279070
 INFO 2025-08-22 15:53:44,571 whatsapp_service 7896 1472 Response status: 200
 INFO 2025-08-22 15:53:44,571 whatsapp_service 7896 1472 WhatsApp sent successfully to 6285206279070
+INFO 2025-08-25 10:38:43,169 whatsapp_service 13848 5976 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-08-25 10:38:43,169 whatsapp_service 13848 5976 API Token configured: saJk4PWovX...
+INFO 2025-08-25 11:18:42,009 whatsapp_service 13848 15960 Sending WhatsApp to 6281397115281
+INFO 2025-08-25 11:18:44,441 whatsapp_service 13848 15960 Response status: 200
+INFO 2025-08-25 11:18:44,441 whatsapp_service 13848 15960 WhatsApp sent successfully to 6281397115281
+INFO 2025-08-26 06:44:49,147 whatsapp_service 12180 12176 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-08-26 06:44:49,147 whatsapp_service 12180 12176 API Token configured: saJk4PWovX...
+INFO 2025-08-26 10:52:06,808 whatsapp_service 12180 14872 Sending WhatsApp to 6281397115281
+INFO 2025-08-26 10:52:08,730 whatsapp_service 12180 14872 Response status: 200
+INFO 2025-08-26 10:52:08,730 whatsapp_service 12180 14872 WhatsApp sent successfully to 6281397115281
+INFO 2025-08-27 08:35:15,927 whatsapp_service 16896 10512 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-08-27 08:35:15,940 whatsapp_service 16896 10512 API Token configured: saJk4PWovX...
+INFO 2025-08-28 11:11:49,394 whatsapp_service 15228 15292 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-08-28 11:11:49,395 whatsapp_service 15228 15292 API Token configured: saJk4PWovX...
+INFO 2025-08-28 11:19:05,153 whatsapp_service 15228 10356 Sending WhatsApp to 6282166174086
+INFO 2025-08-28 11:19:07,819 whatsapp_service 15228 10356 Response status: 200
+INFO 2025-08-28 11:19:07,820 whatsapp_service 15228 10356 WhatsApp sent successfully to 6282166174086
+INFO 2025-08-29 09:35:45,426 whatsapp_service 16768 16776 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-08-29 09:35:45,426 whatsapp_service 16768 16776 API Token configured: saJk4PWovX...
+INFO 2025-09-01 10:49:57,635 whatsapp_service 864 16496 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-01 10:49:57,645 whatsapp_service 864 16496 API Token configured: saJk4PWovX...
+INFO 2025-09-04 07:09:31,352 whatsapp_service 16124 1480 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-04 07:09:31,352 whatsapp_service 16124 1480 API Token configured: saJk4PWovX...
+INFO 2025-09-08 12:02:27,419 whatsapp_service 17288 17292 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-08 12:02:27,432 whatsapp_service 17288 17292 API Token configured: saJk4PWovX...
+INFO 2025-09-08 12:06:40,020 whatsapp_service 17288 12072 Sending WhatsApp to 6281361101333
+INFO 2025-09-08 12:06:41,937 whatsapp_service 17288 12072 Response status: 200
+INFO 2025-09-08 12:06:41,937 whatsapp_service 17288 12072 WhatsApp sent successfully to 6281361101333
+INFO 2025-09-09 08:57:49,042 whatsapp_service 16964 16968 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-09 08:57:49,052 whatsapp_service 16964 16968 API Token configured: saJk4PWovX...
+INFO 2025-09-10 08:28:24,563 whatsapp_service 14136 14108 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-10 08:28:24,564 whatsapp_service 14136 14108 API Token configured: saJk4PWovX...
+INFO 2025-09-10 08:34:06,512 whatsapp_service 14136 3292 Sending WhatsApp to 6281361101333
+INFO 2025-09-10 08:34:07,428 whatsapp_service 14136 3292 Response status: 200
+INFO 2025-09-10 08:34:07,428 whatsapp_service 14136 3292 WhatsApp sent successfully to 6281361101333
+INFO 2025-09-10 10:30:55,533 whatsapp_service 14136 2116 Sending WhatsApp to 6281260548693
+INFO 2025-09-10 10:30:56,400 whatsapp_service 14136 2116 Response status: 200
+INFO 2025-09-10 10:30:56,400 whatsapp_service 14136 2116 WhatsApp sent successfully to 6281260548693
+INFO 2025-09-10 11:16:14,566 whatsapp_service 14136 13144 Sending WhatsApp to 6281260548693
+INFO 2025-09-10 11:16:15,334 whatsapp_service 14136 13144 Response status: 200
+INFO 2025-09-10 11:16:15,334 whatsapp_service 14136 13144 WhatsApp sent successfully to 6281260548693
+INFO 2025-09-11 15:42:44,475 whatsapp_service 5636 14292 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-11 15:42:44,476 whatsapp_service 5636 14292 API Token configured: saJk4PWovX...
+INFO 2025-09-11 15:50:43,339 whatsapp_service 5636 1996 Sending WhatsApp to 6281260548693
+INFO 2025-09-11 15:50:44,750 whatsapp_service 5636 1996 Response status: 200
+INFO 2025-09-11 15:50:44,750 whatsapp_service 5636 1996 WhatsApp sent successfully to 6281260548693
+INFO 2025-09-12 09:37:35,389 whatsapp_service 14484 14472 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-12 09:37:35,405 whatsapp_service 14484 14472 API Token configured: saJk4PWovX...
+INFO 2025-09-15 11:12:35,049 whatsapp_service 15504 7876 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-15 11:12:35,060 whatsapp_service 15504 7876 API Token configured: saJk4PWovX...
+INFO 2025-09-15 11:33:58,961 whatsapp_service 12832 16076 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-15 11:33:58,962 whatsapp_service 12832 16076 API Token configured: saJk4PWovX...
+INFO 2025-09-15 11:38:21,157 whatsapp_service 12832 16568 Sending WhatsApp to 6281260548693
+INFO 2025-09-15 11:38:22,424 whatsapp_service 12832 16568 Response status: 200
+INFO 2025-09-15 11:38:22,424 whatsapp_service 12832 16568 WhatsApp sent successfully to 6281260548693
+INFO 2025-09-15 15:01:02,342 whatsapp_service 12832 14636 Sending WhatsApp to 6285359078713
+INFO 2025-09-15 15:01:04,698 whatsapp_service 12832 14636 Response status: 200
+INFO 2025-09-15 15:01:04,698 whatsapp_service 12832 14636 WhatsApp sent successfully to 6285359078713
+INFO 2025-09-16 10:30:46,972 whatsapp_service 12832 5140 Sending WhatsApp to 6285206279070
+INFO 2025-09-16 10:30:47,823 whatsapp_service 12832 5140 Response status: 200
+INFO 2025-09-16 10:30:47,823 whatsapp_service 12832 5140 WhatsApp sent successfully to 6285206279070
+INFO 2025-09-17 07:34:51,872 whatsapp_service 17812 13964 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-17 07:34:51,890 whatsapp_service 17812 13964 API Token configured: saJk4PWovX...
+INFO 2025-09-18 07:31:59,416 whatsapp_service 5008 6492 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-18 07:31:59,416 whatsapp_service 5008 6492 API Token configured: saJk4PWovX...
+INFO 2025-09-19 09:32:06,623 whatsapp_service 18304 18312 WhatsApp service enabled with URL: https://api.fonnte.com/send
+INFO 2025-09-19 09:32:06,623 whatsapp_service 18304 18312 API Token configured: saJk4PWovX...
